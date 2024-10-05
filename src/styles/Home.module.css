@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container {
+    position: relative;
+  }
+  
+  .banner {
+    position: relative;
+    height: 80vh;
+    width: 100%;
+  }
+  
+  .textOverlay {
+    position: absolute;
+    bottom: 20%;
+    left: 10%;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .heading {
+    font-size: 48px;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  p {
+    font-size: 24px;
+    font-family: 'Lato', sans-serif;
+  }
+  
