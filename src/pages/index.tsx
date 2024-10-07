@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cake, Coffee, Croissant, ChevronDown, Instagram, Facebook, Phone, Send } from 'lucide-react';
-import Link from 'next/link';
+import { Cake, Coffee, Croissant, ChevronDown, Instagram, Facebook } from 'lucide-react';
+
 import GallerySection from '@components/Gallery/GallerySection';
 import Navbar from '@/components/Navbar/Navbar';
 
+const backgroundImages = [
+  '/images/luxury-pastry-1.jpg',
+  '/images/luxury-pastry-2.jpg',
+  '/images/luxury-pastry-3.jpg',
+];
+
 const LuxuryBakeryHomepage = () => {
-  const [scrollY, setScrollY] = useState(0);
+  // Eliminar scrollY si no se usa, o utilizarlo como se muestra en la Opción B
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const backgroundImages = [
-    '/images/luxury-pastry-1.jpg',
-    '/images/luxury-pastry-2.jpg',
-    '/images/luxury-pastry-3.jpg',
-  ];
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -28,7 +22,7 @@ const LuxuryBakeryHomepage = () => {
       );
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, []); // backgroundImages.length ya no es necesario porque backgroundImages está fuera del componente
 
   return (
     <div className="min-h-screen bg-amber-50 text-brown-900 overflow-hidden font-serif relative">
