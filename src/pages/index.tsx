@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cake, Coffee, Croissant, ChevronDown, Instagram, Facebook, ShoppingCart } from 'lucide-react';
+import { Cake, Coffee, Croissant, Instagram, Facebook, ShoppingCart } from 'lucide-react';
 import GallerySection from '@/components/Gallery/GallerySection';
 import { useProducts } from '@/hooks/useProducts';
 import Navbar from '@/components/Navbar/Navbar';
@@ -9,7 +9,7 @@ import Image from 'next/image';
 const LuxuryBakeryHomepage = () => {
   const { products, loading, error } = useProducts();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [isAnimating] = useState(false);
 
   useEffect(() => {
     if (!loading && products && products.length > 0) {

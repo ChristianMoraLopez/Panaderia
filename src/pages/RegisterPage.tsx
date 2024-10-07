@@ -5,7 +5,7 @@ import { Cake, User, Mail, Lock, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import  Button  from '@/components/ui/button';
 import  Input  from '@/components/ui/Input';
-import  Label  from '@/components/ui/Label';
+import Link from 'next/link';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const RegisterPage: React.FC = () => {
@@ -101,9 +101,9 @@ const RegisterPage: React.FC = () => {
         <div className="text-center">
           <p className="text-sm text-amber-800">
             ¿Ya tienes una cuenta?{' '}
-            <a href="/LoginPage" className="font-medium text-amber-600 hover:text-amber-500">
+            <Link href="/LoginPage" className="font-medium text-amber-600 hover:text-amber-500">
               Inicia sesión aquí
-            </a>
+            </Link>
           </p>
         </div>
       </motion.div>
