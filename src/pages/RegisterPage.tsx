@@ -59,12 +59,15 @@ const RegisterPage: React.FC = () => {
             <form className="space-y-6" onSubmit={handleSubmit}>
               {inputFields.map((field) => (
                 <div key={field.name}>
-                  <Label htmlFor={field.name} className="block text-sm font-medium text-amber-800">
-                    {field.label}
-                  </Label>
+                <label 
+  htmlFor={field.name} 
+  className="block text-base font-semibold text-amber-900"
+>
+  {field.label}
+</label>
                   <div className="mt-1 relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <field.icon className="h-5 w-5 text-amber-500" aria-hidden="true" />
+                      <field.icon className="h-5 w-5 text-amber-800" aria-hidden="true" />
                     </div>
                     <Input
                       id={field.name}
@@ -98,7 +101,7 @@ const RegisterPage: React.FC = () => {
         <div className="text-center">
           <p className="text-sm text-amber-800">
             ¿Ya tienes una cuenta?{' '}
-            <a href="/login" className="font-medium text-amber-600 hover:text-amber-500">
+            <a href="/LoginPage" className="font-medium text-amber-600 hover:text-amber-500">
               Inicia sesión aquí
             </a>
           </p>

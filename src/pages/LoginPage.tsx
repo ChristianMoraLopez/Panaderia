@@ -96,7 +96,7 @@ const LoginPage = () => {
             )}
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
-                <Label htmlFor="email" className="text-amber-800 font-semibold">Correo Electrónico</Label>
+                <label htmlFor="email" className="text-amber-800 font-semibold">Correo Electrónico</label>
                 <div className="mt-1 relative">
                   <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-500" size={18} />
                   <Input
@@ -111,7 +111,7 @@ const LoginPage = () => {
                 {errors.email && <p className="mt-1 text-red-500 text-sm">{errors.email}</p>}
               </div>
               <div>
-                <Label htmlFor="password" className="text-amber-800 font-semibold">Contraseña</Label>
+                <label htmlFor="password" className="text-amber-800 font-semibold">Contraseña</label>
                 <div className="mt-1 relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-500" size={18} />
                   <Input

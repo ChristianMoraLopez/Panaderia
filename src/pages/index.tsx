@@ -47,7 +47,7 @@ const LuxuryBakeryHomepage = () => {
 
       {/* WhatsApp Button */}
       <a
-        href="https://wa.me/1234567890"
+        href="https://wa.me/3144715980"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 transition-colors duration-300"
