@@ -46,11 +46,8 @@ const Navbar: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      // Optionally, you can add a redirect here after successful logout
-      // router.push('/');
     } catch (error) {
       console.error('Logout failed:', error);
-      // Optionally, show an error message to the user
     }
   };
 
@@ -59,13 +56,15 @@ const Navbar: React.FC = () => {
       <span
         className={`group flex flex-col items-center px-4 py-2 text-sm font-medium ${
           pathname === href ? 'text-brown-600' : 'text-brown-800 hover:text-brown-600'
-        } transition-colors duration-300 cursor-pointer`}
+        } transition-colors duration-300 cursor-pointer ${
+          isScrolled ? '' : 'text-white hover:text-cream-100'
+        }`}
         onClick={onClick}
       >
         <Icon
           icon={icon}
           className={`h-5 w-5 mb-1 group-hover:scale-110 transition-transform duration-300 ${
-            pathname === href ? 'text-brown-600' : 'text-brown-800'
+            pathname === href ? 'text-brown-600' : isScrolled ? 'text-brown-800' : 'text-white'
           }`}
         />
         {text}
@@ -85,18 +84,24 @@ const Navbar: React.FC = () => {
             <span className="flex-shrink-0 flex items-center">
               <Image
                 className="h-12 w-auto"
-                src="/images/LogoBlack.svg"
+                src={isScrolled ? "/images/LogoBlack.svg" : "/images/LogoWhite.svg"}
                 alt="Logo"
                 width={250}
                 height={250}
               />
-              <span className="ml-2 text-2xl font-serif italic text-brown-800"> Dulce Hogar </span>
+              <span className={`ml-2 text-2xl font-serif italic ${
+                isScrolled ? 'text-brown-800' : 'text-white'
+              }`}>
+                Dulce Hogar
+              </span>
             </span>
           </Link>
           <div className="hidden md:flex items-center space-x-6">
             {user && (
-              <span className="text-sm font-medium text-brown-800">
-                Hola, {user.displayName|| user.displayName}
+              <span className={`text-sm font-medium ${
+                isScrolled ? 'text-brown-800' : 'text-white'
+              }`}>
+                Hola, {user.displayName || user.email}
               </span>
             )}
             <NavLink href="/products" text="Delicias" icon={Cake} />
@@ -116,7 +121,9 @@ const Navbar: React.FC = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleNav}
-              className="inline-flex items-center justify-center p-2 rounded-full border border-brown-800 text-brown-800 hover:text-brown-600 hover:border-brown-600 focus:outline-none transition-colors duration-300"
+              className={`inline-flex items-center justify-center p-2 rounded-full ${
+                isScrolled ? 'border border-brown-800 text-brown-800 hover:text-brown-600 hover:border-brown-600' : 'border border-white text-white hover:text-cream-100 hover:border-cream-100'
+              } focus:outline-none transition-colors duration-300`}
             >
               <span className="sr-only">Abrir menú principal</span>
               <Icon icon={isNavOpen ? X : Menu} className="h-6 w-6" aria-hidden="true" />
