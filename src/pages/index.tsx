@@ -1,113 +1,152 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cake, Coffee, Croissant, ChevronDown, Instagram, Facebook, Twitter } from 'lucide-react';
-import Link from 'next/link';
-import GallerySection from '@components/Gallery/GallerySection';
+import { Cake, Coffee, Croissant, Instagram, Facebook, ShoppingCart } from 'lucide-react';
+import GallerySection from '@/components/Gallery/GallerySection';
+import { useProducts } from '@/hooks/useProducts';
 import Navbar from '@/components/Navbar/Navbar';
+import Image from 'next/image';
 
 const LuxuryBakeryHomepage = () => {
-  const [scrollY, setScrollY] = useState(0);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const backgroundImages = [
-    '/images/luxury-pastry-1.jpg',
-    '/images/luxury-pastry-2.jpg',
-    '/images/luxury-pastry-3.jpg',
-  ];
+  const { products, loading, error } = useProducts();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAnimating] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    if (!loading && products && products.length > 0) {
+      const timer = setInterval(() => {
+        if (!isAnimating) {
+          setCurrentSlide((prevSlide) => (prevSlide + 1) % products.length);
+        }
+      }, 5000);
+      return () => clearInterval(timer);
+    }
+  }, [loading, products, isAnimating]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        (prevIndex + 1) % backgroundImages.length
-      );
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+  const handleSlideChange = (index: number) => {
+    if (!isAnimating) {
+      setCurrentSlide(index);
+    }
+  };
+
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center bg-amber-50">
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      >
+        <Cake className="w-16 h-16 text-amber-600" />
+      </motion.div>
+    </div>
+  );
+  if (error) return <div className="h-screen flex items-center justify-center bg-amber-50 text-red-600 text-xl">Error: {error}</div>;
 
   return (
-    <div className="min-h-screen bg-beige-200 text-black overflow-hidden"> {/* Cambiado de bg-black a bg-beige-200 */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentImageIndex}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.5 }}
-          className="fixed inset-0 w-full h-full"
-          style={{
-            backgroundImage: `url(${backgroundImages[currentImageIndex]})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.5)', // Ajustado para un brillo más cálido
-          }}
-        />
-      </AnimatePresence>
-
+    <div className="min-h-screen bg-amber-50 text-brown-900 overflow-hidden font-serif relative">
       <Navbar />
 
-      <main>
-        <section className="h-screen flex items-center justify-center relative">
-          <div className="text-center z-10">
+      {/* Main Slider Section */}
+      <section className="h-screen relative overflow-hidden">
+        <AnimatePresence initial={false}>
+          {products && products[currentSlide] && (
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 1.5 }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <Image
+                src={`https:${products[currentSlide].image.fields.file.url}`}
+                alt={products[currentSlide].name}
+                layout="fill"
+                objectFit="cover"
+                quality={100}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center z-10 px-4">
             <motion.h2
+              key={`title-${currentSlide}`}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1 }}
-              className="text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter"
+              exit={{ opacity: 0, y: -50 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter text-amber-100 drop-shadow-lg"
             >
-              Arte en cada bocado
+              {products && products[currentSlide] ? products[currentSlide].name : 'Arte en cada bocado'}
             </motion.h2>
             <motion.p
+              key={`description-${currentSlide}`}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.5 }}
-              className="text-xl md:text-2xl font-light mb-12 max-w-2xl mx-auto"
+              exit={{ opacity: 0, y: -50 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              className="text-lg md:text-xl lg:text-2xl font-light mb-12 max-w-2xl mx-auto text-amber-50 drop-shadow"
             >
-              Descubre la exquisitez de nuestras creaciones artesanales, donde cada detalle es una obra maestra
+              {products && products[currentSlide] ? products[currentSlide].description : 'Descubre la exquisitez de nuestras creaciones artesanales'}
             </motion.p>
             <motion.button
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 2 }}
-              className="px-8 py-4 bg-gold-400 text-black rounded-full text-lg font-semibold hover:bg-gold-300 transition-colors"
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              className="px-8 py-4 bg-amber-600 text-amber-50 rounded-full text-lg font-semibold hover:bg-amber-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              Explorar Nuestro Menú
+              <ShoppingCart className="inline-block mr-2 h-5 w-5" />
+              Ordenar Ahora
             </motion.button>
           </div>
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-          >
-            <ChevronDown className="w-10 h-10 text-black opacity-70" /> {/* Cambiado de text-white a text-black */}
-          </motion.div>
-        </section>
+        </div>
 
-        <section className="py-24 bg-black bg-opacity-80">
+        {/* Thumbnails */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-4">
+          {products && products.map((product, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.1, y: -5 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => handleSlideChange(index)}
+              className={`w-16 h-16 rounded-full overflow-hidden border-2 ${
+                currentSlide === index ? 'border-amber-400 shadow-glow' : 'border-transparent'
+              } cursor-pointer transition-all duration-300`}
+            >
+              <Image
+                src={`https:${product.image.fields.file.url}`}
+                alt={product.name}
+                width={64}
+                height={64}
+                objectFit="cover"
+              />
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <main>
+        <section className="py-24 bg-gradient-to-b from-amber-900 to-brown-900">
           <div className="container mx-auto px-6">
-            <h3 className="text-4xl font-bold mb-16 text-center text-gold-400">Nuestras Especialidades</h3> {/* Ajustado a texto dorado */}
+            <h3 className="text-4xl font-bold mb-16 text-center text-amber-300 drop-shadow-lg">Nuestras Especialidades</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {[
-                { icon: Cake, title: "Pasteles de Ensueño" },
-                { icon: Coffee, title: "Café de Especialidad" },
-                { icon: Croissant, title: "Panes Artesanales" },
-              ].map(({ icon: Icon, title }, index) => (
+                { icon: Cake, title: "Pasteles de Ensueño", description: "Creaciones únicas que deleitan todos los sentidos" },
+                { icon: Coffee, title: "Café de Especialidad", description: "Aromas intensos y sabores cuidadosamente seleccionados" },
+                { icon: Croissant, title: "Panes Artesanales", description: "Tradición y creatividad en cada hogaza" },
+              ].map(({ icon: Icon, title, description }, index) => (
                 <motion.div
                   key={title}
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: index * 0.2 }}
-                  className="text-center"
+                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                  className="text-center bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg p-8 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
                 >
-                  <Icon className="w-16 h-16 mx-auto mb-6 text-gold-400" />
-                  <h4 className="text-2xl font-semibold mb-4">{title}</h4>
-                  <p className="text-gray-600"> {/* Cambiado de text-gray-400 a text-gray-600 */}
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  <Icon className="w-16 h-16 mx-auto mb-6 text-amber-600" />
+                  <h4 className="text-2xl font-semibold mb-4 text-brown-800">{title}</h4>
+                  <p className="text-brown-600">
+                    {description}
                   </p>
                 </motion.div>
               ))}
@@ -115,31 +154,46 @@ const LuxuryBakeryHomepage = () => {
           </div>
         </section>
 
-        <section className="py-24 bg-black bg-opacity-80">
+        <section className="py-24 bg-gradient-to-b from-brown-900 to-amber-900">
           <GallerySection />
         </section>
       </main>
 
-      <footer className="bg-black py-12">
+      <footer className="bg-brown-900 py-12 text-amber-100">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-8 md:mb-0">
-              <h5 className="text-2xl font-bold mb-4 text-gold-400">Dulces Delicias</h5> {/* Ajustado a texto dorado */}
-              <p className="text-gray-400">Horneado con pasión desde 1995</p>
+              <h5 className="text-2xl font-bold mb-4 text-amber-300">Dulces Delicias</h5>
+              <p className="text-amber-200">Horneado con pasión desde 1995</p>
             </div>
             <div className="flex space-x-6">
-              {[Instagram, Facebook, Twitter].map((Icon, index) => (
-                <a
+              {[
+                { Icon: Instagram, href: "https://www.instagram.com/dulcesdelicias" },
+                { Icon: Facebook, href: "https://www.facebook.com/dulcesdelicias" },
+                { 
+                  Icon: () => (
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                    </svg>
+                  ), 
+                  href: "https://www.tiktok.com/@dulcesdelicias" 
+                },
+              ].map(({ Icon, href }, index) => (
+                <motion.a
                   key={index}
-                  href="#"
-                  className="text-white hover:text-gold-400 transition-colors"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber-300 hover:text-amber-100 transition-colors"
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
                 >
                   <Icon className="w-6 h-6" />
-                </a>
+                </motion.a>
               ))}
             </div>
           </div>
-          <div className="mt-12 text-center text-sm text-gray-400">
+          <div className="mt-12 text-center text-sm text-amber-200">
             © 2024 Dulces Delicias Artesanales. Todos los derechos reservados.
           </div>
         </div>

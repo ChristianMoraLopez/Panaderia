@@ -10,7 +10,7 @@ class MyDocument extends Document {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link href="https://fonts.googleapis.com/css2?family=Ms+Madi&display=swap" rel="stylesheet" />
-          <link rel="icon" href="/images/LogoMakeUpBlackAndWhite.svg" type="image/svg" />
+          <link rel="icon" href="/images/reshot-icon-bread.svg" type="image/svg" />
         </Head>
         <body>
           <Main />

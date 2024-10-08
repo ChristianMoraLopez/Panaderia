@@ -17,6 +17,8 @@ dotenv.config();
 // Usar el token de acceso desde la variable de entorno
 const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
 
+
+
 if (!accessToken) {
   throw new Error("Contentful access token is not defined in the environment variables.");
 }
@@ -85,28 +87,32 @@ export const useAuth = () => {
   const registerUser = async ({ name, LastName, email, password }: UserData) => {
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Convertir el correo a minúsculas
+      const emailLowerCase = email.toLowerCase();
+  
+      const userCredential = await createUserWithEmailAndPassword(auth, emailLowerCase, password);
       const user = userCredential.user;
-
+  
       // Actualizar el perfil del usuario en Firebase con el nombre
       await updateProfile(user, {
         displayName: `${name} ${LastName}`
       });
-
+  
       const space = await client.getSpace('tq4ckeil24qo');
       const environment = await space.getEnvironment('master');
-
+  
       const entry = await environment.createEntry('panaderaDelicias', {
         fields: {
           name: { 'en-US': name },
           LastName: { 'en-US': LastName },
-          email: { 'en-US': email },
+          // Usar el correo en minúsculas aquí
+          email: { 'en-US': emailLowerCase },
           uid: { 'en-US': user.uid },
           registry: { 'en-US': new Date().toISOString() }
         }
       });
       await entry.publish();
-
+  
       console.log('Usuario registrado y entrada creada en Contentful');
       console.log('Usuario registrado:', user);
       
@@ -123,6 +129,7 @@ export const useAuth = () => {
       setLoading(false);
     }
   };
+  
 
   return { user, loading, error, login, logout, registerUser };
 };
