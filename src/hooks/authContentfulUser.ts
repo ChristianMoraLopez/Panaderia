@@ -15,7 +15,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Usar el token de acceso desde la variable de entorno
-const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
+const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
 
 if (!accessToken) {
   throw new Error("Contentful access token is not defined in the environment variables.");
