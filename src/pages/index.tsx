@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cake, Coffee, Croissant, Instagram, Facebook, ShoppingCart } from 'lucide-react';
 import GallerySection from '@/components/Gallery/GallerySection';
@@ -9,23 +9,9 @@ import Image from 'next/image';
 const LuxuryBakeryHomepage = () => {
   const { products, loading, error } = useProducts();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAnimating] = useState(false);
 
-  useEffect(() => {
-    if (!loading && products && products.length > 0) {
-      const timer = setInterval(() => {
-        if (!isAnimating) {
-          setCurrentSlide((prevSlide) => (prevSlide + 1) % products.length);
-        }
-      }, 5000);
-      return () => clearInterval(timer);
-    }
-  }, [loading, products, isAnimating]);
-
-  const handleSlideChange = (index: number) => {
-    if (!isAnimating) {
-      setCurrentSlide(index);
-    }
+  const handleSlideChange = (index : number) => {
+    setCurrentSlide(index);
   };
 
   if (loading) return (
@@ -50,10 +36,10 @@ const LuxuryBakeryHomepage = () => {
           {products && products[currentSlide] && (
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 1.5 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
               className="absolute inset-0 w-full h-full"
             >
               <Image
@@ -110,14 +96,14 @@ const LuxuryBakeryHomepage = () => {
               whileHover={{ scale: 1.1, y: -5 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleSlideChange(index)}
-              className={`w-16 h-16 rounded-full overflow-hidden border-2 ${
+              className={`w-24 h-16 rounded-lg overflow-hidden border-2 ${
                 currentSlide === index ? 'border-amber-400 shadow-glow' : 'border-transparent'
               } cursor-pointer transition-all duration-300`}
             >
               <Image
                 src={`https:${product.image.fields.file.url}`}
                 alt={product.name}
-                width={64}
+                width={96}
                 height={64}
                 objectFit="cover"
               />
