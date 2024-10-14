@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cake, Coffee, Croissant, Instagram, Facebook, ShoppingCart } from 'lucide-react';
 import GallerySection from '@/components/Gallery/GallerySection';
 import { useProducts } from '@/hooks/useProducts';
 import Navbar from '@/components/Navbar/Navbar';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 const LuxuryBakeryHomepage = () => {
   const { products, loading, error } = useProducts();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
+  const productsSectionRef = useRef<HTMLElement | null>(null);
+  const router = useRouter();
 
   const handleSlideChange = (index : number) => {
     setCurrentSlide(index);
+  };
+
+  const handleNavigate = () => {
+    router.push('/ProductGalleryPage'); // Aquí navegas a la página /gallery
   };
 
   if (loading) return (
@@ -28,7 +36,7 @@ const LuxuryBakeryHomepage = () => {
 
   return (
     <div className="min-h-screen bg-amber-50 text-brown-900 overflow-hidden font-serif relative">
-      <Navbar />
+      <Navbar cartCount={cartCount} />
 
       {/* Main Slider Section */}
       <section className="h-screen relative overflow-hidden">
@@ -81,6 +89,7 @@ const LuxuryBakeryHomepage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
               className="px-8 py-4 bg-amber-600 text-amber-50 rounded-full text-lg font-semibold hover:bg-amber-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              onClick= {handleNavigate}
             >
               <ShoppingCart className="inline-block mr-2 h-5 w-5" />
               Ordenar Ahora
@@ -140,8 +149,8 @@ const LuxuryBakeryHomepage = () => {
           </div>
         </section>
 
-        <section className="py-24 bg-gradient-to-b from-brown-900 to-amber-900">
-          <GallerySection />
+        <section ref={productsSectionRef} className="py-24 bg-gradient-to-b from-brown-900 to-amber-900">
+          <GallerySection onAddToCart={() => setCartCount(prevCount => prevCount + 1)} />
         </section>
       </main>
 

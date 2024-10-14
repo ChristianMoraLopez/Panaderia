@@ -7,7 +7,6 @@ interface CategoryFilterProps {
   activeCategory: string | null;
   setActiveCategory: (category: string | null) => void;
   isScrolled: boolean;
-  theme: string;
 }
 
 const CategoryFilter: React.FC<CategoryFilterProps> = ({
@@ -15,7 +14,6 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   activeCategory,
   setActiveCategory,
   isScrolled,
-  theme,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -36,11 +34,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
       <div className="md:hidden px-4">
         <button
           onClick={toggleMenu}
-          className={`w-full py-3 px-5 flex justify-between items-center ${
-            theme === "dark" 
-              ? "bg-gray-800 text-white border border-gray-700" 
-              : "bg-white text-gray-900 border border-gray-200"
-          } rounded-lg shadow-sm hover:shadow-md transition-all duration-300`}
+          className="w-full py-3 px-5 flex justify-between items-center bg-white text-gray-900 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
         >
           <span className="font-semibold">{activeCategory || "Todas las Categorías"}</span>
           {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -56,11 +50,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
               <button
                 className={`w-full py-3 px-5 text-left font-medium ${
                   !activeCategory
-                    ? theme === "dark"
-                      ? "bg-gray-700 text-white"
-                      : "bg-gray-100 text-gray-900"
-                    : theme === "dark"
-                    ? "bg-gray-800 text-gray-300"
+                    ? "bg-gray-100 text-gray-900"
                     : "bg-white text-gray-700"
                 } hover:bg-opacity-90 transition-colors duration-200`}
                 onClick={() => handleCategoryClick(null)}
@@ -72,11 +62,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                   key={category}
                   className={`w-full py-3 px-5 text-left font-medium ${
                     activeCategory === category
-                      ? theme === "dark"
-                        ? "bg-gray-700 text-white"
-                        : "bg-gray-100 text-gray-900"
-                      : theme === "dark"
-                      ? "bg-gray-800 text-gray-300"
+                      ? "bg-gray-100 text-gray-900"
                       : "bg-white text-gray-700"
                   } hover:bg-opacity-90 transition-colors duration-200`}
                   onClick={() => handleCategoryClick(category)}
@@ -99,9 +85,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         <button
           className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
             !activeCategory
-              ? `${theme === "dark" ? "bg-white text-gray-900" : "bg-gray-900 text-white"} shadow-md hover:shadow-lg transform hover:-translate-y-1`
-              : theme === "dark"
-              ? "text-gray-300 hover:bg-gray-800 hover:text-white"
+              ? "bg-gray-900 text-white shadow-md hover:shadow-lg transform hover:-translate-y-1"
               : "text-gray-700 hover:bg-gray-200"
           }`}
           onClick={() => setActiveCategory(null)}
@@ -113,9 +97,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
             key={category}
             className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
               activeCategory === category
-                ? `${theme === "dark" ? "bg-white text-gray-900" : "bg-gray-900 text-white"} shadow-md hover:shadow-lg transform hover:-translate-y-1`
-                : theme === "dark"
-                ? "text-gray-300 hover:bg-gray-800 hover:text-white"
+                ? "bg-gray-900 text-white shadow-md hover:shadow-lg transform hover:-translate-y-1"
                 : "text-gray-700 hover:bg-gray-200"
             }`}
             onClick={() => setActiveCategory(category)}

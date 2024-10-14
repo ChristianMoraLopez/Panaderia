@@ -1,12 +1,12 @@
 import '@/styles/globals.css';
 import { AppProps } from 'next/app';
-import { ThemeProvider } from '../context/ThemeContext'; // Ajusta la ruta según la ubicación de tu ThemeContext
+import CartProvider from '@/store/Cart';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider>
+    <CartProvider>
       <Component {...pageProps} />
-    </ThemeProvider>
+    </CartProvider>
   );
 }
 

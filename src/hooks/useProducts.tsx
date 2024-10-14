@@ -18,6 +18,7 @@ export const useProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        
         // Aquí usamos 'ContentfulUserEntry' que está definido en tus tipos
         const response = await client.getEntries<ContentfulProductEntry>({
           content_type: 'panaderaDeliciasProductos', // Tipo de contenido de productos

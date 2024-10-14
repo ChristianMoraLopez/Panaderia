@@ -4,29 +4,49 @@ import { useProducts } from '@/hooks/useProducts';
 import { motion } from 'framer-motion';
 import { Cake } from 'lucide-react';
 
-const GallerySection = () => {
+// Define the Product type
+interface Product {
+  name: string;
+  price: number;
+  image: {
+    fields: {
+      file: {
+        url: string;
+      };
+    };
+  };
+}
+
+// Define the type for the onAddToCart function
+interface GallerySectionProps {
+  onAddToCart: (product: Product) => void;
+}
+
+const GallerySection: React.FC<GallerySectionProps> = ({ onAddToCart }) => {
   const { products, loading, error } = useProducts();
 
-  if (loading) return (
-    <div className="flex justify-center items-center h-64">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-      >
-        <Cake className="w-12 h-12 text-brown-500" />
-      </motion.div>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-64">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+        >
+          <Cake className="w-12 h-12 text-brown-500" />
+        </motion.div>
+      </div>
+    );
 
-  if (error) return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="text-center text-red-600 p-4 bg-red-100 rounded-lg"
-    >
-      Error: {error}
-    </motion.div>
-  );
+  if (error)
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center text-red-600 p-4 bg-red-100 rounded-lg"
+      >
+        Error: {error}
+      </motion.div>
+    );
 
   return (
     <motion.div
@@ -35,22 +55,21 @@ const GallerySection = () => {
       transition={{ duration: 0.5 }}
       className="py-12"
     >
-      <h2 className="text-3xl font-bold text-center mb-8 text-brown-800">Nuestras Delicias</h2>
+      <h2 className="text-3xl font-bold text-center mb-8 text-brown-800">
+        Nuestras Delicias
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {products?.map((product, index) => {
+        {products?.map((product: Product, index: number) => {
           if (!product) return null;
-
           const imageUrl = product.image?.fields?.file?.url
             ? `https:${product.image.fields.file.url}`
             : '/placeholder.jpg';
-
           return (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1
-              }}
+              transition={{ delay: index * 0.1 }}
               className="group"
             >
               <div className="relative overflow-hidden rounded-lg shadow-lg">
@@ -71,6 +90,7 @@ const GallerySection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="mt-4 w-full py-2 px-4 bg-brown-600 text-white rounded-full font-medium hover:bg-brown-700 transition-colors duration-300"
+                onClick={() => onAddToCart(product)}
               >
                 Añadir al Carrito
               </motion.button>
