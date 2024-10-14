@@ -174,7 +174,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
               Hola, {user.displayName || user.email}
             </span>
           )}
-          <NavLink href="/products" text="Delicias" icon={Cake} />
+          <NavLink href="/ProductGalleryPage" text="Delicias" icon={Cake} />
           <NavLink href="/CheckOut" text="Canasta" icon={ShoppingCart} />
           {user ? (
             <>
