@@ -69,7 +69,7 @@ const Profile = () => {
               name: historyItem.fields.name['en-US'],
               price: price,
               quantity: quantity,
-              image_url: imageId
+              image_url: `https://images.ctfassets.net/tq4ckeil24qo/${imageId}`
             }],
             total: price * quantity
           };
@@ -122,7 +122,7 @@ const Profile = () => {
         {purchase.items.map((item) => (
           <div key={item.id} className="flex items-center space-x-4 mb-2">
             <Image
-              src={`https://images.ctfassets.net/tq4ckeil24qo/${item.image_url}`}
+              src={item.image_url}
               alt={item.name}
               width={50}
               height={50}
