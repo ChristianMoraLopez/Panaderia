@@ -60,7 +60,8 @@ const Profile = () => {
         if ('fields' in historyItem) {
           const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
           const price = historyItem.fields.price['en-US'];
-          const imageId = historyItem.fields.image['en-US'].sys.id;
+          const imageUrl = historyItem.fields.image['en-US'].sys.id|| '';
+          console.log('Image URL from Contentful:', imageUrl); // Log the image URL
           return {
             id: key,
             date: new Date().toISOString(),
@@ -69,7 +70,7 @@ const Profile = () => {
               name: historyItem.fields.name['en-US'],
               price: price,
               quantity: quantity,
-              image_url: `https://images.ctfassets.net/tq4ckeil24qo/${imageId}`
+              image_url: imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl
             }],
             total: price * quantity
           };
@@ -77,6 +78,7 @@ const Profile = () => {
         return null;
       }).filter((item): item is PurchaseHistoryItem => item !== null);
       setPurchaseHistory(profileHistory);
+      
     }
   }, [user, profile]);
 
