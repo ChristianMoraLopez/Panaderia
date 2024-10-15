@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2, Truck as TruckIcon, Cake as CakeIcon, User, Mail, Phone, Home, Building, MapPin, Flag, MapPinned } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/hooks/authContentfulUser';
 import { useCart, useCartMutations } from '@/store/Cart';
 import { v4 as uuidv4 } from 'uuid';
-import { Truck as TruckIcon, Cake as CakeIcon } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
-
 // Definir la interfaz OrderItem
 interface OrderItem {
   id: number;
