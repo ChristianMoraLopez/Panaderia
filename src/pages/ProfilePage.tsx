@@ -123,12 +123,13 @@ const Profile = () => {
         {purchase.items.map((item) => (
           <div key={item.id} className="flex items-center space-x-4 mb-2">
             <Image
-              src={`https://${item.image_url}`}
-              alt={item.name}
-              width={50}
-              height={50}
-              className="rounded"
-            />
+  src={`https://images.ctfassets.net/tq4ckeil24qo/${item.image_url}`} 
+  alt={item.name}
+  width={50}
+  height={50}
+  className="rounded"
+/>
+
             <div>
               <p className="font-medium">{item.name}</p>
               <p className="text-sm text-gray-600">
