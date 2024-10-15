@@ -44,6 +44,7 @@ interface HistoryItem {
     description?: { 'en-US': string };
     registry?: { 'en-US': string };
     image?: { 'en-US': { sys: { type: string; linkType: string; id: string } } }; // Añadir campo para la imagen
+    quantity?: { 'en-US': number }; // Añadir campo para la cantidad
   };
 }
 
@@ -141,7 +142,7 @@ export const useAuth = () => {
 
   const updatePurchaseHistory = async (
     productId: string, 
-    productDetails: { name: string; price: number; description: string; imageId: string } // Incluir imageId
+    productDetails: { name: string; price: number; description: string; imageId: string, quantity: number } // Incluir imageId
   ) => {
     if (!user) {
       setError('No hay usuario autenticado');
@@ -187,7 +188,8 @@ export const useAuth = () => {
             price: { 'en-US': productDetails.price },
             description: { 'en-US': productDetails.description },
             registry: { 'en-US': new Date().toISOString() },
-            image: { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id: productDetails.imageId } } } // Añadir imagen al historial
+            image: { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id: productDetails.imageId } } }, // Añadir imagen al historial
+            quantity: { 'en-US': productDetails.quantity } // Añadir cantidad al historial
           }
         };
 

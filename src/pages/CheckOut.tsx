@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useCart, useCartMutations, CartItemType } from '@/store/Cart';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -6,16 +7,27 @@ import { Trash2, Plus, Minus, ShoppingCart, Loader2 } from 'lucide-react';
 import Navbar from '@/components/Navbar/Navbar';
 import { useAuth } from '@/hooks/authContentfulUser';
 import { toast } from 'react-hot-toast';
+import { v4 as uuidv4 } from 'uuid';
 
-
+// Extendemos el tipo CartItemType para incluir un hash único
+interface ExtendedCartItemType extends CartItemType {
+  hash: string;
+}
 
 const CheckoutPage: React.FC = () => {
   const { items, itemsById, subTotal, count } = useCart();
   const { addToCart, removeFromCart, clearCart } = useCartMutations();
   const [isProcessing, setIsProcessing] = useState(false);
   const { user, updatePurchaseHistory } = useAuth();
+  const router = useRouter();
 
-  const handleQuantityChange = (item: CartItemType, change: number) => {
+  // Convertimos los items del carrito a ExtendedCartItemType con hash único
+  const extendedItems: ExtendedCartItemType[] = items.map(item => ({
+    ...item,
+    hash: uuidv4()
+  }));
+
+  const handleQuantityChange = (item: ExtendedCartItemType, change: number) => {
     if (change > 0) {
       addToCart(item, 1);
     } else {
@@ -38,23 +50,46 @@ const CheckoutPage: React.FC = () => {
       // Simulación del proceso de pago
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      if (user && items.length > 0) {
-        console.log('Actualizando historial de usuario...');
-        for (const item of items) {
-            // Asegúrate de que item tenga las propiedades necesarias
-            const productDetails = {
-                name: item.name,
-                price: item.price,
-                description: item.description,
-                imageId : item.image_url
-            };
-    
-            // Llamar a updatePurchaseHistory con el id y los detalles del producto
-            await updatePurchaseHistory(item.id.toString(), productDetails);
+      const purchaseId = uuidv4();
+      const purchaseDate = new Date().toISOString();
+
+      if (user) {
+        console.log('Actualizando historial de usuario autenticado...');
+        for (const item of extendedItems) {
+          const productDetails = {
+            name: item.name,
+            price: item.price,
+            description: item.description || 'No description available',
+            imageId: item.image_url,
+            hash: item.hash,
+            quantity : item.quantity
+          };
+          await updatePurchaseHistory(item.hash, productDetails);
         }
-    }
+      } else {
+        console.log('Guardando historial de compra para usuario no autenticado...');
+        const purchaseHistory = {
+          id: purchaseId,
+          date: purchaseDate,
+          items: extendedItems,
+          total: total
+
+        };
+        const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
+        localPurchaseHistory.push(purchaseHistory);
+        localStorage.setItem('purchaseHistory', JSON.stringify(localPurchaseHistory));
+      }
+
+      // Guardar la información de la compra en el localStorage para usar en el formulario de envío
+      localStorage.setItem('currentPurchase', JSON.stringify({
+        purchaseId,
+        purchaseDate,
+        items: extendedItems,
+        total
+      }));
+
       setIsProcessing(false);
-      toast.success('¡Gracias por tu compra!', {
+      toast.success('¡Pago procesado con éxito!', {
         icon: '🎉',
         style: {
           borderRadius: '10px',
@@ -62,7 +97,13 @@ const CheckoutPage: React.FC = () => {
           color: '#fff',
         },
       });
+
+      // Limpiar el carrito después de procesar el pago
       clearCart();
+
+      // Redirigir al usuario al formulario de envío
+      router.push('/shipping');
+
     } catch (error) {
       setIsProcessing(false);
       toast.error('Hubo un error al procesar tu compra. Por favor, intenta de nuevo.', {
@@ -77,9 +118,11 @@ const CheckoutPage: React.FC = () => {
     }
   };
 
+  // Cálculo del impuesto y total
   const tax = subTotal * 0.1;
   const total = subTotal + tax;
 
+  // Función para obtener URL absoluta de imágenes
   const getAbsoluteImageUrl = (url: string) => {
     return url.startsWith('//') ? `https:${url}` : url;
   };
@@ -90,15 +133,15 @@ const CheckoutPage: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 pt-24">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-4xl font-serif text-amber-800 text-center mb-8 font-bold">Tu Carrito</h1>
-          {items.length === 0 ? (
+          {extendedItems.length === 0 ? (
             <EmptyCart />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2">
                 <AnimatePresence>
-                  {items.map((item) => (
+                  {extendedItems.map((item) => (
                     <CartItem
-                      key={item.id}
+                      key={item.hash}
                       item={item}
                       handleQuantityChange={handleQuantityChange}
                       handleRemoveItem={handleRemoveItem}
@@ -134,15 +177,15 @@ const EmptyCart: React.FC = () => (
 );
 
 interface CartItemProps {
-  item: CartItemType;
-  handleQuantityChange: (item: CartItemType, change: number) => void;
+  item: ExtendedCartItemType;
+  handleQuantityChange: (item: ExtendedCartItemType, change: number) => void;
   handleRemoveItem: (itemId: number) => void;
   getAbsoluteImageUrl: (url: string) => string;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item, handleQuantityChange, handleRemoveItem, getAbsoluteImageUrl }) => (
   <motion.div
-    key={item.id}
+    key={item.hash}
     className="bg-white rounded-lg shadow-md p-4 mb-4 flex items-center"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
