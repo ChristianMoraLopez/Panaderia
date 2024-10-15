@@ -30,10 +30,7 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'videos.ctfassets.net',
       },
-      {
-        protocol: 'https',
-        hostname: 'undefined',
-      }
+      // Elimina el patrón con hostname 'undefined'
     ],
   },
   async rewrites() {
