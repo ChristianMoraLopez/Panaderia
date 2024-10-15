@@ -97,6 +97,7 @@ const ShippingForm = () => {
         });
 
         clearCart();
+        // Mantenemos isSubmitting en true hasta que se redirija
         setTimeout(() => {
           router.push('/');
         }, 5000);
@@ -113,10 +114,10 @@ const ShippingForm = () => {
           color: '#fff',
         },
       });
-    } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Solo aquí reseteamos isSubmitting en caso de error
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 pt-24">
@@ -124,11 +125,11 @@ const ShippingForm = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8"
+          className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-amber-200"
         >
           <div className="flex items-center justify-center mb-8">
-            <CakeIcon className="text-amber-600 w-12 h-12 mr-4" />
-            <h1 className="text-3xl font-serif text-amber-800 text-center font-bold">Información de Envío</h1>
+            <CakeIcon className="text-amber-600 w-16 h-16 mr-4" />
+            <h1 className="text-4xl font-serif text-amber-800 text-center font-bold">Información de Envío</h1>
           </div>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -138,7 +139,7 @@ const ShippingForm = () => {
                 value={formData.fullName}
                 onChange={handleChange}
                 required
-                icon={<span className="text-amber-600">👤</span>}
+                icon={<User className="text-amber-600" />}
               />
               <InputField
                 label="Correo Electrónico"
@@ -147,7 +148,7 @@ const ShippingForm = () => {
                 onChange={handleChange}
                 required
                 type="email"
-                icon={<span className="text-amber-600">✉️</span>}
+                icon={<Mail className="text-amber-600" />}
               />
               <InputField
                 label="Teléfono"
@@ -156,7 +157,7 @@ const ShippingForm = () => {
                 onChange={handleChange}
                 required
                 type="tel"
-                icon={<span className="text-amber-600">📞</span>}
+                icon={<Phone className="text-amber-600" />}
               />
               <InputField
                 label="Dirección Línea 1"
@@ -164,14 +165,14 @@ const ShippingForm = () => {
                 value={formData.address1}
                 onChange={handleChange}
                 required
-                icon={<span className="text-amber-600">🏠</span>}
+                icon={<Home className="text-amber-600" />}
               />
               <InputField
                 label="Dirección Línea 2 (Opcional)"
                 name="address2"
                 value={formData.address2}
                 onChange={handleChange}
-                icon={<span className="text-amber-600">🏢</span>}
+                icon={<Building className="text-amber-600" />}
               />
               <InputField
                 label="Ciudad"
@@ -179,7 +180,7 @@ const ShippingForm = () => {
                 value={formData.city}
                 onChange={handleChange}
                 required
-                icon={<span className="text-amber-600">🌆</span>}
+                icon={<MapPin className="text-amber-600" />}
               />
               <InputField
                 label="Estado"
@@ -187,7 +188,7 @@ const ShippingForm = () => {
                 value={formData.state}
                 onChange={handleChange}
                 required
-                icon={<span className="text-amber-600">🏞️</span>}
+                icon={<Flag className="text-amber-600" />}
               />
               <InputField
                 label="Código Postal"
@@ -195,17 +196,17 @@ const ShippingForm = () => {
                 value={formData.zipCode}
                 onChange={handleChange}
                 required
-                icon={<span className="text-amber-600">📮</span>}
+                icon={<MapPinned className="text-amber-600" />}
               />
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full bg-amber-600 text-white py-4 rounded-full font-semibold hover:bg-amber-700 transition-colors duration-300 flex items-center justify-center text-lg"
+              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-4 rounded-full font-semibold hover:from-amber-600 hover:to-amber-700 transition-all duration-300 flex items-center justify-center text-lg shadow-lg"
               type="submit"
               disabled={isSubmitting}
             >
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" initial={false}>
                 {isSubmitting ? (
                   <motion.div
                     key="loading"
@@ -214,7 +215,7 @@ const ShippingForm = () => {
                     exit={{ opacity: 0 }}
                     className="flex items-center"
                   >
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
                     Procesando pedido...
                   </motion.div>
                 ) : (
@@ -225,7 +226,7 @@ const ShippingForm = () => {
                     exit={{ opacity: 0 }}
                     className="flex items-center"
                   >
-                    <TruckIcon className="mr-2 h-5 w-5" />
+                    <TruckIcon className="mr-2 h-6 w-6" />
                     Completar Pedido
                   </motion.div>
                 )}
@@ -266,7 +267,8 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, value, onChange, r
         value={value}
         onChange={onChange}
         required={required}
-        className={`w-full px-4 py-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all duration-200 ${icon ? 'pl-10' : ''}`}
+        className={`w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 ${icon ? 'pl-10' : ''} bg-amber-50 text-amber-800 placeholder-amber-400`}
+        placeholder={label}
       />
     </div>
   </div>
