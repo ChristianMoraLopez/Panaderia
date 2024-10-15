@@ -16,6 +16,8 @@ const ProductGalleryPage: React.FC = () => {
   const {  count } = useCart();
   const { addToCart } = useCartMutations();
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  
+  const [language, setLanguage] = useState<'es' | 'en'>('es');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,6 +50,9 @@ const ProductGalleryPage: React.FC = () => {
     }));
   };
 
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === 'es' ? 'en' : 'es');
+  };
   const handleAddToCart = (product: ProductFields) => {
     const quantity = quantities[product.image.sys.id] || 1;
     for (let i = 0; i < quantity; i++) {
@@ -64,7 +69,7 @@ const ProductGalleryPage: React.FC = () => {
 
   return (
     <>
-      <Navbar cartCount={count} />
+       <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 pt-20">
         <div className={`sticky top-20 z-10 bg-amber-100 transition-all duration-300 ${
           isScrolled ? 'shadow-lg' : ''

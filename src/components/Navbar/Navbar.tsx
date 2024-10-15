@@ -67,21 +67,21 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) 
   const NavLink: React.FC<NavLinkProps> = ({ href, textES, textEN, icon, onClick }) => (
     <Link href={href} passHref>
       <span
-        className={`group flex flex-col items-center px-4 py-2 text-sm font-medium ${
-          pathname === href ? 'text-brown-600' : 'text-brown-800 hover:text-brown-600'
-        } transition-colors duration-300 cursor-pointer ${
-          isDarkBackground ? 'text-white hover:text-cream-100' : ''
-        }`}
+        className={`group flex flex-col items-center justify-center px-2 py-2 text-sm font-medium w-24 h-16
+          ${pathname === href ? 'text-brown-600' : 'text-brown-800 hover:text-brown-600'}
+          transition-colors duration-300 cursor-pointer
+          ${isDarkBackground ? 'text-white hover:text-cream-100' : ''}`}
         onClick={onClick}
       >
         <Icon
           icon={icon}
-          className={`h-5 w-5 mb-1 group-hover:scale-110 transition-transform duration-300 ${
-            pathname === href ? 'text-brown-600' : 
-            isDarkBackground ? 'text-white' : 'text-brown-800'
-          }`}
+          className={`h-5 w-5 mb-1 group-hover:scale-110 transition-transform duration-300
+            ${pathname === href ? 'text-brown-600' : 
+            isDarkBackground ? 'text-white' : 'text-brown-800'}`}
         />
-        {language === 'es' ? textES : textEN}
+        <span className="text-center w-full truncate">
+          {language === 'es' ? textES : textEN}
+        </span>
       </span>
     </Link>
   );
@@ -92,9 +92,10 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) 
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${
-        isScrolled ? 'bg-opacity-95 backdrop-blur-md' : 'bg-opacity-0'
-      } ${isDarkBackground ? 'bg-brown-800' : 'bg-cream-100'} ${visible ? 'top-0' : '-top-20'}`}
+      className={`fixed w-full z-50 transition-all duration-500 ease-in-out
+        ${isScrolled ? 'bg-opacity-95 backdrop-blur-md' : 'bg-opacity-0'}
+        ${isDarkBackground ? 'bg-brown-800' : 'bg-cream-100'}
+        ${visible ? 'top-0' : '-top-20'}`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
@@ -107,18 +108,18 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) 
                 width={250}
                 height={250}
               />
-              <span className={`ml-2 text-2xl font-serif italic ${
-                isDarkBackground ? 'text-white' : 'text-brown-800'
-              } transition-colors duration-300`}>
+              <span className={`ml-2 text-2xl font-serif italic
+                ${isDarkBackground ? 'text-white' : 'text-brown-800'}
+                transition-colors duration-300`}>
                 BEEV&lsquo;S OVEN
               </span>
             </span>
           </Link>
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-2">
             {user && (
-              <span className={`text-sm font-medium ${
-                isDarkBackground ? 'text-white' : 'text-brown-800'
-              } transition-colors duration-300`}>
+              <span className={`text-sm font-medium px-4
+                ${isDarkBackground ? 'text-white' : 'text-brown-800'}
+                transition-colors duration-300`}>
                 {language === 'es' ? `Hola, ${user.displayName || user.email}` : `Hello, ${user.displayName || user.email}`}
               </span>
             )}
@@ -136,19 +137,19 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) 
             <NavLink href="/contact" textES="Contáctanos" textEN="Contact Us" icon={Phone} />
             <button
               onClick={toggleLanguage}
-              className={`flex items-center px-4 py-2 text-sm font-medium ${
-                isDarkBackground ? 'text-white hover:text-cream-100' : 'text-brown-800 hover:text-brown-600'
-              } transition-colors duration-300`}
+              className={`flex items-center justify-center px-4 py-2 text-sm font-medium w-24 h-16
+                ${isDarkBackground ? 'text-white hover:text-cream-100' : 'text-brown-800 hover:text-brown-600'}
+                transition-colors duration-300`}
             >
               <Globe className="h-5 w-5 mr-1" />
               {language === 'es' ? 'EN' : 'ES'}
             </button>
-            <div className="relative">
+            <div className="relative w-24 h-16 flex items-center justify-center">
               <Link href="/CheckOut">
                 <span className="relative inline-block">
-                  <ShoppingCart className={`h-6 w-6 ${
-                    isDarkBackground ? 'text-white' : 'text-brown-800'
-                  } transition-colors duration-300`} />
+                  <ShoppingCart className={`h-6 w-6
+                    ${isDarkBackground ? 'text-white' : 'text-brown-800'}
+                    transition-colors duration-300`} />
                   {cartCount > 0 && (
                     <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
                       {cartCount}
@@ -161,11 +162,11 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) 
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleNav}
-              className={`inline-flex items-center justify-center p-2 rounded-full ${
-                isDarkBackground 
+              className={`inline-flex items-center justify-center p-2 rounded-full
+                ${isDarkBackground 
                   ? 'border border-white text-white hover:text-cream-100 hover:border-cream-100'
-                  : 'border border-brown-800 text-brown-800 hover:text-brown-600 hover:border-brown-600'
-              } focus:outline-none transition-colors duration-300`}
+                  : 'border border-brown-800 text-brown-800 hover:text-brown-600 hover:border-brown-600'}
+                focus:outline-none transition-colors duration-300`}
             >
               <span className="sr-only">{language === 'es' ? 'Abrir menú principal' : 'Open main menu'}</span>
               <Icon icon={isNavOpen ? X : Menu} className="h-6 w-6" aria-hidden="true" />
@@ -175,9 +176,9 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) 
       </div>
       {/* Mobile menu */}
       <div
-        className={`md:hidden transition-all duration-300 ease-in-out ${
-          isNavOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
-        } overflow-hidden`}
+        className={`md:hidden transition-all duration-300 ease-in-out
+          ${isNavOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}
+          overflow-hidden`}
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-cream-100 bg-opacity-95 backdrop-blur-md">
           {user && (
@@ -199,7 +200,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) 
           <NavLink href="/contact" textES="Contáctanos" textEN="Contact Us" icon={Phone} />
           <button
             onClick={toggleLanguage}
-            className="flex items-center px-3 py-2 text-base font-medium text-brown-800 hover:text-brown-600 transition-colors duration-300"
+            className="flex items-center px-3 py-2 text-base font-medium text-brown-800 hover:text-brown-600 transition-colors duration-300 w-full"
           >
             <Globe className="h-5 w-5 mr-1" />
             {language === 'es' ? 'Change to English' : 'Cambiar a Español'}

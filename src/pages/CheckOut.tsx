@@ -18,6 +18,7 @@ const CheckoutPage: React.FC = () => {
   const { items, itemsById, subTotal, count } = useCart();
   const { addToCart, removeFromCart, clearCart } = useCartMutations();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [language, setLanguage] = useState<'es' | 'en'>('es');
   const { user, updatePurchaseHistory } = useAuth();
   const router = useRouter();
 
@@ -33,6 +34,11 @@ const CheckoutPage: React.FC = () => {
     } else {
       removeFromCart(item.id);
     }
+  };
+
+  
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === 'es' ? 'en' : 'es');
   };
 
   const handleRemoveItem = (itemId: number) => {
@@ -129,7 +135,7 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <>
-      <Navbar cartCount={count} />
+       <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
       <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 pt-24">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-4xl font-serif text-amber-800 text-center mb-8 font-bold">Tu Carrito</h1>

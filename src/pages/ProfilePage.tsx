@@ -51,6 +51,8 @@ const Profile = () => {
   const [purchaseHistory, setPurchaseHistory] = useState<PurchaseHistoryItem[]>([]);
   const [healthLevel, setHealthLevel] = useState({ level: 'Principiante Saludable', description: 'Estás comenzando tu viaje hacia una vida más saludable.' });
   const [purchaseCount, setPurchaseCount] = useState(0);
+  const [language, setLanguage] = useState<'es' | 'en'>('es');
+
 
   useEffect(() => {
     if (!user) {
@@ -84,6 +86,11 @@ const Profile = () => {
     }
   }, [user, profile]);
 
+  
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === 'es' ? 'en' : 'es');
+  };
+
   const calculateHealthLevel = (purchases: number) => {
     setPurchaseCount(purchases);
     if (purchases < 5) {
@@ -102,7 +109,7 @@ const Profile = () => {
   if (authLoading || profileLoading) {
     return (
       <>
-        <Navbar cartCount={count} />
+         <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
         <div className="max-w-md mx-auto mt-32 p-8 bg-yellow-50 rounded-lg shadow-lg text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-700 mx-auto"></div>
           <p className="mt-4 text-yellow-800">Horneando su perfil...</p>
@@ -114,7 +121,7 @@ const Profile = () => {
   if (error) {
     return (
       <>
-        <Navbar cartCount={count} />
+        <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
         <div className="max-w-md mx-auto mt-32 p-8 bg-red-50 rounded-lg shadow-lg text-center">
           <p className="text-red-600">{error}</p>
         </div>
@@ -164,7 +171,7 @@ const Profile = () => {
   };
   return (
     <>
-      <Navbar cartCount={count} />
+       <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
       <div className="max-w-4xl mx-auto mt-32 p-8 bg-green-50 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold mb-6 text-green-800 text-center">Mi Rincón Saludable</h1>
         
