@@ -3,21 +3,24 @@ import Icon from '@/components/Icon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { ShoppingCart, User, Coffee, Phone, Menu, X, Cake, LucideIcon, LogOut } from 'lucide-react';
+import { ShoppingCart, User, Coffee, Phone, Menu, X, Cake, LucideIcon, LogOut, Globe } from 'lucide-react';
 import { useAuth } from '@/hooks/authContentfulUser';
 
 interface NavbarProps {
   cartCount: number;
+  language: 'es' | 'en';
+  toggleLanguage: () => void;
 }
 
 interface NavLinkProps {
   href: string;
-  text: string;
+  textES: string;
+  textEN: string;
   icon: LucideIcon;
   onClick?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
+const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
@@ -45,7 +48,6 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
   }, [prevScrollPos]);
 
   useEffect(() => {
-    // Determinar si la página actual tiene fondo oscuro
     const darkBackgroundPages = ['/'];
     setIsDarkBackground(darkBackgroundPages.includes(pathname));
   }, [pathname]);
@@ -62,7 +64,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
     }
   };
 
-  const NavLink: React.FC<NavLinkProps> = ({ href, text, icon, onClick }) => (
+  const NavLink: React.FC<NavLinkProps> = ({ href, textES, textEN, icon, onClick }) => (
     <Link href={href} passHref>
       <span
         className={`group flex flex-col items-center px-4 py-2 text-sm font-medium ${
@@ -79,7 +81,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
             isDarkBackground ? 'text-white' : 'text-brown-800'
           }`}
         />
-        {text}
+        {language === 'es' ? textES : textEN}
       </span>
     </Link>
   );
@@ -108,7 +110,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
               <span className={`ml-2 text-2xl font-serif italic ${
                 isDarkBackground ? 'text-white' : 'text-brown-800'
               } transition-colors duration-300`}>
-                BEEV´S OVEN
+                BEEV&lsquo;S OVEN
               </span>
             </span>
           </Link>
@@ -117,21 +119,30 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
               <span className={`text-sm font-medium ${
                 isDarkBackground ? 'text-white' : 'text-brown-800'
               } transition-colors duration-300`}>
-                Hola, {user.displayName || user.email}
+                {language === 'es' ? `Hola, ${user.displayName || user.email}` : `Hello, ${user.displayName || user.email}`}
               </span>
             )}
-            <NavLink href="/ProductGalleryPage" text="Delicias" icon={Cake} />
-            <NavLink href="/CheckOut" text="Canasta" icon={ShoppingCart} />
+            <NavLink href="/ProductGalleryPage" textES="Delicias" textEN="Delights" icon={Cake} />
+            <NavLink href="/CheckOut" textES="Canasta" textEN="Basket" icon={ShoppingCart} />
             {user ? (
               <>
-                <NavLink href="/ProfilePage" text="Mi Cuenta" icon={User} />
-                <NavLink href="#" text="Cerrar Sesión" icon={LogOut} onClick={handleLogout} />
+                <NavLink href="/ProfilePage" textES="Mi Cuenta" textEN="My Account" icon={User} />
+                <NavLink href="#" textES="Cerrar Sesión" textEN="Log Out" icon={LogOut} onClick={handleLogout} />
               </>
             ) : (
-              <NavLink href="/LoginPage" text="Iniciar Sesión" icon={User} />
+              <NavLink href="/LoginPage" textES="Iniciar Sesión" textEN="Log In" icon={User} />
             )}
-            <NavLink href="/about-us" text="Nuestra Historia" icon={Coffee} />
-            <NavLink href="/contact" text="Contáctanos" icon={Phone} />
+            <NavLink href="/about-us" textES="Nuestra Historia" textEN="Our Story" icon={Coffee} />
+            <NavLink href="/contact" textES="Contáctanos" textEN="Contact Us" icon={Phone} />
+            <button
+              onClick={toggleLanguage}
+              className={`flex items-center px-4 py-2 text-sm font-medium ${
+                isDarkBackground ? 'text-white hover:text-cream-100' : 'text-brown-800 hover:text-brown-600'
+              } transition-colors duration-300`}
+            >
+              <Globe className="h-5 w-5 mr-1" />
+              {language === 'es' ? 'EN' : 'ES'}
+            </button>
             <div className="relative">
               <Link href="/CheckOut">
                 <span className="relative inline-block">
@@ -156,7 +167,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
                   : 'border border-brown-800 text-brown-800 hover:text-brown-600 hover:border-brown-600'
               } focus:outline-none transition-colors duration-300`}
             >
-              <span className="sr-only">Abrir menú principal</span>
+              <span className="sr-only">{language === 'es' ? 'Abrir menú principal' : 'Open main menu'}</span>
               <Icon icon={isNavOpen ? X : Menu} className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
@@ -171,21 +182,28 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount }) => {
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-cream-100 bg-opacity-95 backdrop-blur-md">
           {user && (
             <span className="block px-3 py-2 text-base font-medium text-brown-800">
-              Hola, {user.displayName || user.email}
+              {language === 'es' ? `Hola, ${user.displayName || user.email}` : `Hello, ${user.displayName || user.email}`}
             </span>
           )}
-          <NavLink href="/ProductGalleryPage" text="Delicias" icon={Cake} />
-          <NavLink href="/CheckOut" text="Canasta" icon={ShoppingCart} />
+          <NavLink href="/ProductGalleryPage" textES="Delicias" textEN="Delights" icon={Cake} />
+          <NavLink href="/CheckOut" textES="Canasta" textEN="Basket" icon={ShoppingCart} />
           {user ? (
             <>
-              <NavLink href="/ProfilePage" text="Mi Cuenta" icon={User} />
-              <NavLink href="#" text="Cerrar Sesión" icon={LogOut} onClick={handleLogout} />
+              <NavLink href="/ProfilePage" textES="Mi Cuenta" textEN="My Account" icon={User} />
+              <NavLink href="#" textES="Cerrar Sesión" textEN="Log Out" icon={LogOut} onClick={handleLogout} />
             </>
           ) : (
-            <NavLink href="/LoginPage" text="Iniciar Sesión" icon={User} />
+            <NavLink href="/LoginPage" textES="Iniciar Sesión" textEN="Log In" icon={User} />
           )}
-          <NavLink href="/about-us" text="Nuestra Historia" icon={Coffee} />
-          <NavLink href="/contact" text="Contáctanos" icon={Phone} />
+          <NavLink href="/about-us" textES="Nuestra Historia" textEN="Our Story" icon={Coffee} />
+          <NavLink href="/contact" textES="Contáctanos" textEN="Contact Us" icon={Phone} />
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center px-3 py-2 text-base font-medium text-brown-800 hover:text-brown-600 transition-colors duration-300"
+          >
+            <Globe className="h-5 w-5 mr-1" />
+            {language === 'es' ? 'Change to English' : 'Cambiar a Español'}
+          </button>
         </div>
       </div>
     </nav>
