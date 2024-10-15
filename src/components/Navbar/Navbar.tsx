@@ -87,8 +87,8 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, language, toggleLanguage }) 
   );
 
   const logoSrc = isDarkBackground
-    ? "/images/reshot-icon-bread white.svg"
-    : "/images/reshot-icon-bread.svg";
+    ? "/images/reshot-icon-bread white.png"
+    : "/images/reshot-icon-bread.png";
 
   return (
     <nav
