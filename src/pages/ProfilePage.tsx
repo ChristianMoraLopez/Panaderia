@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/authContentfulUser';
 import { useCustomerProfile } from '@/hooks/useCustomerProfile';
 import { useCart } from '@/store/Cart';
 import Image from 'next/image';
-import { Cake, Calendar, ShoppingBag, Coffee, Star } from 'lucide-react';
+import { Cake, Calendar, ShoppingBag, Coffee, Star, Award  } from 'lucide-react';
 import Navbar from '@/components/Navbar/Navbar';
 import Link from 'next/link';
 
@@ -49,19 +49,21 @@ const Profile = () => {
   const { profile, loading: profileLoading, error } = useCustomerProfile(user?.email);
   const { count } = useCart();
   const [purchaseHistory, setPurchaseHistory] = useState<PurchaseHistoryItem[]>([]);
+  const [healthLevel, setHealthLevel] = useState({ level: 'Principiante Saludable', description: 'Estás comenzando tu viaje hacia una vida más saludable.' });
+  const [purchaseCount, setPurchaseCount] = useState(0);
 
   useEffect(() => {
     if (!user) {
       const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
       setPurchaseHistory(localPurchaseHistory);
+      calculateHealthLevel(localPurchaseHistory.length);
     } else if (profile && profile.history) {
       const profileHistory = Object.entries(profile.history).map(([key, value]) => {
         const historyItem = value as HistoryItem;
         if ('fields' in historyItem) {
           const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
           const price = historyItem.fields.price['en-US'];
-          const imageUrl = historyItem.fields.image['en-US'].sys.id|| '';
-          console.log('Image URL from Contentful:', imageUrl); // Log the image URL
+          const imageUrl = historyItem.fields.image['en-US'].sys.id || '';
           return {
             id: key,
             date: new Date().toISOString(),
@@ -78,9 +80,24 @@ const Profile = () => {
         return null;
       }).filter((item): item is PurchaseHistoryItem => item !== null);
       setPurchaseHistory(profileHistory);
-      
+      calculateHealthLevel(profileHistory.length);
     }
   }, [user, profile]);
+
+  const calculateHealthLevel = (purchases: number) => {
+    setPurchaseCount(purchases);
+    if (purchases < 5) {
+      setHealthLevel({ level: 'Principiante Saludable', description: 'Estás comenzando tu viaje hacia una vida más saludable.' });
+    } else if (purchases < 10) {
+      setHealthLevel({ level: 'Entusiasta del Bienestar', description: 'Estás desarrollando hábitos saludables constantemente.' });
+    } else if (purchases < 20) {
+      setHealthLevel({ level: 'Adepto del Equilibrio', description: 'Has demostrado un compromiso sólido con tu bienestar.' });
+    } else if (purchases < 35) {
+      setHealthLevel({ level: 'Maestro de la Nutrición', description: 'Tu dedicación a la alimentación saludable es admirable.' });
+    } else {
+      setHealthLevel({ level: 'Gurú del Estilo de Vida Saludable', description: '¡Eres un ejemplo a seguir en el camino del bienestar!' });
+    }
+  };
 
   if (authLoading || profileLoading) {
     return (
@@ -118,6 +135,8 @@ const Profile = () => {
       );
     }
 
+    
+
     return purchaseHistory.map((purchase) => (
       <div key={purchase.id} className="mb-6 p-4 bg-white rounded-lg shadow">
         <h3 className="text-lg font-semibold text-yellow-800 mb-2">Compra del {new Date(purchase.date).toLocaleDateString()}</h3>
@@ -146,42 +165,46 @@ const Profile = () => {
   return (
     <>
       <Navbar cartCount={count} />
-      <div className="max-w-4xl mx-auto mt-32 p-8 bg-yellow-50 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold mb-6 text-yellow-800 text-center">Mi Rincón Dulce</h1>
+      <div className="max-w-4xl mx-auto mt-32 p-8 bg-green-50 rounded-lg shadow-lg">
+        <h1 className="text-4xl font-bold mb-6 text-green-800 text-center">Mi Rincón Saludable</h1>
         
         {user && profile ? (
-          <div className="bg-white p-6 rounded-lg shadow-inner mb-6 border-2 border-yellow-200">
-            <h2 className="text-2xl font-semibold mb-4 text-yellow-700 flex items-center">
-              <Coffee className="w-6 h-6 mr-2 text-yellow-600" />
-              Perfil de Goloso
+          <div className="bg-white p-6 rounded-lg shadow-inner mb-6 border-2 border-green-200">
+            <h2 className="text-2xl font-semibold mb-4 text-green-700 flex items-center">
+              <Coffee className="w-6 h-6 mr-2 text-green-600" />
+              Perfil de Salud
             </h2>
             <div className="space-y-3">
-              <p className="flex items-center"><Cake className="w-5 h-5 mr-2 text-yellow-600" /> <span className="font-medium">Nombre:</span> <span className="ml-2">{profile.name} {profile.LastName}</span></p>
-              <p className="flex items-center"><Calendar className="w-5 h-5 mr-2 text-yellow-600" /> <span className="font-medium">Fecha de Registro:</span> <span className="ml-2">{profile.registry ? new Date(profile.registry).toLocaleDateString() : 'Fecha no disponible'}</span></p>
-              <p className="flex items-center"><Star className="w-5 h-5 mr-2 text-yellow-600" /> <span className="font-medium">Nivel de Dulzura:</span> <span className="ml-2">Aficionado al Azúcar</span></p>
+              <p className="flex items-center"><Cake className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Nombre:</span> <span className="ml-2">{profile.name} {profile.LastName}</span></p>
+              <p className="flex items-center"><Calendar className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Fecha de Registro:</span> <span className="ml-2">{profile.registry ? new Date(profile.registry).toLocaleDateString() : 'Fecha no disponible'}</span></p>
+              <p className="flex items-center"><Star className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Nivel de Bienestar:</span> <span className="ml-2">{healthLevel.level}</span></p>
+              <p className="flex items-center"><Award className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Compras Saludables:</span> <span className="ml-2">{purchaseCount}</span></p>
+            </div>
+            <div className="mt-4 p-4 bg-green-100 rounded-lg">
+              <p className="text-green-700 italic">{healthLevel.description}</p>
             </div>
           </div>
         ) : (
-          <div className="bg-white p-6 rounded-lg shadow-inner mb-6 border-2 border-yellow-200 text-center">
-            <h2 className="text-2xl font-semibold mb-4 text-yellow-700">Bienvenido, Invitado</h2>
-            <p className="text-yellow-600 mb-4">Inicia sesión para acceder a todas las funciones de tu perfil.</p>
-            <Link href="/login" className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+          <div className="bg-white p-6 rounded-lg shadow-inner mb-6 border-2 border-green-200 text-center">
+            <h2 className="text-2xl font-semibold mb-4 text-green-700">Bienvenido, Invitado</h2>
+            <p className="text-green-600 mb-4">Inicia sesión para acceder a todas las funciones de tu perfil saludable.</p>
+            <Link href="/login" className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">
               Iniciar Sesión
             </Link>
           </div>
         )}
 
-        <div className="bg-white p-6 rounded-lg shadow-inner border-2 border-yellow-200">
-          <h2 className="text-2xl font-semibold mb-4 text-yellow-700 flex items-center">
-            <ShoppingBag className="w-6 h-6 mr-2 text-yellow-600" />
-            Historial de Antojos
+        <div className="bg-white p-6 rounded-lg shadow-inner border-2 border-green-200">
+          <h2 className="text-2xl font-semibold mb-4 text-green-700 flex items-center">
+            <ShoppingBag className="w-6 h-6 mr-2 text-green-600" />
+            Historial de Compras Saludables
           </h2>
           {renderPurchaseHistory()}
         </div>
         
-        <div className="mt-8 bg-yellow-100 p-6 rounded-lg shadow-inner text-center">
-          <h3 className="text-xl font-semibold text-yellow-800 mb-3">¿Sabías que...?</h3>
-          <p className="text-yellow-700">Nuestro pan más vendido, el Brioche de Vainilla, tarda 6 horas en prepararse desde el amasado hasta el horneado.</p>
+        <div className="mt-8 bg-green-100 p-6 rounded-lg shadow-inner text-center">
+          <h3 className="text-xl font-semibold text-green-800 mb-3">¿Sabías que...?</h3>
+          <p className="text-green-700">Nuestro pan integral más vendido, el Pan de Semillas, está elaborado con una mezcla de 7 granos diferentes para una nutrición óptima.</p>
         </div>
 
         {user && (
