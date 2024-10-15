@@ -62,6 +62,7 @@ const Profile = () => {
         if ('fields' in historyItem) {
           const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
           const price = historyItem.fields.price['en-US'];
+          console.log('IMAGE URL' + historyItem.fields.image['en-US'].sys.id);
           return {
             id: key,
             date: new Date().toISOString(), // Considera almacenar la fecha en Contentful
@@ -71,13 +72,16 @@ const Profile = () => {
               price: price,
               quantity: quantity,
               image_url: historyItem.fields.image['en-US'].sys.id
+              
             }],
             total: price * quantity
+            
           };
         }
         return null;
       }).filter((item): item is PurchaseHistoryItem => item !== null);
       setPurchaseHistory(profileHistory);
+   
     }
   }, [user, profile]);
 
@@ -123,13 +127,13 @@ const Profile = () => {
         {purchase.items.map((item) => (
           <div key={item.id} className="flex items-center space-x-4 mb-2">
             <Image
-  src={`https://images.ctfassets.net/tq4ckeil24qo/${item.image_url}`} 
-  alt={item.name}
-  width={50}
-  height={50}
-  className="rounded"
-/>
-
+              src={`https://${item.image_url}`}
+              
+              alt={item.name}
+              width={50}
+              height={50}
+              className="rounded"
+            />
             <div>
               <p className="font-medium">{item.name}</p>
               <p className="text-sm text-gray-600">
