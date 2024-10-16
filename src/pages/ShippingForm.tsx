@@ -1,33 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Truck as TruckIcon, Cake as CakeIcon, User, Mail, Phone, Home, Building, MapPin, Flag, MapPinned } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Loader2, CreditCard, User, Mail, Phone, Home, MapPin } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/hooks/authContentfulUser';
 import { useCart, useCartMutations } from '@/store/Cart';
 import { v4 as uuidv4 } from 'uuid';
-// Definir la interfaz OrderItem
-interface OrderItem {
-  id: number;
-  name: string;
-  quantity: number;
-  price: number;
-}
-
-// Definir la interfaz OrderData
-interface OrderData {
-  purchaseId: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  address1: string;
-  address2?: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  orderDetails: OrderItem[];
-  totalAmount: number;
-}
 
 const ShippingForm = () => {
   const router = useRouter();
@@ -38,15 +16,20 @@ const ShippingForm = () => {
   const [formData, setFormData] = useState({
     fullName: user?.displayName || '',
     email: user?.email || '',
-    address1: '',
-    address2: '',
+    phone: '',
+    address: '',
     city: '',
-    state: '',
-    zipCode: '',
-    phone: ''
+    documentType: '',
+    documentNumber: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (items.length === 0) {
+      router.push('/checkout');
+    }
+  }, [items, router]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
@@ -58,63 +41,59 @@ const ShippingForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Preparar los datos del pedido
-    const orderData: OrderData = {
-      purchaseId: uuidv4(),
-      ...formData,
-      orderDetails: items.map(item => ({
-        id: item.id,
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price
-      })),
-      totalAmount: subTotal,
+    if (subTotal <= 0) {
+      toast.error('El total de la compra no es válido. Por favor, revisa tu carrito.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    const purchaseId = uuidv4();
+    const orderData = {
+      amount: subTotal.toFixed(2),
+      referenceCode: purchaseId,
+      description: `Orden ${purchaseId}`,
+      buyerEmail: formData.email,
+      payerFullName: formData.fullName,
+      billingAddress: formData.address,
+      shippingAddress: formData.address,
+      telephone: formData.phone,
+      payerDocument: `${formData.documentType}${formData.documentNumber}`,
     };
 
     try {
-      const response = await fetch('/api/sendMail', {
+      const response = await fetch('/api/generatePayuUrl', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
 
+      if (!response.ok) {
+        throw new Error('Error al generar el formulario de pago');
+      }
+
       const data = await response.json();
 
-      if (data.success) {
-        toast.success('Pedido completado con éxito', {
-          icon: '🎉',
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-          },
-          duration: 5000,
-        });
-
-        clearCart();
-        // Mantenemos isSubmitting en true hasta que se redirija
-        setTimeout(() => {
-          router.push('/');
-        }, 5000);
+      if (data.success && data.htmlForm) {
+        // Insertar y enviar el formulario de PayU
+        const formContainer = document.createElement('div');
+        formContainer.innerHTML = data.htmlForm;
+        document.body.appendChild(formContainer);
+        const payuForm = formContainer.querySelector('form');
+        if (payuForm) {
+          clearCart();
+          payuForm.submit();
+        } else {
+          throw new Error('No se pudo encontrar el formulario de PayU');
+        }
       } else {
-        throw new Error(data.message || 'Error al enviar el formulario');
+        throw new Error('Error al generar el formulario de pago de PayU');
       }
     } catch (error) {
       console.error('Error al procesar el pedido:', error);
-      toast.error('Hubo un error al procesar tu pedido. Por favor, intenta de nuevo.', {
-        icon: '❌',
-        style: {
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff',
-        },
-      });
-      setIsSubmitting(false); // Solo aquí reseteamos isSubmitting en caso de error
+      toast.error('Hubo un error al procesar tu pedido. Por favor, intenta de nuevo.');
+      setIsSubmitting(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 pt-24">
@@ -124,111 +103,47 @@ const ShippingForm = () => {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-amber-200"
         >
-          <div className="flex items-center justify-center mb-8">
-            <CakeIcon className="text-amber-600 w-16 h-16 mr-4" />
-            <h1 className="text-4xl font-serif text-amber-800 text-center font-bold">Información de Envío</h1>
-          </div>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <InputField
-                label="Nombre Completo"
-                name="fullName"
-                value={formData.fullName}
+          <h1 className="text-3xl font-bold text-amber-800 text-center mb-6">Información de Envío</h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <InputField label="Nombre Completo" name="fullName" value={formData.fullName} onChange={handleChange} required icon={<User />} />
+            <InputField label="Correo Electrónico" name="email" value={formData.email} onChange={handleChange} required type="email" icon={<Mail />} />
+            <InputField label="Teléfono" name="phone" value={formData.phone} onChange={handleChange} required type="tel" icon={<Phone />} />
+            <InputField label="Dirección" name="address" value={formData.address} onChange={handleChange} required icon={<Home />} />
+            <InputField label="Ciudad" name="city" value={formData.city} onChange={handleChange} required icon={<MapPin />} />
+            <div>
+              <label className="block text-sm font-medium text-amber-700 mb-1">Tipo de Documento</label>
+              <select
+                name="documentType"
+                value={formData.documentType}
                 onChange={handleChange}
                 required
-                icon={<User className="text-amber-600" />}
-              />
-              <InputField
-                label="Correo Electrónico"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                type="email"
-                icon={<Mail className="text-amber-600" />}
-              />
-              <InputField
-                label="Teléfono"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                type="tel"
-                icon={<Phone className="text-amber-600" />}
-              />
-              <InputField
-                label="Dirección Línea 1"
-                name="address1"
-                value={formData.address1}
-                onChange={handleChange}
-                required
-                icon={<Home className="text-amber-600" />}
-              />
-              <InputField
-                label="Dirección Línea 2 (Opcional)"
-                name="address2"
-                value={formData.address2}
-                onChange={handleChange}
-                icon={<Building className="text-amber-600" />}
-              />
-              <InputField
-                label="Ciudad"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-                icon={<MapPin className="text-amber-600" />}
-              />
-              <InputField
-                label="Estado"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                required
-                icon={<Flag className="text-amber-600" />}
-              />
-              <InputField
-                label="Código Postal"
-                name="zipCode"
-                value={formData.zipCode}
-                onChange={handleChange}
-                required
-                icon={<MapPinned className="text-amber-600" />}
-              />
+                className="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+              >
+                <option value="">Selecciona un tipo</option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="NIT">NIT</option>
+                <option value="PP">Pasaporte</option>
+              </select>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-4 rounded-full font-semibold hover:from-amber-600 hover:to-amber-700 transition-all duration-300 flex items-center justify-center text-lg shadow-lg"
+            <InputField label="Número de Documento" name="documentNumber" value={formData.documentNumber} onChange={handleChange} required />
+            <button
               type="submit"
               disabled={isSubmitting}
+              className="w-full bg-amber-600 text-white py-3 rounded-full font-semibold hover:bg-amber-700 transition-colors duration-300 flex items-center justify-center"
             >
-              <AnimatePresence mode="wait" initial={false}>
-                {isSubmitting ? (
-                  <motion.div
-                    key="loading"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex items-center"
-                  >
-                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                    Procesando pedido...
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="submit"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex items-center"
-                  >
-                    <TruckIcon className="mr-2 h-6 w-6" />
-                    Completar Pedido
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Procesando...
+                </>
+              ) : (
+                <>
+                  <CreditCard className="mr-2 h-5 w-5" />
+                  Proceder al Pago
+                </>
+              )}
+            </button>
           </form>
         </motion.div>
       </div>
@@ -247,13 +162,11 @@ interface InputFieldProps {
 }
 
 const InputField: React.FC<InputFieldProps> = ({ label, name, value, onChange, required = false, type = 'text', icon }) => (
-  <div className="relative">
-    <label htmlFor={name} className="block text-sm font-medium text-amber-700 mb-1">
-      {label}
-    </label>
+  <div>
+    <label htmlFor={name} className="block text-sm font-medium text-amber-700 mb-1">{label}</label>
     <div className="relative">
       {icon && (
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-amber-500">
           {icon}
         </div>
       )}
@@ -264,8 +177,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, value, onChange, r
         value={value}
         onChange={onChange}
         required={required}
-        className={`w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 ${icon ? 'pl-10' : ''} bg-amber-50 text-amber-800 placeholder-amber-400`}
-        placeholder={label}
+        className={`w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 ${icon ? 'pl-10' : ''}`}
       />
     </div>
   </div>

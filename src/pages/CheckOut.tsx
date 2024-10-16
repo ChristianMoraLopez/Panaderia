@@ -49,53 +49,24 @@ const CheckoutPage: React.FC = () => {
       }
     }
   };
-
   const handleCheckout = async () => {
     setIsProcessing(true);
     try {
-      // Simulación del proceso de pago
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       const purchaseId = uuidv4();
       const purchaseDate = new Date().toISOString();
 
-      if (user) {
-        console.log('Actualizando historial de usuario autenticado...');
-        for (const item of extendedItems) {
-          const productDetails = {
-            name: item.name,
-            price: item.price,
-            description: item.description || 'No description available',
-            imageId: item.image_url,
-            hash: item.hash,
-            quantity : item.quantity
-          };
-          await updatePurchaseHistory(item.hash, productDetails);
-        }
-      } else {
-        console.log('Guardando historial de compra para usuario no autenticado...');
-        const purchaseHistory = {
-          id: purchaseId,
-          date: purchaseDate,
-          items: extendedItems,
-          total: total
-
-        };
-        const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
-        localPurchaseHistory.push(purchaseHistory);
-        localStorage.setItem('purchaseHistory', JSON.stringify(localPurchaseHistory));
-      }
-
-      // Guardar la información de la compra en el localStorage para usar en el formulario de envío
+      // Guardamos la información de la compra en el localStorage antes de limpiar el carrito
       localStorage.setItem('currentPurchase', JSON.stringify({
         purchaseId,
         purchaseDate,
         items: extendedItems,
-        total
+        subTotal,
+        tax: tax.toFixed(2),
+        total: total.toFixed(2)
       }));
 
       setIsProcessing(false);
-      toast.success('¡Pago procesado con éxito!', {
+      toast.success('¡Procesando tu pedido!', {
         icon: '🎉',
         style: {
           borderRadius: '10px',
@@ -104,10 +75,7 @@ const CheckoutPage: React.FC = () => {
         },
       });
 
-      // Limpiar el carrito después de procesar el pago
-      clearCart();
-
-      // Redirigir al usuario al formulario de envío
+      // Redirigir al usuario al formulario de envío sin limpiar el carrito
       router.push('/shipping');
 
     } catch (error) {
