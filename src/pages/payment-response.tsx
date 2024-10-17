@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, Loader } from 'lucide-react';
+import { CheckCircle, XCircle, Loader, Phone, Mail } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/hooks/authContentfulUser';
 import { useCartMutations } from '@/store/Cart';
@@ -19,6 +19,7 @@ const PaymentResponse = () => {
   const [status, setStatus] = useState<'success' | 'failure' | 'loading'>('loading');
   const { user, updatePurchaseHistory } = useAuth();
   const { clearCart } = useCartMutations();
+  const [emailSent, setEmailSent] = useState(false);
 
   useEffect(() => {
     const handlePaymentResponse = async () => {
@@ -29,20 +30,28 @@ const PaymentResponse = () => {
           setStatus('success');
           const pendingOrderString = localStorage.getItem('pendingOrder');
           
-          if (pendingOrderString) {
+          if (pendingOrderString && !emailSent) {
             const pendingOrder = JSON.parse(pendingOrderString);
             
             try {
-              // Enviar correo electrónico
+              // Asegurarse de que la dirección esté completa
+              const completeAddress = `${pendingOrder.address || ''}, ${pendingOrder.city || ''}, ${pendingOrder.state || ''}, ${pendingOrder.zipCode || ''}`.trim();
+              
+              // Enviar correo electrónico una sola vez
               const emailResponse = await fetch('/api/sendMail', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(pendingOrder),
+                body: JSON.stringify({
+                  ...pendingOrder,
+                  address: completeAddress
+                }),
               });
 
               if (!emailResponse.ok) {
                 throw new Error('Error al enviar el correo electrónico');
               }
+
+              setEmailSent(true);
 
               // Actualizar historial de compras
               if (user) {
@@ -51,13 +60,13 @@ const PaymentResponse = () => {
                     name: item.name,
                     price: item.price,
                     quantity: item.quantity,
-                    description: item.description || 'No description available',
+                    description: item.description,
                     imageId: item.image_url
                   };
                   await updatePurchaseHistory(pendingOrder.purchaseId, productDetails);
                 }
               } else {
-                // Guardar en localStorage para usuarios no autenticados
+                // Si no está logueado, guardamos la compra en el localStorage
                 const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
                 localPurchaseHistory.push(pendingOrder);
                 localStorage.setItem('purchaseHistory', JSON.stringify(localPurchaseHistory));
@@ -81,7 +90,8 @@ const PaymentResponse = () => {
     };
 
     handlePaymentResponse();
-  }, [router.isReady, router.query, user, updatePurchaseHistory, clearCart]);
+  }, [router.isReady, router.query, user, updatePurchaseHistory, clearCart, emailSent]);
+
 
   const renderContent = () => {
     switch (status) {
@@ -94,7 +104,25 @@ const PaymentResponse = () => {
           >
             <CheckCircle className="w-24 h-24 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-green-700 mb-2">¡Pago Exitoso!</h2>
-            <p className="text-gray-600">Gracias por tu compra. Tu pedido ha sido procesado correctamente.</p>
+            <p className="text-gray-600 mb-4">Gracias por tu compra. Tu pedido ha sido procesado correctamente.</p>
+            <div className="bg-amber-100 p-4 rounded-lg text-left mb-4">
+              <h3 className="font-semibold text-amber-800 mb-2">Próximos pasos:</h3>
+              <ul className="list-disc list-inside text-amber-700 space-y-2">
+                <li>Recibirás un correo electrónico con la confirmación de tu pedido en breve.</li>
+                <li>Nos pondremos en contacto contigo para coordinar la entrega de tus deliciosos productos.</li>
+                <li>Si tienes alguna pregunta o necesitas gestionar el envío, no dudes en contactarnos:</li>
+              </ul>
+            </div>
+            <div className="flex justify-center space-x-4 mb-4">
+              <a href="mailto:contacto@beevovenbakery.com" className="flex items-center text-amber-600 hover:text-amber-700">
+                <Mail className="w-5 h-5 mr-2" />
+                contacto@beevovenbakery.com
+              </a>
+              <a href="tel:+573144715980" className="flex items-center text-amber-600 hover:text-amber-700">
+                <Phone className="w-5 h-5 mr-2" />
+                +57 314 471 5980
+              </a>
+            </div>
           </motion.div>
         );
       case 'failure':

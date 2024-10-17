@@ -1,5 +1,4 @@
-
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createClient } from 'contentful';
 import { UserFields } from '@/types/UserTypesContentful';
 
@@ -14,42 +13,49 @@ export const useCustomerProfile = (email: string | null | undefined) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!email) {
-        setError('Email no proporcionado');
-        setLoading(false);
-        return;
+  const fetchProfile = useCallback(async () => {
+    if (!email) {
+      setError('Email no proporcionado');
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const entries = await client.getEntries({
+        content_type: 'panaderaDelicias',
+        'fields.email': email,
+        limit: 1
+      });
+
+      if (entries.items.length > 0) {
+        setProfile(entries.items[0].fields as unknown as UserFields);
+      } else {
+        setError('No se encontró un perfil con ese email');
       }
-
-      try {
-        const entries = await client.getEntries({
-          content_type: 'panaderaDelicias',
-          'fields.email': email,
-          limit: 1
-        });
-
-        if (entries.items.length > 0) {
-          setProfile(entries.items[0].fields as unknown as UserFields);
-        } else {
-          setError('No se encontró un perfil con ese email');
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(`Error al obtener el perfil del cliente: ${err.message}`);
-        } else {
-          setError('Error desconocido al obtener el perfil del cliente');
-        }
-        console.error(err);
-      } finally {
-        setLoading(false);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(`Error al obtener el perfil del cliente: ${err.message}`);
+      } else {
+        setError('Error desconocido al obtener el perfil del cliente');
       }
-    };
-
-    if (email) {
-      fetchProfile();
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   }, [email]);
 
-  return { profile, loading, error };
+  useEffect(() => {
+    if (email) {
+      fetchProfile();
+    }
+  }, [email, fetchProfile]);
+
+  const refetch = useCallback(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  return { profile, loading, error, refetch };
 };

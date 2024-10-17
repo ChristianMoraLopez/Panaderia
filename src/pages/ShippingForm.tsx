@@ -4,12 +4,11 @@ import { motion } from 'framer-motion';
 import { Loader2, CreditCard, User, Mail, Phone, Home, MapPin } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/hooks/authContentfulUser';
-import { useCart, useCartMutations } from '@/store/Cart';
+import { useCart } from '@/store/Cart';
 import { v4 as uuidv4 } from 'uuid';
 
 const ShippingForm: React.FC = () => {
   const { user } = useAuth();
-  const { clearCart } = useCartMutations();
   const router = useRouter();
   const { items, subTotal } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +47,32 @@ const ShippingForm: React.FC = () => {
     }
 
     const purchaseId = uuidv4();
+    
+    // Crear el objeto de orden completo
     const orderData = {
+      purchaseId,
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      documentType: formData.documentType,
+      documentNumber: formData.documentNumber,
+      orderDetails: items.map(item => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        description: item.description,
+        image_url: item.image_url
+      })),
+      totalAmount: subTotal,
+    };
+
+    // Guardar la orden en localStorage
+    localStorage.setItem('pendingOrder', JSON.stringify(orderData));
+
+    const payuData = {
       amount: subTotal.toFixed(2),
       referenceCode: purchaseId,
       description: `Orden ${purchaseId}`,
@@ -64,7 +88,7 @@ const ShippingForm: React.FC = () => {
       const response = await fetch('/api/generatePayuUrl', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(payuData),
       });
 
       if (!response.ok) {
@@ -80,7 +104,7 @@ const ShippingForm: React.FC = () => {
         document.body.appendChild(formContainer);
         const payuForm = formContainer.querySelector('form');
         if (payuForm) {
-          clearCart();
+          // No limpiar el carrito aquí, lo haremos después de una transacción exitosa
           payuForm.submit();
         } else {
           throw new Error('No se pudo encontrar el formulario de PayU');

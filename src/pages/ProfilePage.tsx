@@ -46,45 +46,56 @@ type PurchaseHistoryItem = {
 
 const Profile = () => {
   const { user, loading: authLoading, logout } = useAuth();
-  const { profile, loading: profileLoading, error } = useCustomerProfile(user?.email);
+  const { profile, loading: profileLoading, error, refetch } = useCustomerProfile(user?.email);
   const { count } = useCart();
   const [purchaseHistory, setPurchaseHistory] = useState<PurchaseHistoryItem[]>([]);
   const [healthLevel, setHealthLevel] = useState({ level: 'Principiante Saludable', description: 'Estás comenzando tu viaje hacia una vida más saludable.' });
   const [purchaseCount, setPurchaseCount] = useState(0);
   const [language, setLanguage] = useState<'es' | 'en'>('es');
 
-
   useEffect(() => {
-    if (!user) {
-      const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
-      setPurchaseHistory(localPurchaseHistory);
-      calculateHealthLevel(localPurchaseHistory.length);
-    } else if (profile && profile.history) {
-      const profileHistory = Object.entries(profile.history).map(([key, value]) => {
-        const historyItem = value as HistoryItem;
-        if ('fields' in historyItem) {
-          const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
-          const price = historyItem.fields.price['en-US'];
-          const imageUrl = historyItem.fields.image['en-US'].sys.id || '';
-          return {
-            id: key,
-            date: new Date().toISOString(),
-            items: [{
-              id: parseInt(key),
-              name: historyItem.fields.name['en-US'],
-              price: price,
-              quantity: quantity,
-              image_url: imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl
-            }],
-            total: price * quantity
-          };
+    const fetchPurchaseHistory = () => {
+      if (!user) {
+        const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
+        setPurchaseHistory(localPurchaseHistory);
+        calculateHealthLevel(localPurchaseHistory.length);
+      } else if (profile && profile.history) {
+        try {
+          const profileHistory = Object.entries(profile.history)
+            .map(([key, value]) => {
+              const historyItem = value as HistoryItem;
+              if ('fields' in historyItem) {
+                const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
+                const price = historyItem.fields.price['en-US'];
+                const imageUrl = historyItem.fields.image && historyItem.fields.image['en-US'] ? historyItem.fields.image['en-US'].sys.id : '';
+                return {
+                  id: key,
+                  date: new Date().toISOString(),
+                  items: [{
+                    id: parseInt(key),
+                    name: historyItem.fields.name['en-US'],
+                    price: price,
+                    quantity: quantity,
+                    image_url: imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl
+                  }],
+                  total: price * quantity
+                };
+              }
+              return null;
+            })
+            .filter((item): item is PurchaseHistoryItem => item !== null);
+          setPurchaseHistory(profileHistory);
+          calculateHealthLevel(profileHistory.length);
+        } catch (error) {
+          console.error("Error processing purchase history:", error);
+          localStorage.removeItem('purchaseHistory');
+          refetch();
         }
-        return null;
-      }).filter((item): item is PurchaseHistoryItem => item !== null);
-      setPurchaseHistory(profileHistory);
-      calculateHealthLevel(profileHistory.length);
-    }
-  }, [user, profile]);
+      }
+    };
+
+    fetchPurchaseHistory();
+  }, [user, profile, refetch]);
 
   
   const toggleLanguage = () => {
@@ -130,7 +141,7 @@ const Profile = () => {
   }
 
   const renderPurchaseHistory = () => {
-    if (purchaseHistory.length === 0) {
+    if (!purchaseHistory || purchaseHistory.length === 0) {
       return (
         <div className="text-center">
           <ShoppingBag className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
@@ -142,32 +153,44 @@ const Profile = () => {
       );
     }
 
-    
-
-    return purchaseHistory.map((purchase) => (
-      <div key={purchase.id} className="mb-6 p-4 bg-white rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-yellow-800 mb-2">Compra del {new Date(purchase.date).toLocaleDateString()}</h3>
-        {purchase.items.map((item) => (
-          <div key={item.id} className="flex items-center space-x-4 mb-2">
-            <Image
-              src={item.image_url}
-              alt={item.name}
-              width={50}
-              height={50}
-              className="rounded"
-            />
-            <div>
-              <p className="font-medium">{item.name}</p>
-              <p className="text-sm text-gray-600">
-                Cantidad: {item.quantity} - Precio unitario: ${item.price.toFixed(2)} - 
-                Total: ${(item.price * item.quantity).toFixed(2)}
-              </p>
-            </div>
-          </div>
-        ))}
-        <p className="text-right font-semibold">Total de la compra: ${purchase.total.toFixed(2)}</p>
-      </div>
-    ));
+    return purchaseHistory.map((purchase) => {
+      if (!purchase || !purchase.items) {
+        return null;
+      }
+      return (
+        <div key={purchase.id} className="mb-6 p-4 bg-white rounded-lg shadow">
+          <h3 className="text-lg font-semibold text-yellow-800 mb-2">Compra del {new Date(purchase.date).toLocaleDateString()}</h3>
+          {Array.isArray(purchase.items) && purchase.items.length > 0 ? (
+            purchase.items.map((item) => {
+              if (!item) return null;
+              return (
+                <div key={item.id} className="flex items-center space-x-4 mb-2">
+                  {item.image_url && (
+                    <Image
+                      src={item.image_url}
+                      alt={item.name}
+                      width={50}
+                      height={50}
+                      className="rounded"
+                    />
+                  )}
+                  <div>
+                    <p className="font-medium">{item.name}</p>
+                    <p className="text-sm text-gray-600">
+                      Cantidad: {item.quantity} - Precio unitario: ${item.price.toFixed(2)} - 
+                      Total: ${(item.price * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <p className="text-yellow-600">No hay detalles disponibles para esta compra.</p>
+          )}
+          <p className="text-right font-semibold">Total de la compra: ${purchase.total.toFixed(2)}</p>
+        </div>
+      );
+    });
   };
   return (
     <>

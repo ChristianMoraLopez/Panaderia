@@ -1,11 +1,36 @@
-import React from 'react'
-import { SVGIconProps } from './svg.types'
+import React from 'react';
 
-const Basket = ({ size = '34px' }: SVGIconProps) => (
-  <svg width={size} height={size} viewBox="0 0 16 16" version="1.1" >
-  <path fill="#444" d="M14 13.1v-1.1h-9.4l0.6-1.1 9.2-0.9 1.6-6h-12.3l-0.7-3h-3v1h2.2l2.1 8.4-1.3 2.6v1.5c0 0.8 0.7 1.5 1.5 1.5s1.5-0.7 1.5-1.5-0.7-1.5-1.5-1.5h7.5v1.5c0 0.8 0.7 1.5 1.5 1.5s1.5-0.7 1.5-1.5c0-0.7-0.4-1.2-1-1.4z"/>
-</svg>
 
-)
 
-export default Basket
+interface SVGIconProps {
+  size?: string;
+  color?: string;
+  className?: string;
+}
+
+
+
+const Basket: React.FC<SVGIconProps> = ({ size = '34px', color = '#926cad',  className}) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 110 110"
+    width={size}
+    height={size}
+    className={className}
+  >
+    <circle fill={color} cx="55" cy="55" r="55" />
+    <path
+      fill="#fff"
+      d="M27.92 35H82.24L88 76.64S88 86.11 79.52 88H31.36S23.68 86.11 23 79.79 27.92 35 27.92 35Z"
+    />
+    <path
+      fill="none"
+      stroke="#fff"
+      strokeMiterlimit="10"
+      strokeWidth="4"
+      d="M69.62 47V33.38a36.45 36.45 0 000-5.53 9.16 9.16 0 00-1.3-2.76 9.71 9.71 0 00-3.21-3.23 15.85 15.85 0 00-12.75-2.42 19.93 19.93 0 00-3.88 1.4 27 27 0 00-3.36 1.79c-3.32 2.18-4.39 6.21-4.39 9.68 0 2.61 0 5.23 0 7.84 0 2.27 0 4.54 0 6.82"
+    />
+  </svg>
+);
+
+export default Basket;
