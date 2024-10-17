@@ -52,7 +52,7 @@ const PaymentResponse = () => {
                     price: item.price,
                     quantity: item.quantity,
                     description: item.description || 'No description available',
-                    imageId: item.image_url || '',
+                    imageId: item.image_url
                   };
                   await updatePurchaseHistory(pendingOrder.purchaseId, productDetails);
                 }

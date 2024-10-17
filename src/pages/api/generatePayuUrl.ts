@@ -2,13 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import crypto from 'crypto';
 
 const API_KEY = '4Vj8eK4rloUd272L48hsrarnUA';
-//const API_LOGIN = 'pRRXKOl8ikMmt9u';
 const MERCHANT_ID = '508029';
 const ACCOUNT_ID = '512321';
 const PAYU_BASE_URL = 'https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/';
-
-
-
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
