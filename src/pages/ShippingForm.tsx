@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Truck as TruckIcon, Cake as CakeIcon, User, Mail, Phone, Home, Building, MapPin, Flag, MapPinned } from 'lucide-react';
+import { Loader2, Truck as TruckIcon, Cake as CakeIcon, User, Mail, Phone, Home, Building, MapPin, Flag, MapPinned, IdCard} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/hooks/authContentfulUser';
-import { useCart, useCartMutations } from '@/store/Cart';
+import { useCart } from '@/store/Cart';
 import { v4 as uuidv4 } from 'uuid';
-// Definir la interfaz OrderItem
+
+// Define OrderItem interface
 interface OrderItem {
   id: number;
   name: string;
@@ -14,12 +14,13 @@ interface OrderItem {
   price: number;
 }
 
-// Definir la interfaz OrderData
+// Define OrderData interface
 interface OrderData {
   purchaseId: string;
   fullName: string;
   email: string;
   phone: string;
+  idNumber: string;
   address1: string;
   address2?: string;
   city: string;
@@ -29,11 +30,9 @@ interface OrderData {
   totalAmount: number;
 }
 
-const ShippingForm = () => {
-  const router = useRouter();
+const ShippingForm: React.FC = () => {
   const { user } = useAuth();
   const { items, subTotal } = useCart();
-  const { clearCart } = useCartMutations();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: user?.displayName || '',
@@ -43,7 +42,8 @@ const ShippingForm = () => {
     city: '',
     state: '',
     zipCode: '',
-    phone: ''
+    phone: '',
+    idNumber: '', 
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,9 +58,17 @@ const ShippingForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Preparar los datos del pedido
+    if (subTotal <= 0) {
+      toast.error('El total de la compra no es válido. Por favor, revisa tu carrito.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    const purchaseId = uuidv4();
+
+    // Prepare order data
     const orderData: OrderData = {
-      purchaseId: uuidv4(),
+      purchaseId,
       ...formData,
       orderDetails: items.map(item => ({
         id: item.id,
@@ -71,50 +79,64 @@ const ShippingForm = () => {
       totalAmount: subTotal,
     };
 
+    // Save order data to local storage or state management system
+    localStorage.setItem('currentOrder', JSON.stringify(orderData));
+
+    // Prepare data for PayU
+    const payuData = {
+      amount: subTotal.toFixed(2),
+      referenceCode: purchaseId,
+      description: `Compra en Mi Tienda - Ref: ${purchaseId}`,
+      buyerEmail: formData.email,
+      payerFullName: formData.fullName,
+      billingAddress: `${formData.address1}, ${formData.address2 || ''}`,
+      shippingAddress: `${formData.address1}, ${formData.address2 || ''}`,
+      telephone: formData.phone,
+      payerDocument: formData.idNumber,
+    };
+
     try {
-      const response = await fetch('/api/sendMail', {
+      const response = await fetch('/api/generatePayuUrl', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(payuData),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate payment form');
+      }
 
       const data = await response.json();
 
-      if (data.success) {
-        toast.success('Pedido completado con éxito', {
-          icon: '🎉',
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-          },
-          duration: 5000,
-        });
-
-        clearCart();
-        // Mantenemos isSubmitting en true hasta que se redirija
-        setTimeout(() => {
-          router.push('/');
-        }, 5000);
+      if (data.success && data.htmlForm) {
+        // Create a temporary div to hold the HTML form
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = data.htmlForm;
+        
+        // Find the form element
+        const form = tempDiv.querySelector('form');
+        
+        if (form) {
+          // Append the form to the body and submit it
+          document.body.appendChild(form);
+          form.submit();
+        } else {
+          throw new Error('Payment form not found in the response');
+        }
       } else {
-        throw new Error(data.message || 'Error al enviar el formulario');
+        throw new Error(data.error || 'Failed to generate payment form');
       }
     } catch (error) {
-      console.error('Error al procesar el pedido:', error);
-      toast.error('Hubo un error al procesar tu pedido. Por favor, intenta de nuevo.', {
-        icon: '❌',
-        style: {
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff',
-        },
-      });
-      setIsSubmitting(false); // Solo aquí reseteamos isSubmitting en caso de error
+      console.error('Error generating payment form:', error);
+      toast.error('Error al procesar el pago. Por favor, inténtelo de nuevo.');
+      // Remove the saved order data if there's an error
+      localStorage.removeItem('currentOrder');
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 pt-24">
@@ -155,6 +177,14 @@ const ShippingForm = () => {
                 required
                 type="tel"
                 icon={<Phone className="text-amber-600" />}
+              />
+              <InputField
+                label="Cédula"
+                name="idNumber"
+                value={formData.idNumber}
+                onChange={handleChange}
+                required
+                icon={<IdCard className="text-amber-600" />}
               />
               <InputField
                 label="Dirección Línea 1"
@@ -258,14 +288,13 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, value, onChange, r
         </div>
       )}
       <input
-        type={type}
         id={name}
         name={name}
         value={value}
         onChange={onChange}
         required={required}
-        className={`w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 ${icon ? 'pl-10' : ''} bg-amber-50 text-amber-800 placeholder-amber-400`}
-        placeholder={label}
+        type={type}
+        className={`block w-full px-3 py-2 border border-amber-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-amber-500 focus:border-amber-500 sm:text-sm ${icon ? 'pl-10' : ''}`}
       />
     </div>
   </div>

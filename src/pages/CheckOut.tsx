@@ -85,14 +85,7 @@ const CheckoutPage: React.FC = () => {
         localPurchaseHistory.push(purchaseHistory);
         localStorage.setItem('purchaseHistory', JSON.stringify(localPurchaseHistory));
       }
-
-      // Guardar la información de la compra en el localStorage para usar en el formulario de envío
-      localStorage.setItem('currentPurchase', JSON.stringify({
-        purchaseId,
-        purchaseDate,
-        items: extendedItems,
-        total
-      }));
+      
 
       setIsProcessing(false);
       toast.success('¡Pago procesado con éxito!', {
