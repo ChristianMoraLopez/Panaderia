@@ -242,7 +242,12 @@ const LuxuryBakeryHomepage = () => {
         </div>
       </section>
 
- 
+
+      <main>
+        <section ref={productsSectionRef} className=" bg-gradient-to-b from-brown-900 to-amber-900">
+          <GallerySection onAddToCart={() => setCartCount(prevCount => prevCount + 1)} language={language} />
+        </section>
+      </main>
 
       <footer className="bg-brown-900 py-12 text-amber-100">
         <div className="container mx-auto px-6">

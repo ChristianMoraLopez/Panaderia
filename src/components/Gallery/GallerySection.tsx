@@ -79,7 +79,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({ onAddToCart, language }
           style={{
             position: 'absolute',
             top: `${Math.random() * 500}%`,
-            left: `${Math.random() * 150}%`,
+            left: `${Math.random() * 200}%`,
             transform: `rotate(${Math.random() * 360}deg)`,
           }}
         />
