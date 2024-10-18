@@ -38,6 +38,10 @@ const nextConfig = {
         source: '/shipping',
         destination: '/ShippingForm', // Redirige a ShippingForm.tsx
       },
+      {
+        source: '/product',
+        destination: '/ProductGalleryPage', // Redirige a ProductGalleryPage.tsx
+      }
     ];
   },
 };

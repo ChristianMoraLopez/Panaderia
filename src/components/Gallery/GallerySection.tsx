@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useProducts } from '@/hooks/useProducts';
 import { motion } from 'framer-motion';
-import { Cake } from 'lucide-react';
-
+import { Cake, Cookie, Croissant, Coffee, Utensils  } from 'lucide-react';
 // Define the Product type
 interface Product {
   name: string;
@@ -25,18 +25,23 @@ interface GallerySectionProps {
 
 const GallerySection: React.FC<GallerySectionProps> = ({ onAddToCart, language }) => {
   const { products, loading, error } = useProducts();
+  const [randomProducts, setRandomProducts] = useState<Product[]>([]);
 
-  // Translations
+  useEffect(() => {
+    if (products && products.length > 0) {
+      const shuffled = [...products].sort(() => 0.5 - Math.random());
+      setRandomProducts(shuffled.slice(0, 3));
+    }
+  }, [products]);
+
   const translations = {
     es: {
-      title: "Nuestras Delicias",
-      addToCart: "Añadir al Carrito",
+      title: "Destacados",
       loading: "Cargando...",
       error: "Error: "
     },
     en: {
-      title: "Our Delights",
-      addToCart: "Add to Cart",
+      title: "Featured",
       loading: "Loading...",
       error: "Error: "
     }
@@ -65,19 +70,45 @@ const GallerySection: React.FC<GallerySectionProps> = ({ onAddToCart, language }
       </motion.div>
     );
 
+  const BackgroundIcons = () => (
+    <>
+      {[Cake, Cookie, Croissant, Coffee, Utensils].map((Icon, index) => (
+        <Icon 
+          key={index} 
+          className="w-8 h-8 text-brown-800 opacity-10" 
+          style={{
+            position: 'absolute',
+            top: `${Math.random() * 500}%`,
+            left: `${Math.random() * 150}%`,
+            transform: `rotate(${Math.random() * 360}deg)`,
+          }}
+        />
+      ))}
+    </>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="py-12"
+      className="pt-0"
     >
-      <h2 className="text-3xl font-bold text-center mb-8 text-brown-800">
-        {translations[language].title}
-      </h2>
+      <div className="relative mb-12 overflow-hidden">
+        <div className="absolute inset-0 bg-[#D0D450]"></div>
+        <div className="relative z-10 py-6 px-4">
+          <h2 className="text-4xl font-bold text-center text-purple-800 relative z-20">
+            {translations[language].title}
+          </h2>
+          <div className="absolute inset-0 z-10">
+            {[...Array(50)].map((_, i) => (
+              <BackgroundIcons key={i} />
+            ))}
+          </div>
+        </div>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {products?.map((product: Product, index: number) => {
-          if (!product) return null;
+        {randomProducts.map((product: Product, index: number) => {
           const imageUrl = product.image?.fields?.file?.url
             ? `https:${product.image.fields.file.url}`
             : '/placeholder.jpg';
@@ -87,32 +118,23 @@ const GallerySection: React.FC<GallerySectionProps> = ({ onAddToCart, language }
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="group"
+              className="group relative"
             >
-              <div className="relative overflow-hidden rounded-lg shadow-lg">
-                <Image
-                  src={imageUrl}
-                  alt={language === 'es' ? product.name : product.name}
-                  width={500}
-                  height={500}
-                  className="w-full h-64 object-cover transition-transform duration-300 transform group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="text-white text-xl font-semibold mb-2">
+              <Link href="/product">
+                <div className="relative overflow-hidden rounded-lg shadow-lg cursor-pointer">
+                  <Image
+                    src={imageUrl}
+                    alt={language === 'es' ? product.name : product.name}
+                    width={500}
+                    height={500}
+                    className="w-full h-64 object-cover transition-transform duration-300 transform group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <h3 className="absolute bottom-4 left-4 right-4 text-white text-2xl font-bold text-center drop-shadow-lg transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                     {language === 'es' ? product.name : product.name}
                   </h3>
-                  <p className="text-amber-200 font-medium">${product.price.toFixed(2)}</p>
                 </div>
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="mt-4 w-full py-2 px-4 bg-brown-600 text-white rounded-full font-medium hover:bg-brown-700 transition-colors duration-300"
-                onClick={() => onAddToCart(product)}
-              >
-                {translations[language].addToCart}
-              </motion.button>
+              </Link>
             </motion.div>
           );
         })}

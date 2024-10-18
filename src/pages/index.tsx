@@ -242,39 +242,7 @@ const LuxuryBakeryHomepage = () => {
         </div>
       </section>
 
-
-      <main>
-        <section className="py-24 bg-gradient-to-b from-amber-900 to-brown-900">
-          <div className="container mx-auto px-6">
-            <h3 className="text-4xl font-bold mb-16 text-center text-amber-300 drop-shadow-lg">{t('ourSpecialties')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              {[
-                { icon: Cake, title: t('dreamCakes'), description: t('dreamCakesDesc') },
-                { icon: Coffee, title: t('specialtyCoffee'), description: t('specialtyCoffeeDesc') },
-                { icon: Croissant, title: t('artisanalBreads'), description: t('artisanalBreadsDesc') },
-              ].map(({ icon: Icon, title, description }, index) => (
-                <motion.div
-                  key={title}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                  className="text-center bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg p-8 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-                >
-                  <Icon className="w-16 h-16 mx-auto mb-6 text-amber-600" />
-                  <h4 className="text-2xl font-semibold mb-4 text-brown-800">{title}</h4>
-                  <p className="text-brown-600">
-                    {description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section ref={productsSectionRef} className="py-24 bg-gradient-to-b from-brown-900 to-amber-900">
-          <GallerySection onAddToCart={() => setCartCount(prevCount => prevCount + 1)} language={language} />
-        </section>
-      </main>
+ 
 
       <footer className="bg-brown-900 py-12 text-amber-100">
         <div className="container mx-auto px-6">
