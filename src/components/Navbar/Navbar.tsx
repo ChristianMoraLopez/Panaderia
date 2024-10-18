@@ -84,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({
               alt={language === "es" ? textES : textEN}
               width={24}
               height={24}
-              className="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300"
+              className="h-8 w-8 md:h-10 md:w-10 lg:h-8 lg:w-8 mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300"
             />
           ) : (
             <Icon
@@ -127,7 +127,7 @@ const Navbar: React.FC<NavbarProps> = ({
                   maxWidth: '100%',
                   maxHeight: '100%',
                 }}
-                sizes="(max-width: 640px) 120px, (max-width: 768px) 160px, 200px"
+                sizes="(max-width: 640px) 100px, (max-width: 768px) 140px, 150px"
               />
             </span>
           </Link>
@@ -246,49 +246,49 @@ const Navbar: React.FC<NavbarProps> = ({
             ${isNavOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"}
             overflow-hidden`}
       >
-        <div className="px-4 pt-2 pb-3 space-y-1 sm:px-3 bg-cream-100 bg-opacity-95 backdrop-blur-md">
+        <div className="px-4 pt-2 pb-3 space-y-4 sm:px-3 bg-cream-100 bg-opacity-95 backdrop-blur-md flex flex-col items-center">
           {user && (
-            <span className="block px-3 py-2 text-lg font-bold text-brown-800">
+            <span className="block px-3 py-2 text-lg font-bold text-brown-800 text-center">
               {language === "es"
                 ? `Hola, ${user.displayName || user.email}`
                 : `Hello, ${user.displayName || user.email}`}
             </span>
-          )}<NavLink
-          href="/login"
-          textES="Iniciar Sesión"
-          textEN="Login"
-          icon="/images/login.svg"
-        />
-   <NavLink
-
-   
-        href="/ProductGalleryPage"
-        textES="Comprar"
-        textEN="Buy"
-        icon="/images/buy.svg"
-      />
-
-      <NavLink
-        href="/about-us"
-        textES="Sobre Nosotros"
-        textEN="About Us"
-        icon="/images/about-us.svg"
-      />
-      <NavLink
-        href="/contact"
-        textES="Contáctanos"
-        textEN="Contact Us"
-        icon="/images/ContactUs.svg"
-      />
+          )}
+          <NavLink
+            href="/login"
+            textES="Iniciar Sesión"
+            textEN="Login"
+            icon="/images/login.svg"
+          />
+          <NavLink
+            href="/ProductGalleryPage"
+            textES="Comprar"
+            textEN="Buy"
+            icon="/images/buy.svg"
+          />
+          <NavLink
+            href="/about-us"
+            textES="Sobre Nosotros"
+            textEN="About Us"
+            icon="/images/about-us.svg"
+          />
+          <NavLink
+            href="/contact"
+            textES="Contáctanos"
+            textEN="Contact Us"
+            icon="/images/ContactUs.svg"
+          />
           <Link href="/CheckOut" passHref>
-            <span className="flex items-center px-3 py-2 text-lg font-bold text-brown-800 hover:text-brown-600 transition-colors duration-300">
-              <Basket  />
-              {language === "es" ? "Carrito" : "Cart"}
-              {cartCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center px-2 py-1 text-sm font-bold leading-none text-red-100 bg-red-600 rounded-full">
-                  {cartCount}
-                </span>
-              )}
+            <span className="group flex flex-col items-center justify-center px-2 py-2 text-sm md:text-base lg:text-lg font-semibold w-full h-20 md:h-24 text-brown-800 hover:text-brown-600 transition-colors duration-300">
+              <Basket className="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300" />
+              <span className="text-center w-full truncate">
+                {language === "es" ? "Carrito" : "Cart"}
+                {cartCount > 0 && (
+                  <span className="ml-2 inline-flex items-center justify-center px-2 py-1 text-sm font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                    {cartCount}
+                  </span>
+                )}
+              </span>
             </span>
           </Link>
         </div>

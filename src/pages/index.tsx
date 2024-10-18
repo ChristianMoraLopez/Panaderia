@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cake, Coffee, Croissant, Instagram, Facebook, ShoppingCart } from 'lucide-react';
+import { LucideIcon, Cake, Coffee, Croissant, MessageCircle,Instagram, Facebook, ShoppingCart } from 'lucide-react';
+
 import GallerySection from '@/components/Gallery/GallerySection';
 import { useProducts } from '@/hooks/useProducts';
 import Navbar from '@/components/Navbar/Navbar';
@@ -14,6 +15,13 @@ type Translations = {
     en: string;
   };
 };
+
+// Definición de tipos para las props de SocialButton
+interface SocialButtonProps {
+  Icon: LucideIcon | React.FC<React.SVGProps<SVGSVGElement>>;
+  href: string;
+}
+
 
 // Objeto de traducciones
 const translations: Translations = {
@@ -79,6 +87,9 @@ const LuxuryBakeryHomepage = () => {
   const productsSectionRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
+  
+  const colors = ['#B7D3D3', '#8D4C91', '#F2BEB7', '#D0D450'];
+
   const handleSlideChange = (index: number) => {
     setCurrentSlide(index);
   };
@@ -105,10 +116,34 @@ const LuxuryBakeryHomepage = () => {
     </div>
   );
   if (error) return <div className="h-screen flex items-center justify-center bg-amber-50 text-red-600 text-xl">Error: {error}</div>;
+  const SocialButton: React.FC<SocialButtonProps> = ({ Icon, href }) => (
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bg-white/20 p-2 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors"
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+    >
+      <Icon className="w-6 h-6 text-white" />
+    </motion.a>
+  );
 
   return (
     <div className="min-h-screen bg-amber-50 text-brown-900 overflow-hidden font-serif relative">
       <Navbar cartCount={cartCount} language={language} toggleLanguage={toggleLanguage} />
+
+      {/* WhatsApp Button */}
+      <motion.a
+        href="https://wa.me/1234567890"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <MessageCircle className="w-6 h-6" />
+      </motion.a>
 
       {/* Main Slider Section */}
       <section className="h-screen relative overflow-hidden">
@@ -130,9 +165,26 @@ const LuxuryBakeryHomepage = () => {
                 quality={100}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
+            
             </motion.div>
+
+            
           )}
         </AnimatePresence>
+
+        {/* Social Media Buttons */}
+        <div className="absolute left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex             ">
+          <SocialButton Icon={Instagram} href="https://www.instagram.com/dulcesdelicias" />
+          <SocialButton Icon={Facebook} href="https://www.facebook.com/dulcesdelicias" />
+          <SocialButton 
+            Icon={() => (
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+              </svg>
+            )} 
+            href="https://www.tiktok.com/@dulcesdelicias" 
+          />
+        </div>
 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center z-10 px-4">
@@ -164,7 +216,7 @@ const LuxuryBakeryHomepage = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-              className="px-8 py-4 bg-amber-600 text-amber-50 rounded-full text-lg font-semibold hover:bg-amber-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="px-8 py-4 bg-[#D0D450] text-[#7C428C] rounded-full text-lg font-semibold hover:bg-[#C8CC4A] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               onClick={handleNavigate}
             >
               <ShoppingCart className="inline-block mr-2 h-5 w-5" />
@@ -173,29 +225,23 @@ const LuxuryBakeryHomepage = () => {
           </div>
         </div>
 
-        {/* Thumbnails */}
+        {/* Colored Circles */}
         <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-4">
-          {products && products.map((product, index) => (
+          {products && products.map((_, index) => (
             <motion.div
               key={index}
-              whileHover={{ scale: 1.1, y: -5 }}
+              whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleSlideChange(index)}
-              className={`w-24 h-16 rounded-lg overflow-hidden border-2 ${
-                currentSlide === index ? 'border-amber-400 shadow-glow' : 'border-transparent'
-              } cursor-pointer transition-all duration-300`}
-            >
-              <Image
-                src={`https:${product.image.fields.file.url}`}
-                alt={language === 'es' ? product.name : product.name}
-                width={96}
-                height={64}
-                objectFit="cover"
-              />
-            </motion.div>
+              className={`w-4 h-4 rounded-full cursor-pointer transition-all duration-300 ${
+                currentSlide === index ? 'ring-2 ring-white ring-offset-2' : ''
+              }`}
+              style={{ backgroundColor: colors[index % colors.length] }}
+            />
           ))}
         </div>
       </section>
+
 
       <main>
         <section className="py-24 bg-gradient-to-b from-amber-900 to-brown-900">
