@@ -23,7 +23,7 @@ interface GallerySectionProps {
   language: 'es' | 'en';
 }
 
-const GallerySection: React.FC<GallerySectionProps> = ({ onAddToCart, language }) => {
+const GallerySection: React.FC<GallerySectionProps> = ({ language }) => {
   const { products, loading, error } = useProducts();
   const [randomProducts, setRandomProducts] = useState<Product[]>([]);
 

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LucideIcon, Cake, Coffee, Croissant, MessageCircle,Instagram, Facebook, ShoppingCart } from 'lucide-react';
+import { LucideIcon, Cake,  MessageCircle,Instagram, Facebook, ShoppingCart } from 'lucide-react';
 
 import GallerySection from '@/components/Gallery/GallerySection';
 import { useProducts } from '@/hooks/useProducts';
