@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const currency = 'COP';
     let test = process.env.NODE_ENV === 'production' ? '0' : '1';
-    test = '1'; 
+    test = '0'; 
 
 
     // Ensure amount is a string with two decimal places
