@@ -13,10 +13,7 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const translations = {
-
-
         es: {
-
             title: "Menú Semanal",
             loading: "Cargando...",
             error: "Error al cargar el menú semanal",
@@ -46,8 +43,6 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
         return <div className="text-center py-6 text-red-500">{translations[language].error}</div>;
     }
 
-
-
     const currentMenu = products[currentIndex];
     const imageUrl = currentMenu.image?.fields?.file?.url
         ? `https:${currentMenu.image.fields.file.url}`
@@ -55,71 +50,73 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
 
     return (
         <div className="w-full mb-12">
-          <Header 
-        title={translations[language].title}
-        backgroundColor="bg-[#8D4C91]"
-        textColor="color-[#D9D055]"
-      />
-
+            <Header 
+                title={translations[language].title}
+                backgroundColor="bg-[#8D4C91]"
+                textColor="text-[#D9D055]"
+            />
            
-{/* Content */}
-<div className="relative w-full" style={{ height: '600px' }}>
-    <Image
-        src={imageUrl}
-        alt={currentMenu.title}
-        layout="fill"
-        objectFit="cover"
-        className="transition-transform duration-300 transform hover:scale-105"
-    />
-    <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
-    
-    {/* Watermark Logo */}
-    <div className="absolute inset-0 overflow-hidden">
-        <Image
-            src="/images/SVG/LogoWithOutLetters.svg"
-            alt="Watermark Logo"
-            width={800}  // Ajusta este tamaño según necesites
-            height={800} // Asegúrate de mantener la proporción
-            className="absolute opacity-10 filter grayscale"
-            style={{
-                bottom: '0px',  // Distancia desde el borde inferior
-                left: '-200px',    // Distancia desde el borde izquierdo
-            }}
-        />
-    </div>
+            {/* Content */}
+            <div className="relative w-full" style={{ minHeight: '400px', height: 'calc(100vh - 200px)' }}>
+                <Image
+                    src={imageUrl}
+                    alt={currentMenu.title}
+                    layout="fill"
+                    objectFit="cover"
+                    className="transition-transform duration-300 transform hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
                 
-                {/* Left side content */}
-                <div className="absolute top-0 left-0 bottom-0 w-1/2 p-8 flex flex-col justify-end text-white">
-                    <h3 className="text-4xl font-bold mb-4">{currentMenu.title}</h3>
-                    <p className="text-2xl font-semibold">
-                        ${currentMenu.price.toFixed(2)}
-                    </p>
+                {/* Watermark Logo */}
+                <div className="absolute inset-0 overflow-hidden">
+                    <Image
+                        src="/images/SVG/LogoWithOutLetters.svg"
+                        alt="Watermark Logo"
+                        width={800}
+                        height={800}
+                        className="absolute opacity-10 filter grayscale"
+                        style={{
+                            bottom: '0px',
+                            left: '-200px',
+                        }}
+                    />
                 </div>
+                
+                {/* Content wrapper */}
+                <div className="absolute inset-0 flex flex-col md:flex-row">
+                    {/* Left side content */}
+                    <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col justify-end text-white">
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4">{currentMenu.title}</h3>
+                        <p className="text-xl sm:text-2xl font-semibold">
+                            ${currentMenu.price.toFixed(2)}
+                        </p>
+                    </div>
 
-                {/* Colored Circles as division */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 flex flex-col space-y-2">
-                    {products.map((_, index) => (
-                        <motion.div
-                            key={index}
-                            whileHover={{ scale: 1.2 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => setCurrentIndex(index)}
-                            className={`w-4 h-4 rounded-full cursor-pointer transition-all duration-300 ${
-                                currentIndex === index ? 'ring-2 ring-white ring-offset-1' : ''
-                            }`}
-                            style={{ backgroundColor: colors[index % colors.length] }}
-                        />
-                    ))}
-                </div>
+                    {/* Colored Circles as division */}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 -translate-y-full md:top-1/2 md:-translate-y-1/2 flex flex-row md:flex-col space-x-2 md:space-x-0 md:space-y-2 p-2">
+                        {products.map((_, index) => (
+                            <motion.div
+                                key={index}
+                                whileHover={{ scale: 1.2 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => setCurrentIndex(index)}
+                                className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full cursor-pointer transition-all duration-300 ${
+                                    currentIndex === index ? 'ring-2 ring-white ring-offset-1' : ''
+                                }`}
+                                style={{ backgroundColor: colors[index % colors.length] }}
+                            />
+                        ))}
+                    </div>
 
-                {/* Right side content (description) */}
-                <div className="absolute top-0 right-0 bottom-0 w-1/2 p-8 flex items-center">
-                    <div className="bg-black/40 p-6 rounded-lg text-white">
-                        <ul className="text-lg">
-                            {currentMenu.description.split(',').map((item, index) => (
-                                <li key={index} className="mb-2">{item.trim()}</li>
-                            ))}
-                        </ul>
+                    {/* Right side content (description) */}
+                    <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex items-center">
+                        <div className="bg-black/40 p-4 sm:p-6 rounded-lg text-white w-full">
+                            <ul className="text-sm sm:text-base md:text-lg">
+                                {currentMenu.description.split(',').map((item, index) => (
+                                    <li key={index} className="mb-2">{item.trim()}</li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

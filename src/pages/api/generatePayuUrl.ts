@@ -1,12 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import crypto from 'crypto';
-
+/*
 const API_KEY = 'tsG2CYzQLRDpQhkj6wmj6h5siZ';
 const MERCHANT_ID = '1008897';
 const ACCOUNT_ID = '1017706';
-const PAYU_BASE_URL = 'https://checkout.payulatam.com/ppp-web-gateway-payu/';
+const PAYU_BASE_URL = 'https://checkout.payulatam.com/ppp-web-gateway-payu/';*/
 
-
+const API_KEY = '4Vj8eK4rloUd272L48hsrarnUA';
+const MERCHANT_ID = '508029';
+const ACCOUNT_ID = '512321';
+const PAYU_BASE_URL = 'https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/';
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -58,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const currency = 'COP';
     let test = process.env.NODE_ENV === 'production' ? '0' : '1';
-    test = '0'; 
+    test = '1'; 
 
 
     // Ensure amount is a string with two decimal places
