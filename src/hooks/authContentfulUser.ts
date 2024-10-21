@@ -155,7 +155,7 @@ export const useAuth = () => {
     }
 
     try {
-      const space = await client.getSpace('tq4ckeil24qo');
+      const space = await client.getSpace('lv8bddpr230t');
       const environment = await space.getEnvironment('master');
 
       const entries = await environment.getEntries({

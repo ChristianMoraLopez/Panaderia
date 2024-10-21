@@ -112,12 +112,12 @@ const LuxuryBakeryHomepage = () => {
   const t = (key: string) => translations[key][language];
 
   if (loading) return (
-    <div className="h-screen flex items-center justify-center bg-amber-50">
+    <div className="h-screen flex items-center justify-center bg-[#8D4C91]">
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
       >
-        <Cake className="w-16 h-16 text-amber-600" />
+        <Image src="/images/SVG/LogoWithOutLetters.sgv" alt="Beev's oven" width={300} height={60} />
       </motion.div>
     </div>
   );
