@@ -26,7 +26,7 @@ const client = createClient({
 
 interface UserData {
   name: string;
-  LastName: string;
+  lastName: string;
   email: string;
   password: string;
 }
@@ -97,7 +97,7 @@ export const useAuth = () => {
     }
   };
 
-  const registerUser = async ({ name, LastName, email, password }: UserData) => {
+  const registerUser = async ({ name, lastName, email, password }: UserData) => {
     setLoading(true);
     try {
       const emailLowerCase = email.toLowerCase();
@@ -106,18 +106,18 @@ export const useAuth = () => {
 
       // Actualizar el perfil del usuario en Firebase con el nombre
       await updateProfile(user, {
-        displayName: `${name} ${LastName}`
+        displayName: `${name} ${lastName}`
       });
 
-      const space = await client.getSpace('tq4ckeil24qo');
+      const space = await client.getSpace('lv8bddpr230t');
       const environment = await space.getEnvironment('master');
 
-      const entry = await environment.createEntry('panaderaDelicias', {
+      const entry = await environment.createEntry('user', {
         fields: {
           name: { 'en-US': name },
-          LastName: { 'en-US': LastName },
+          lastName: { 'en-US': lastName },
           email: { 'en-US': emailLowerCase },
-          uid: { 'en-US': user.uid },
+          userUid: { 'en-US': user.uid },
           registry: { 'en-US': new Date().toISOString() }
         }
       });
@@ -159,7 +159,7 @@ export const useAuth = () => {
       const environment = await space.getEnvironment('master');
 
       const entries = await environment.getEntries({
-        content_type: 'panaderaDelicias',
+        content_type: 'user',
         'fields.email': user.email?.toLowerCase(),
         limit: 1
       });

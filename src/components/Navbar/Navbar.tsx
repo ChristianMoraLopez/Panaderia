@@ -52,6 +52,8 @@ const Navbar: React.FC<NavbarProps> = ({
       } else {
         setVisible(true);
       }
+
+      setIsDarkBackground(currentScrollPos <= 100);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -67,16 +69,31 @@ const Navbar: React.FC<NavbarProps> = ({
     setIsNavOpen(!isNavOpen);
   };
 
+ 
   const NavLink: React.FC<NavLinkProps> = ({ href, textES, textEN, icon }) => {
     const isCustomIcon = typeof icon === 'string';
+    const isActive = pathname === href;
+    const isBuyLink = href === "/ProductGalleryPage";
+
+    const textColor = isBuyLink
+      ? isDarkBackground
+        ? "text-white !important"
+        : "text-black !important"
+      : isActive
+      ? "text-brown-600"
+      : isDarkBackground
+      ? "text-white"
+      : "text-brown-800";
+
+    const hoverColor = isDarkBackground
+      ? "group-hover:text-cream-100"
+      : "group-hover:text-brown-600";
 
     return (
       <Link href={href} passHref>
         <span
           className={`group flex flex-col items-center justify-center px-2 py-2 text-sm md:text-base lg:text-lg font-semibold w-full md:w-28 lg:w-36 h-20 md:h-24
-            ${pathname === href ? "text-brown-600" : "text-brown-800 hover:text-brown-600"}
-            transition-colors duration-300 cursor-pointer
-            ${isDarkBackground ? "text-white hover:text-cream-100" : ""}`}
+            transition-colors duration-300 cursor-pointer`}
         >
           {isCustomIcon ? (
             <Image
@@ -89,11 +106,13 @@ const Navbar: React.FC<NavbarProps> = ({
           ) : (
             <Icon
               icon={icon as LucideIcon}
-              className={`h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300
-                ${pathname === href ? "text-brown-600" : isDarkBackground ? "text-white" : "text-brown-800"}`}
+              className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300 text-brown-800"
             />
           )}
-          <span className="text-center w-full truncate">
+          <span 
+            className={`text-center w-full truncate ${textColor} ${isBuyLink ? '' : hoverColor}`}
+            style={{ color: isBuyLink ? (isDarkBackground ? 'white' : 'black') : '' }}
+          >
             {language === "es" ? textES : textEN}
           </span>
         </span>
@@ -101,20 +120,20 @@ const Navbar: React.FC<NavbarProps> = ({
     );
   };
 
+
   const logoSrc = isDarkBackground
     ? "/images/reshot-icon-bread white.png"
     : "/images/reshot-icon-bread.png";
-
-  return (
-    <nav
-      className={`fixed w-full z-50 transition-all duration-500 ease-in-out
-          ${isScrolled ? "bg-opacity-95 backdrop-blur-md" : "bg-opacity-0"}
-          ${isDarkBackground ? "bg-brown-800" : "bg-cream-100"}
-          ${visible ? "top-0" : "-top-36"}`}
-    >
+    return (
+      <nav
+        className={`fixed w-full z-50 transition-all duration-500 ease-in-out
+            ${isScrolled ? "bg-opacity-95 backdrop-blur-md" : "bg-opacity-0"}
+            ${isDarkBackground ? "bg-brown-800" : "bg-cream-100"}
+            ${visible ? "top-0" : "-top-36"}`}
+      >
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24 xl:h-36">
-        <Link href="/" passHref>
+          <Link href="/" passHref>
             <span className="flex-shrink-0 flex items-center h-full">
               <Image
                 className="h-auto w-auto transition-opacity duration-300 pt-16"
@@ -144,29 +163,26 @@ const Navbar: React.FC<NavbarProps> = ({
               </span>
             )}
 
-          <NavLink
-                href="/login"
-                textES="Iniciar Sesión"
-                textEN="Login"
-                icon="/images/login.svg"
-              />
-         <NavLink
-
-         
+            <NavLink
+              href="/login"
+              textES="Iniciar Sesión"
+              textEN="Login"
+              icon="/images/login.svg"
+            />
+            <NavLink
               href="/ProductGalleryPage"
               textES="Comprar"
               textEN="Buy"
               icon="/images/buy.svg"
             />
-
             <NavLink
-              href="/about-us"
+              href="/AboutUs"
               textES="Sobre Nosotros"
               textEN="About Us"
               icon="/images/about-us.svg"
             />
             <NavLink
-              href="/contact"
+              href="/ContactUsPage"
               textES="Contáctanos"
               textEN="Contact Us"
               icon="/images/ContactUs.svg"
@@ -176,7 +192,7 @@ const Navbar: React.FC<NavbarProps> = ({
               <Link href="/CheckOut">
                 <span className="relative inline-block">
                   <Basket
-                   className="h-16 w-16 mr-2"
+                   className="h-16 w-16 mr-2 text-brown-800"
                   />
                   {cartCount > 0 && (
                     <span className="absolute top-0 right-0 inline-flex items-center justify-center px-3 py-2 text-base font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
@@ -187,18 +203,14 @@ const Navbar: React.FC<NavbarProps> = ({
               </Link>
 
               <button
-              onClick={toggleLanguage}
-              className={`flex items-center justify-center px-6 py-4 text-xl font-bold w-44 h-28
-                  ${
-                    isDarkBackground
-                      ? "text-white hover:text-cream-100"
-                      : "text-brown-800 hover:text-brown-600"
-                  }
-                  transition-colors duration-300`}
-            >
-              <Globe className="h-8 w-8 mr-3" />
-              {language === "es" ? "EN" : "ES"}
-            </button>
+                onClick={toggleLanguage}
+                className={`flex items-center justify-center px-6 py-4 text-xl font-bold w-44 h-28
+                    ${isDarkBackground ? "text-white hover:text-cream-100" : "text-brown-800 hover:text-brown-600"}
+                    transition-colors duration-300`}
+              >
+                <Globe className="h-8 w-8 mr-3 text-brown-800" />
+                {language === "es" ? "EN" : "ES"}
+              </button>
             </div>
           </div>
           <div className="xl:hidden flex items-center space-x-4">
@@ -240,20 +252,21 @@ const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
       </div>
-      {/* Mobile menu */}
-      <div
+       {/* Mobile menu */}
+       <div
         className={`xl:hidden transition-all duration-300 ease-in-out
             ${isNavOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"}
-            overflow-hidden`}
+            overflow-hidden ${isDarkBackground ? "bg-brown-800" : "bg-cream-100"} bg-opacity-95 backdrop-blur-md`}
       >
-        <div className="px-4 pt-2 pb-3 space-y-4 sm:px-3 bg-cream-100 bg-opacity-95 backdrop-blur-md flex flex-col items-center">
+        <div className="px-4 pt-2 pb-3 space-y-4 sm:px-3 flex flex-col items-center">
           {user && (
-            <span className="block px-3 py-2 text-lg font-bold text-brown-800 text-center">
+            <span className={`text-2xl font-bold px-8 ${isDarkBackground ? "text-white" : "text-brown-800"}`}>
               {language === "es"
                 ? `Hola, ${user.displayName || user.email}`
                 : `Hello, ${user.displayName || user.email}`}
             </span>
           )}
+
           <NavLink
             href="/login"
             textES="Iniciar Sesión"
@@ -267,20 +280,21 @@ const Navbar: React.FC<NavbarProps> = ({
             icon="/images/buy.svg"
           />
           <NavLink
-            href="/about-us"
+            href="/AboutUs"
             textES="Sobre Nosotros"
             textEN="About Us"
             icon="/images/about-us.svg"
           />
           <NavLink
-            href="/contact"
+            href="/ContactUsPage"
             textES="Contáctanos"
             textEN="Contact Us"
             icon="/images/ContactUs.svg"
           />
           <Link href="/CheckOut" passHref>
-            <span className="group flex flex-col items-center justify-center px-2 py-2 text-sm md:text-base lg:text-lg font-semibold w-full h-20 md:h-24 text-brown-800 hover:text-brown-600 transition-colors duration-300">
-              <Basket className="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300" />
+            <span className={`group flex flex-col items-center justify-center px-2 py-2 text-sm md:text-base lg:text-lg font-semibold w-full h-20 md:h-24 transition-colors duration-300 
+              ${isDarkBackground ? "text-white hover:text-cream-100" : "text-brown-800 hover:text-brown-600"}`}>
+              <Basket className="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300 text-brown-800" />
               <span className="text-center w-full truncate">
                 {language === "es" ? "Carrito" : "Cart"}
                 {cartCount > 0 && (

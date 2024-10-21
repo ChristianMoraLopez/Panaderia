@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createClient } from 'contentful';
-import { ProductFields, ContentfulProductEntry } from '@/types/ProductTypes';
+import { WeeklyMenuFields, WeeklyMenuEntry } from '@/types/ContentfulTypes';
+
 
 // Configuración del cliente de Contentful
 const client = createClient({
@@ -11,7 +12,7 @@ const client = createClient({
 
 // Hook para obtener los productos
 export const useProducts = () => {
-  const [products, setProducts] = useState<ProductFields[] | null>(null);
+  const [products, setProducts] = useState<WeeklyMenuFields[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,10 +21,11 @@ export const useProducts = () => {
       try {
         
         // Aquí usamos 'ContentfulUserEntry' que está definido en tus tipos
-        const response = await client.getEntries<ContentfulProductEntry>({
-          content_type: 'productos', // Tipo de contenido de productos
+        const response = await client.getEntries<WeeklyMenuEntry>({
+          content_type: 'weeklyMenu', // Tipo de contenido de productos
          
         });
+
         console.log(response);
         // Verifica si hay productos en la respuesta
         if (response.items.length > 0) {

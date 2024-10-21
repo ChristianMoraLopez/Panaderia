@@ -5,22 +5,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Trash2, Plus, Minus, ShoppingCart, Loader2 } from 'lucide-react';
 import Navbar from '@/components/Navbar/Navbar';
+import Footer from '@/components/Footer/Footer';
 import { toast } from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
 
-// Extendemos el tipo CartItemType para incluir un hash único
 interface ExtendedCartItemType extends CartItemType {
   hash: string;
 }
 
 const CheckoutPage: React.FC = () => {
   const { items, itemsById, subTotal, count } = useCart();
-  const { addToCart, removeFromCart} = useCartMutations();
+  const { addToCart, removeFromCart } = useCartMutations();
   const [isProcessing, setIsProcessing] = useState(false);
   const [language, setLanguage] = useState<'es' | 'en'>('es');
   const router = useRouter();
 
-  // Convertimos los items del carrito a ExtendedCartItemType con hash único
   const extendedItems: ExtendedCartItemType[] = items.map(item => ({
     ...item,
     hash: uuidv4()
@@ -34,7 +33,6 @@ const CheckoutPage: React.FC = () => {
     }
   };
 
-  
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'es' ? 'en' : 'es');
   };
@@ -47,13 +45,13 @@ const CheckoutPage: React.FC = () => {
       }
     }
   };
+
   const handleCheckout = async () => {
     setIsProcessing(true);
     try {
       const purchaseId = uuidv4();
       const purchaseDate = new Date().toISOString();
 
-      // Guardamos la información de la compra en el localStorage antes de limpiar el carrito
       localStorage.setItem('currentPurchase', JSON.stringify({
         purchaseId,
         purchaseDate,
@@ -64,7 +62,7 @@ const CheckoutPage: React.FC = () => {
       }));
 
       setIsProcessing(false);
-      toast.success('¡Procesando tu pedido!', {
+      toast.success(language === 'es' ? '¡Procesando tu pedido!' : 'Processing your order!', {
         icon: '🎉',
         style: {
           borderRadius: '10px',
@@ -73,12 +71,11 @@ const CheckoutPage: React.FC = () => {
         },
       });
 
-      // Redirigir al usuario al formulario de envío sin limpiar el carrito
       router.push('/shipping');
 
     } catch (error) {
       setIsProcessing(false);
-      toast.error('Hubo un error al procesar tu compra. Por favor, intenta de nuevo.', {
+      toast.error(language === 'es' ? 'Hubo un error al procesar tu compra. Por favor, intenta de nuevo.' : 'There was an error processing your purchase. Please try again.', {
         icon: '❌',
         style: {
           borderRadius: '10px',
@@ -90,25 +87,30 @@ const CheckoutPage: React.FC = () => {
     }
   };
 
-  // Cálculo del impuesto y total
   const tax = subTotal * 0.1;
   const total = subTotal + tax;
 
-  // Función para obtener URL absoluta de imágenes
   const getAbsoluteImageUrl = (url: string) => {
     return url.startsWith('//') ? `https:${url}` : url;
   };
 
   return (
     <>
-       <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 pt-24">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl font-serif text-amber-800 text-center mb-8 font-bold">Tu Carrito</h1>
+      <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
+      <div className="min-h-screen bg-gradient-to-br from-[#F2BFBB] via-[#B7D3D3] to-[#D0D450] pt-24">
+        <div className="container mx-auto px-4 py-12">
+          <motion.h1 
+            className="text-5xl md:text-6xl lg:text-7xl font-black mb-12 tracking-tighter text-[#936DAD] text-center drop-shadow-lg"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            {language === 'es' ? 'Tu Carrito' : 'Your Cart'}
+          </motion.h1>
           {extendedItems.length === 0 ? (
-            <EmptyCart />
+            <EmptyCart language={language} />
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               <div className="lg:col-span-2">
                 <AnimatePresence>
                   {extendedItems.map((item) => (
@@ -118,6 +120,7 @@ const CheckoutPage: React.FC = () => {
                       handleQuantityChange={handleQuantityChange}
                       handleRemoveItem={handleRemoveItem}
                       getAbsoluteImageUrl={getAbsoluteImageUrl}
+                      language={language}
                     />
                   ))}
                 </AnimatePresence>
@@ -128,23 +131,25 @@ const CheckoutPage: React.FC = () => {
                 total={total}
                 isProcessing={isProcessing}
                 handleCheckout={handleCheckout}
+                language={language}
               />
             </div>
           )}
         </div>
       </div>
+      <Footer language={language} />
     </>
   );
 };
 
-const EmptyCart: React.FC = () => (
+const EmptyCart: React.FC<{ language: string }> = ({ language }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="text-center text-amber-700 text-xl"
+    className="text-center text-[#936DAD] text-2xl"
   >
-    <ShoppingCart size={64} className="mx-auto mb-4 text-amber-500" />
-    <p>Tu carrito está vacío</p>
+    <ShoppingCart size={80} className="mx-auto mb-6 text-[#936DAD]" />
+    <p>{language === 'es' ? 'Tu carrito está vacío' : 'Your cart is empty'}</p>
   </motion.div>
 );
 
@@ -153,32 +158,35 @@ interface CartItemProps {
   handleQuantityChange: (item: ExtendedCartItemType, change: number) => void;
   handleRemoveItem: (itemId: number) => void;
   getAbsoluteImageUrl: (url: string) => string;
+  language: string;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item, handleQuantityChange, handleRemoveItem, getAbsoluteImageUrl }) => (
+const CartItem: React.FC<CartItemProps> = ({ item, handleQuantityChange, handleRemoveItem, getAbsoluteImageUrl,  }) => (
   <motion.div
     key={item.hash}
-    className="bg-white rounded-lg shadow-md p-4 mb-4 flex items-center"
+    className="bg-white rounded-xl shadow-2xl p-6 mb-8 flex items-center group hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -20 }}
     transition={{ duration: 0.3 }}
   >
-    <Image
-      src={getAbsoluteImageUrl(item.image_url)}
-      alt={item.name}
-      width={80}
-      height={80}
-      className="rounded-md mr-4 object-cover"
-    />
-    <div className="flex-grow">
-      <h2 className="text-lg font-semibold text-amber-800">{item.name}</h2>
-      <p className="text-amber-600">${item.price.toFixed(2)}</p>
+    <div className="relative h-24 w-24 mr-6">
+      <Image
+        src={getAbsoluteImageUrl(item.image_url)}
+        alt={item.name}
+        layout="fill"
+        objectFit="cover"
+        className="rounded-lg transition-transform duration-300 transform group-hover:scale-110"
+      />
     </div>
-    <div className="flex items-center">
-      <QuantityButton onClick={() => handleQuantityChange(item, -1)} icon={<Minus size={16} />} />
-      <span className="mx-2 font-semibold">{item.quantity}</span>
-      <QuantityButton onClick={() => handleQuantityChange(item, 1)} icon={<Plus size={16} />} />
+    <div className="flex-grow">
+      <h2 className="text-2xl font-serif font-bold text-[#936DAD] mb-2">{item.name}</h2>
+      <p className="text-lg text-[#B6D3D2]">${item.price.toFixed(2)}</p>
+    </div>
+    <div className="flex items-center bg-[#F2BFBB]/20 rounded-full p-1">
+      <QuantityButton onClick={() => handleQuantityChange(item, -1)} icon={<Minus size={20} />} />
+      <span className="mx-4 font-bold text-xl text-[#936DAD]">{item.quantity}</span>
+      <QuantityButton onClick={() => handleQuantityChange(item, 1)} icon={<Plus size={20} />} />
     </div>
     <RemoveButton onClick={() => handleRemoveItem(item.id)} />
   </motion.div>
@@ -194,7 +202,7 @@ const QuantityButton: React.FC<ButtonProps> = ({ onClick, icon }) => (
     whileHover={{ scale: 1.1 }}
     whileTap={{ scale: 0.9 }}
     onClick={onClick}
-    className="p-1 rounded-full bg-amber-200 text-amber-800 hover:bg-amber-300 transition-colors duration-200"
+    className="p-2 rounded-full bg-[#B6D3D2] text-[#936DAD] hover:bg-[#D1D550] transition-colors duration-200"
   >
     {icon}
   </motion.button>
@@ -205,9 +213,9 @@ const RemoveButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
     whileHover={{ scale: 1.1 }}
     whileTap={{ scale: 0.9 }}
     onClick={onClick}
-    className="ml-4 p-2 text-red-500 hover:text-red-700 transition-colors duration-200"
+    className="ml-6 p-3 text-[#F2BFBB] hover:text-[#936DAD] transition-colors duration-200"
   >
-    <Trash2 size={20} />
+    <Trash2 size={24} />
   </motion.button>
 );
 
@@ -217,34 +225,37 @@ interface OrderSummaryProps {
   total: number;
   isProcessing: boolean;
   handleCheckout: () => Promise<void>;
+  language: string;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ subTotal, tax, total, isProcessing, handleCheckout }) => (
+const OrderSummary: React.FC<OrderSummaryProps> = ({ subTotal, tax, total, isProcessing, handleCheckout, language }) => (
   <div className="lg:col-span-1">
     <motion.div
-      className="bg-white rounded-lg shadow-md p-6"
+      className="bg-white rounded-xl shadow-2xl p-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
-      <h2 className="text-2xl font-semibold text-amber-800 mb-4">Resumen de la Orden</h2>
-      <SummaryItem label="Subtotal" value={subTotal} />
-      <SummaryItem label="Impuestos" value={tax} />
-      <SummaryItem label="Total" value={total} isTotal />
+      <h2 className="text-3xl font-serif font-bold text-[#936DAD] mb-6">
+        {language === 'es' ? 'Resumen de la Orden' : 'Order Summary'}
+      </h2>
+      <SummaryItem label={language === 'es' ? 'Subtotal' : 'Subtotal'} value={subTotal} />
+      <SummaryItem label={language === 'es' ? 'Impuestos' : 'Taxes'} value={tax} />
+      <SummaryItem label={language === 'es' ? 'Total' : 'Total'} value={total} isTotal />
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-full bg-amber-600 text-white py-3 rounded-full font-semibold hover:bg-amber-700 transition-colors duration-300 flex items-center justify-center"
+        className="w-full bg-[#936DAD] text-white py-4 rounded-full font-bold text-xl hover:bg-[#8A5EA3] transition-colors duration-300 flex items-center justify-center shadow-lg"
         onClick={handleCheckout}
         disabled={isProcessing}
       >
         {isProcessing ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Procesando...
+            <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+            {language === 'es' ? 'Procesando...' : 'Processing...'}
           </>
         ) : (
-          'Proceder al pago'
+          language === 'es' ? 'Proceder al pago' : 'Proceed to payment'
         )}
       </motion.button>
     </motion.div>
@@ -258,7 +269,7 @@ interface SummaryItemProps {
 }
 
 const SummaryItem: React.FC<SummaryItemProps> = ({ label, value, isTotal = false }) => (
-  <div className={`flex justify-between ${isTotal ? 'text-xl font-bold text-amber-800 mb-6' : 'mb-2'}`}>
+  <div className={`flex justify-between ${isTotal ? 'text-2xl font-bold text-[#936DAD] mb-8' : 'text-xl mb-4 text-[#B6D3D2]'}`}>
     <span>{label}:</span>
     <span>${value.toFixed(2)}</span>
   </div>

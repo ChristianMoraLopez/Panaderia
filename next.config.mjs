@@ -41,7 +41,12 @@ const nextConfig = {
       {
         source: '/product',
         destination: '/ProductGalleryPage', // Redirige a ProductGalleryPage.tsx
+      },
+      {
+        source: '/login',
+        destination: '/LoginPage', // Redirige a ProductPage.tsx
       }
+
     ];
   },
 };

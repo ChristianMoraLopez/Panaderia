@@ -205,7 +205,7 @@ const Profile = () => {
               Perfil de Salud
             </h2>
             <div className="space-y-3">
-              <p className="flex items-center"><Cake className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Nombre:</span> <span className="ml-2">{profile.name} {profile.LastName}</span></p>
+              <p className="flex items-center"><Cake className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Nombre:</span> <span className="ml-2">{profile.name} {profile.lastName}</span></p>
               <p className="flex items-center"><Calendar className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Fecha de Registro:</span> <span className="ml-2">{profile.registry ? new Date(profile.registry).toLocaleDateString() : 'Fecha no disponible'}</span></p>
               <p className="flex items-center"><Star className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Nivel de Bienestar:</span> <span className="ml-2">{healthLevel.level}</span></p>
               <p className="flex items-center"><Award className="w-5 h-5 mr-2 text-green-600" /> <span className="font-medium">Compras Saludables:</span> <span className="ml-2">{purchaseCount}</span></p>

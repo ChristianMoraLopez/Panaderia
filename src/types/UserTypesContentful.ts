@@ -1,7 +1,7 @@
 // Define el tipo para los campos del usuario
 export interface UserFields {
     name: string;           // Nombre del usuario
-    LastName: string;      // Apellido del usuario
+    lastName: string;      // Apellido del usuario
     email: string;         // Correo electrónico del usuario
     history: {             // Historial de enlaces del usuario
       sys: {               
@@ -11,7 +11,7 @@ export interface UserFields {
       };
     };
     registry: string;      // Fecha de registro
-    UserUID: string;       // UID del usuario
+    userUid: string;       // UID del usuario
   }
   
   // Define el tipo para el sistema del usuario

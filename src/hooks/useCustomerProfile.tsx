@@ -3,9 +3,9 @@ import { createClient } from 'contentful';
 import { UserFields } from '@/types/UserTypesContentful';
 
 const client = createClient({
-  space: 'tq4ckeil24qo',
-  environment: 'master',
-  accessToken: '1YhT6yLqrnyqL597WxZ6rEkc1griTNdrJuc1KhoQgDk',
+  space: 'lv8bddpr230t',
+  environment: 'master', // defaults to 'master' if not set
+  accessToken: 'omAfQfcQbXJgHi0H-i08tELMhwDgZ1uMQwDaPhQK50I'
 });
 
 export const useCustomerProfile = (email: string | null | undefined) => {
@@ -25,7 +25,7 @@ export const useCustomerProfile = (email: string | null | undefined) => {
 
     try {
       const entries = await client.getEntries({
-        content_type: 'panaderaDelicias',
+        content_type: 'user',
         'fields.email': email,
         limit: 1
       });

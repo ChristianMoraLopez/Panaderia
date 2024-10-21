@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.1.10",
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.8",
     "@sendgrid/mail": "^8.1.3",

@@ -27,7 +27,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   return (
     <div
       className={`sticky top-0 z-10 py-4 ${
-        isScrolled ? "backdrop-blur-md shadow-lg" : ""
+        isScrolled ? "backdrop-blur-md" : ""
       } transition-all duration-300`}
     >
       {/* Mobile view */}

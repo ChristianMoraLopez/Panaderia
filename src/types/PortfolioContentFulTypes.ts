@@ -4,7 +4,7 @@ import { Asset as ContentfulAsset } from 'contentful';
 // Define el tipo para los campos del usuario
 export interface UserFields {
   name: string; // Nombre del usuario
-  LastName: string; // Apellido del usuario
+  l: string; // Apellido del usuario
   email: string; // Correo electrónico del usuario
   history: {
     sys: {
