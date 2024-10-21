@@ -70,7 +70,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
               <div className="border-b border-blue-700 w-full mb-4" />
 
               <div className="flex flex-col items-center mb-4">
-                {['login', 'buy', 'about-us', 'contactUs'].map((key) => (
+                {['login', 'buy', 'about-us', 'ContactUs'].map((key) => (
                   <Link key={key} href={`/${key.toLowerCase()}`} passHref>
                     <span className="flex items-center mb-2 transition-all duration-300 ease-in-out hover:text-yellow-300 hover:scale-105">
                       <Image src={`/images/${key.toLowerCase()}.svg`} alt={t(key as keyof typeof translations.en)} width={24} height={24} className="mr-2" />
