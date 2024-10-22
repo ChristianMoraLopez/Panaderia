@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![BeeVoven Logo](https://ibb.co/KwnGvHr)
+![BeeVoven Logo](https://i.ibb.co/L5KP7fZ/reshot-icon-bread.png)
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
