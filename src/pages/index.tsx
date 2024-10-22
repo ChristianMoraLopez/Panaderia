@@ -117,7 +117,7 @@ const LuxuryBakeryHomepage = () => {
         animate={{ rotate: 360 }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
       >
-        <Image src="/images/SVG/LogoWithOutLetters.sgv" alt="Beev's oven" width={300} height={60} />
+        <Image src="/images/SVG/LogoWithOutLetters.svg" alt="Beev's oven" width={300} height={60} />
       </motion.div>
     </div>
   );
