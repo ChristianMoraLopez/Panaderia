@@ -53,60 +53,58 @@ const Profile = () => {
   const [purchaseCount, setPurchaseCount] = useState(0);
   const [language, setLanguage] = useState<'es' | 'en'>('es');
 
-  useEffect(() => {
-    const processContentfulHistory = () => {
-      if (!profile || !profile.history) return [];
-      
-      try {
-        return Object.entries(profile.history)
-          .map(([key, value]) => {
-            const historyItem = value as HistoryItem;
-            if ('fields' in historyItem) {
-              const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
-              const price = historyItem.fields.price['en-US'];
-              const imageUrl = historyItem.fields.image && historyItem.fields.image['en-US'] ? 
-                historyItem.fields.image['en-US'].sys.id : '';
-              
-              return {
-                id: key,
-                date: new Date().toISOString(),
-                items: [{
-                  id: parseInt(key),
-                  name: historyItem.fields.name['en-US'],
-                  price: price,
-                  quantity: quantity,
-                  image_url: imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl
-                }],
-                total: price * quantity
-              };
-            }
-            return null;
-          })
-          .filter((item): item is PurchaseHistoryItem => item !== null);
-      } catch (error) {
-        console.error("Error processing Contentful history:", error);
-        return [];
-      }
-    };
+  const processContentfulHistory = () => {
+    if (!profile || !profile.history) return [];
+    
+    try {
+      return Object.entries(profile.history)
+        .map(([key, value]) => {
+          const historyItem = value as HistoryItem;
+          if ('fields' in historyItem) {
+            const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
+            const price = historyItem.fields.price['en-US'];
+            const imageUrl = historyItem.fields.image && historyItem.fields.image['en-US'] ? 
+              historyItem.fields.image['en-US'].sys.id : '';
+            
+            return {
+              id: key,
+              date: new Date().toISOString(),
+              items: [{
+                id: parseInt(key),
+                name: historyItem.fields.name['en-US'],
+                price: price,
+                quantity: quantity,
+                image_url: imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl
+              }],
+              total: price * quantity
+            };
+          }
+          return null;
+        })
+        .filter((item): item is PurchaseHistoryItem => item !== null);
+    } catch (error) {
+      console.error("Error processing Contentful history:", error);
+      return [];
+    }
+  };
 
-    const fetchPurchaseHistory = () => {
+  useEffect(() => {
+    const updatePurchaseHistory = async () => {
       if (!user) {
-        // If no user is logged in, show empty history
         setPurchaseHistory([]);
         calculateHealthLevel(0);
         return;
       }
 
       if (profile) {
-        // Process only Contentful history for logged-in users
         const contentfulHistory = processContentfulHistory();
         setPurchaseHistory(contentfulHistory);
         calculateHealthLevel(contentfulHistory.length);
       }
     };
 
-    fetchPurchaseHistory();
-  }, [user, profile]);
+    updatePurchaseHistory();
+  }, [user, profile, refetch]); 
   
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'es' ? 'en' : 'es');
