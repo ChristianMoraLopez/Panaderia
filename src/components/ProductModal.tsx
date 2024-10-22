@@ -85,7 +85,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 {/* Logo */}
                 <div className="w-24 h-24 mb-6 mx-auto">
                   <Image
-                    src="/images/LogoWithOutLetters.svg"
+                    src="/images/SVG/LogoWithOutLetters.svg"
                     alt="Logo"
                     width={96}
                     height={96}
