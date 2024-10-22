@@ -55,7 +55,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 } hover:bg-opacity-90 transition-colors duration-200`}
                 onClick={() => handleCategoryClick(null)}
               >
-                Todas las Categorías
+                All Categories
               </button>
               {categories.map((category) => (
                 <button
@@ -90,7 +90,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           }`}
           onClick={() => setActiveCategory(null)}
         >
-          Todas las Categorías
+          All Categories
         </button>
         {categories.map((category) => (
           <button

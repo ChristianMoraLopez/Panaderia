@@ -8,6 +8,7 @@ import { ShoppingBag, Cake, Plus, Minus, MessageCircle, Instagram, Facebook } fr
 import Navbar from '@/components/Navbar/Navbar';
 import { useCart, useCartMutations } from '@/store/Cart';
 import Footer from '@/components/Footer/Footer';
+import ProductModal from '@/components/ProductModal';
 
 // Definimos un tipo para nuestras traducciones
 type Translations = {
@@ -49,7 +50,9 @@ const ProductGalleryPage: React.FC = () => {
   const { addToCart } = useCartMutations();
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [language, setLanguage] = useState<'es' | 'en'>('es');
-
+  const [selectedProduct, setSelectedProduct] = useState<ProductFields | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -103,6 +106,11 @@ const ProductGalleryPage: React.FC = () => {
     setCurrentSlide(index);
   };
 
+  const handleProductClick = (product : ProductFields) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
   // Función helper para obtener la traducción
   const t = (key: string) => translations[key][language];
 
@@ -145,7 +153,9 @@ const ProductGalleryPage: React.FC = () => {
                 objectFit="cover"
                 quality={100}
               />
+              
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
+              
             </motion.div>
           )}
         </AnimatePresence>
@@ -271,7 +281,10 @@ const ProductGalleryPage: React.FC = () => {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       style={{ backgroundColor: cardColor }}
                     >
-                      <div className="relative h-80">
+                      <div className="relative h-80 hover:h-96 cursor-pointer"
+                      
+                      onClick={() => handleProductClick(product)}
+                      >
                         <Image
                           src={imageUrl}
                           alt={product.name}
@@ -329,16 +342,27 @@ const ProductGalleryPage: React.FC = () => {
           )}
         </main>
         <Footer language={language} />
+      <ProductModal
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+  product={selectedProduct}
+  language={language}
+  addToCart={addToCart}
+/>
         </div>
       </>
+      
     );
   };
+
+  
   
   // Definición de tipos para las props de SocialButton
   interface SocialButtonProps {
     Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     href: string;
   }
+  
   
   // Componente SocialButton
   const SocialButton: React.FC<SocialButtonProps> = ({ Icon, href }) => (

@@ -182,12 +182,12 @@ const Navbar: React.FC<NavbarProps> = ({
               </span>
             )}
 
-            <NavLink
-              href="/login"
-              textES="Iniciar Sesión"
-              textEN="Login"
-              icon="/images/login.svg"
-            />
+<NavLink  
+    href={user ? "/profile" : "/login"}
+    textES={user ? "Perfil" : "Iniciar Sesión"}
+    textEN={user ? "Profile" : "Login"}
+    icon="/images/login.svg"
+  />
             <NavLink
               href="/ProductGalleryPage"
               textES="Comprar"
@@ -277,12 +277,12 @@ const Navbar: React.FC<NavbarProps> = ({
             </span>
           )}
 
-          <NavLink
-            href="/login"
-            textES="Iniciar Sesión"
-            textEN="Login"
-            icon="/images/login.svg"
-          />
+<NavLink
+    href={user ? "/profile" : "/login"}
+    textES={user ? "Perfil" : "Iniciar Sesión"}
+    textEN={user ? "Profile" : "Login"}
+    icon="/images/login.svg"
+  />
           <NavLink
             href="/ProductGalleryPage"
             textES="Comprar"
