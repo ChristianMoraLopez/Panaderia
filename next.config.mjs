@@ -31,8 +31,7 @@ const nextConfig = {
         hostname: 'videos.ctfassets.net',
       },
     ],
-  },
-  async rewrites() {
+  },async rewrites() {
     return [
       {
         source: '/shipping',
@@ -44,11 +43,13 @@ const nextConfig = {
       },
       {
         source: '/login',
-        destination: '/LoginPage', // Redirige a ProductPage.tsx
+        destination: '/LoginPage', // Redirige a LoginPage.tsx
+      },
+      {
+        source: '/profile',
+        destination: '/ProfilePage', // Redirige a ProfilePage.tsx
       }
-
     ];
   },
 };
-
 export default nextConfig;
