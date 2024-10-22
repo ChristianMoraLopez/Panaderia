@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![BeeVoven Logo](/images/SVG/LogoOnPurple.svg)
+![BeeVoven Logo](https://ibb.co/KwnGvHr)
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -10,179 +10,168 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
 
-🌟 Una tienda en línea artesanal para productos de panadería y repostería excepcionales 🥐
+🥐 Una experiencia única de panadería artesanal en línea 🥖
 
-[Ver Demo](https://beevoven.com) • [Reportar Bug](https://github.com/yourusername/beevoven/issues) • [Solicitar Feature](https://github.com/yourusername/beevoven/issues)
+[beevoven.com](https://beevoven.com) • [LinkedIn](https://linkedin.com/in/christianmora)
 
 </div>
 
+## 👨‍💻 Desarrollador
+
+<div align="center">
+
+### Christian Mora
+**Software Developer | Estudiante de Ingeniería de Software**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](www.linkedin.com/in/christian-moral)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ChristianMoraLopez/)
+
+</div>
+
+### Sobre mí
+Soy un desarrollador de software apasionado por crear experiencias web excepcionales. Actualmente cursando Ingeniería de Software, combino mis estudios académicos con el desarrollo de proyectos reales como BeeVoven.com.
+
+### Especialidades
+- 💻 Desarrollo Frontend con React y Next.js
+- 🎨 Diseño UI/UX con Tailwind CSS
+- 🔄 Integración de APIs y servicios
+- 📱 Desarrollo de aplicaciones responsive
+- 🛠️ Arquitectura de software
+
+### Educación
+- 📚 Ingeniería de Software (En curso)
+- 🎓 Certificaciones en desarrollo web moderno
+
+## 🌟 Sobre BeeVoven
+
+BeeVoven es más que una panadería en línea; es una plataforma que fusiona la tradición artesanal con la tecnología moderna. El proyecto nació de la pasión por crear una experiencia de compra excepcional para productos de panadería artesanal.
+
+### 🎯 Objetivo del Proyecto
+Desarrollar una plataforma e-commerce que:
+- Ofrezca una experiencia de usuario fluida y agradable
+- Mantenga la esencia artesanal de la panadería
+- Integre tecnologías modernas de forma seamless
+- Proporcione una gestión eficiente de pedidos
+
+### 🎨 Diseño y Experiencia
+- Paleta de colores cuidadosamente seleccionada
+- Animaciones fluidas con Framer Motion
+- Interfaz intuitiva y accesible
+- Diseño responsive optimizado
+
 ## ✨ Características
 
-- 🛒 Carrito de compras con persistencia local
-- 🔐 Autenticación y gestión de usuarios
-- 💳 Integración con pasarela de pagos
-- 📱 Diseño responsive y animaciones fluidas
-- 🌈 Tema personalizado y consistente
-- 📧 Notificaciones por correo electrónico
-- 🔍 Búsqueda y filtrado de productos
-- 📦 Seguimiento de pedidos
+- 🛒 Sistema de carrito avanzado
+  - Persistencia local de datos
+  - Actualización en tiempo real
+  - Gestión de cantidades
 
-## 🚀 Tecnologías
+- 🔐 Sistema de Autenticación
+  - Registro de usuarios
+  - Perfiles personalizados
+  - Historial de pedidos
 
-- **Frontend:**
-  - Next.js 14
-  - React 18
-  - TypeScript
-  - Tailwind CSS
-  - Framer Motion
-  - Lucide Icons
-  - Shadcn/UI
+- 💳 Proceso de Pago
+  - Integración segura de pagos
+  - Múltiples métodos de pago
+  - Confirmaciones automáticas
 
-- **Backend:**
-  - Contentful CMS
-  - Node.js
-  - Next.js API Routes
+- 📱 Experiencia Mobile-First
+  - Diseño responsive
+  - Optimización de rendimiento
+  - Navegación intuitiva
 
-- **Testing:**
-  - Jest
-  - React Testing Library
+## 🚀 Stack Tecnológico
 
-## 📦 Instalación
-
-1. Clona el repositorio:
-```bash
-git clone https://github.com/yourusername/beevoven.git
+### Frontend
+```typescript
+const frontendStack = {
+  framework: 'Next.js 14',
+  language: 'TypeScript',
+  styling: 'Tailwind CSS',
+  animation: 'Framer Motion',
+  components: 'Shadcn/UI',
+  icons: 'Lucide Icons',
+}
 ```
 
-2. Instala las dependencias:
+### Backend
+```typescript
+const backendStack = {
+  cms: 'Contentful',
+  serverless: 'Vercel',
+  api: 'Next.js API Routes',
+  database: 'MongoDB',
+}
+```
+
+### DevOps
+```typescript
+const devOpsStack = {
+  hosting: 'Vercel',
+  versionControl: 'Git',
+  ci_cd: 'GitHub Actions',
+  monitoring: 'Vercel Analytics',
+}
+```
+
+## 📦 Instalación y Configuración
+
+1. Clonar el repositorio:
+```bash
+git clone https://github.com/christianmora/beevoven.git
+```
+
+2. Instalar dependencias:
 ```bash
 cd beevoven
 npm install
 ```
 
-3. Configura las variables de entorno:
+3. Configurar variables de entorno:
 ```bash
 cp .env.example .env.local
 ```
 
-4. Inicia el servidor de desarrollo:
+4. Iniciar el servidor de desarrollo:
 ```bash
 npm run dev
 ```
 
 ## 🔧 Variables de Entorno
 
-Para ejecutar este proyecto, necesitarás añadir las siguientes variables de entorno a tu archivo `.env.local`:
-
 ```env
 # Contentful
-CONTENTFUL_SPACE_ID=tu_space_id
-CONTENTFUL_ACCESS_TOKEN=tu_access_token
-CONTENTFUL_PREVIEW_ACCESS_TOKEN=tu_preview_token
+CONTENTFUL_SPACE_ID=
+CONTENTFUL_ACCESS_TOKEN=
 
-# Email
-SMTP_HOST=tu_smtp_host
-SMTP_PORT=tu_smtp_port
-SMTP_USER=tu_smtp_user
-SMTP_PASSWORD=tu_smtp_password
+# Email Service
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASSWORD=
 
-# Pasarela de Pagos
-PAYMENT_API_KEY=tu_api_key
-PAYMENT_SECRET_KEY=tu_secret_key
+# Payment Gateway
+PAYMENT_API_KEY=
+PAYMENT_SECRET_KEY=
 ```
 
-## 📚 Estructura del Proyecto
+## 📞 Contacto
 
-```
-beevoven/
-├── components/           # Componentes React reutilizables
-├── hooks/               # Custom hooks
-├── pages/               # Páginas y rutas de la aplicación
-├── public/              # Archivos estáticos
-├── styles/              # Estilos globales y configuración de Tailwind
-├── types/               # Definiciones de tipos TypeScript
-├── utils/               # Funciones utilitarias
-└── store/              # Estado global de la aplicación
-```
+Para consultas sobre el proyecto o colaboraciones profesionales:
 
-## 🔒 Tipos TypeScript
-
-### Interfaces Principales
-
-```typescript
-interface ProductFields {
-  name: string;
-  description: string;
-  price: number;
-  image: {
-    fields: {
-      file: {
-        url: string;
-      };
-    };
-  };
-  category: string;
-}
-
-interface CartItem {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image_url: string;
-  quantity: number;
-}
-
-interface ProductModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  product: ProductFields | null;
-  language: 'es' | 'en';
-  addToCart: (item: CartItem) => void;
-}
-
-interface ProductDetails {
-  name: string;
-  price: number;
-  description: string;
-  imageId: string;
-  quantity: number;
-}
-```
-
-## 🤝 Contribuir
-
-1. Fork el proyecto
-2. Crea tu Feature Branch:
-```bash
-git checkout -b feature/AmazingFeature
-```
-3. Commit tus cambios:
-```bash
-git commit -m 'feat: Add some AmazingFeature'
-```
-4. Push a la Branch:
-```bash
-git push origin feature/AmazingFeature
-```
-5. Abre un Pull Request
+- 📧 Email: christianmora@example.com
+- 💼 LinkedIn: [Christian Mora](www.linkedin.com/in/christian-moral)
+- 🌐 Portfolio: [christianmora.dev](https://christianmoralopez.github.io/)
 
 ## 📄 Licencia
 
 Este proyecto está bajo la licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
 
-## 📞 Contacto
+---
 
-BeeVoven Bakery - [@beevoven](https://twitter.com/beevoven)
+<div align="center">
 
-Email: contacto@beevovenbakery.com
+Desarrollado con 💜 por [Christian Mora](https://linkedin.com/in/christianmora)
 
-Teléfono: +1 (786) 280-0961
-
-## 🙏 Agradecimientos
-
-- [Next.js](https://nextjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Contentful](https://www.contentful.com/)
-- [Shadcn/UI](https://ui.shadcn.com/)
+</div>
