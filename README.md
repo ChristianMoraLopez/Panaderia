@@ -12,7 +12,7 @@
 
 🥐 Una experiencia única de panadería artesanal en línea 🥖
 
-[beevoven.com](https://beevoven.com) • [LinkedIn](https://linkedin.com/in/christianmora)
+[beevoven.com](https://beevsoven.com) • [LinkedIn](https://linkedin.com/in/christianmora)
 
 </div>
 
