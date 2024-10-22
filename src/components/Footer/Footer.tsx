@@ -59,12 +59,16 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
             <div className="border-l border-purple-700 mx-4" />
             <div className="flex flex-col items-center flex-grow">
               <div className="flex items-center mb-2">
-                <Phone className="w-5 h-5 mr-2" />
-                <span>+1 (786) 376-6883</span>
+              <a href="tel:+17862800961" className="flex items-center text-xl hover:text-[#8D4C91] transition duration-300">
+                    <Phone className="w-6 h-6 mr-4" />
+                    +1 (786) 280-0961
+                  </a>
               </div>
               <div className="flex items-center mb-4">
-                <Mail className="w-5 h-5 mr-2" />
-                <span>info@beevsoven.com</span>
+              <a href="mailto:contacto@beevsoven.com" className="flex items-center text-xl hover:text-[#8D4C91] transition duration-300">
+                    <Mail className="w-6 h-6 mr-4" />
+                    contacto@beevsoven.com
+                  </a>
               </div>
 
               <div className="border-b border-blue-700 w-full mb-4" />
