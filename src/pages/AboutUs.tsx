@@ -165,7 +165,7 @@ interface AboutUsPageProps {
     };
   
     return (
-      <div className="bg-gradient-to-br pt-36 from-[#8D4C91] to-[#6A3B6E] min-h-screen text-white">
+      <div className="bg-gradient-to-br from-[#8D4C91] to-[#6A3B6E] min-h-screen text-white">
         <Navbar cartCount={cartCount} language={language} toggleLanguage={toggleLanguage} />
 
 
