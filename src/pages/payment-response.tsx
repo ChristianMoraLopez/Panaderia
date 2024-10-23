@@ -20,74 +20,85 @@ const PaymentResponse = () => {
   const [status, setStatus] = useState<'success' | 'failure' | 'loading'>('loading');
   const { user, updatePurchaseHistory } = useAuth();
   const { clearCart } = useCartMutations();
-  const [emailSent, setEmailSent] = useState(false);
+  const [processingOrder, setProcessingOrder] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     const handlePaymentResponse = async () => {
-      if (router.isReady) {
-        const { transactionState } = router.query;
+      // Only proceed if router is ready and we're not already processing an order
+      if (!router.isReady || processingOrder) return;
+
+      const { transactionState } = router.query;
+      
+      if (transactionState === '4') {
+        setStatus('success');
+        setShowConfetti(true);
         
-        if (transactionState === '4') {
-          setStatus('success');
-          setShowConfetti(true);
-          const pendingOrderString = localStorage.getItem('pendingOrder');
+        const pendingOrderString = localStorage.getItem('pendingOrder');
+        
+        if (pendingOrderString && !processingOrder) {
+          setProcessingOrder(true); // Set processing flag to prevent multiple executions
           
-          if (pendingOrderString && !emailSent) {
-            const pendingOrder = JSON.parse(pendingOrderString);
-            
-            try {
-              const completeAddress = `${pendingOrder.address || ''}, ${pendingOrder.city || ''}, ${pendingOrder.state || ''}, ${pendingOrder.zipCode || ''}`.trim();
-              
-              const emailResponse = await fetch('/api/sendMail', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  ...pendingOrder,
-                  address: completeAddress
-                }),
-              });
+          const pendingOrder = JSON.parse(pendingOrderString);
+          
+          try {
+            // Send email only once
+            const emailResponse = await fetch('/api/sendMail', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fullName: pendingOrder.customerName,
+                email: pendingOrder.customerEmail,
+                phone: pendingOrder.phoneNumber,
+                address1: pendingOrder.address1,
+                address2: pendingOrder.address2,
+                city: pendingOrder.city,
+                state: pendingOrder.state,
+                zipCode: pendingOrder.zipCode,
+                orderDetails: pendingOrder.orderDetails,
+                totalAmount: pendingOrder.total
+              }),
+            });
 
-              if (!emailResponse.ok) {
-                throw new Error('Error al enviar el correo electrónico');
-              }
-
-              setEmailSent(true);
-
-              if (user) {
-                for (const item of pendingOrder.orderDetails) {
-                  const productDetails: ProductDetails = {
-                    name: item.name,
-                    price: item.price,
-                    quantity: item.quantity,
-                    description: item.description,
-                    imageId: item.image_url
-                  };
-                  await updatePurchaseHistory(pendingOrder.purchaseId, productDetails);
-                }
-              } else {
-                const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
-                localPurchaseHistory.push(pendingOrder);
-                localStorage.setItem('purchaseHistory', JSON.stringify(localPurchaseHistory));
-              }
-
-              clearCart();
-              localStorage.removeItem('pendingOrder');
-              toast.success('¡Compra realizada con éxito!');
-            } catch (error) {
-              console.error('Error al procesar la respuesta del pago:', error);
-              toast.error('Hubo un error al finalizar tu compra. Por favor, contacta con soporte.');
+            if (!emailResponse.ok) {
+              throw new Error('Error al enviar el correo electrónico');
             }
+
+            // Update purchase history
+            if (user) {
+              for (const item of pendingOrder.orderDetails) {
+                const productDetails: ProductDetails = {
+                  name: item.name,
+                  price: item.price,
+                  quantity: item.quantity,
+                  description: item.description,
+                  imageId: item.image_url
+                };
+                await updatePurchaseHistory(pendingOrder.purchaseId, productDetails);
+              }
+            } else {
+              const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
+              localPurchaseHistory.push(pendingOrder);
+              localStorage.setItem('purchaseHistory', JSON.stringify(localPurchaseHistory));
+            }
+
+            // Clean up
+            clearCart();
+            localStorage.removeItem('pendingOrder');
+            toast.success('¡Compra realizada con éxito!');
+          } catch (error) {
+            console.error('Error al procesar la respuesta del pago:', error);
+            toast.error('Hubo un error al finalizar tu compra. Por favor, contacta con soporte.');
           }
-        } else if (transactionState === '6' || transactionState === '104') {
-          setStatus('failure');
-          toast.error('El pago no pudo ser procesado. Por favor, intenta nuevamente.');
         }
+      } else if (transactionState === '6' || transactionState === '104') {
+        setStatus('failure');
+        toast.error('El pago no pudo ser procesado. Por favor, intenta nuevamente.');
       }
     };
 
     handlePaymentResponse();
-  }, [router.isReady, router.query, user, updatePurchaseHistory, clearCart, emailSent]);
+  }, [router.isReady, router.query, user, updatePurchaseHistory, clearCart, processingOrder]);
 
   const renderContent = () => {
     return (
@@ -176,11 +187,11 @@ const PaymentResponse = () => {
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
               <motion.a
                 whileHover={{ scale: 1.05 }}
-                href="mailto:contacto@beevovenbakery.com"
+                href="mailto:info@beevsoven.com"
                 className="flex items-center justify-center bg-[#B6D3D2] text-white py-3 px-6 rounded-full"
               >
                 <Mail className="w-5 h-5 mr-2" />
-                contacto@beevovenbakery.com
+                info@beevsoven.com
               </motion.a>
               <motion.a
                 whileHover={{ scale: 1.05 }}

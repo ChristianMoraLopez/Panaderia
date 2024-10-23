@@ -27,13 +27,13 @@ const RegisterPage: React.FC = () => {
     name: '',
     lastName: '',
     email: '',
-    password: ''
+    password: '',
   });
   const [isRegistering, setIsRegistering] = useState(false);
+  const [randomProduct, setRandomProduct] = useState<Product | null>(null);
   const { registerUser, error } = useAuth();
   const router = useRouter();
   const { products } = useProducts();
-  const [randomProduct, setRandomProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     if (products && products.length > 0) {
@@ -44,7 +44,7 @@ const RegisterPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({ ...prevState, [name]: value }));
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +54,7 @@ const RegisterPage: React.FC = () => {
       await registerUser(formData);
       router.push('/ProfilePage');
     } catch (err) {
-      // El error ya se maneja en el hook
+      // Error is handled in the hook
     } finally {
       setIsRegistering(false);
     }
@@ -87,7 +87,9 @@ const RegisterPage: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="absolute inset-0 bg-purple-600 opacity-70"></div>
+
+      <div className="absolute inset-0 bg-purple-600 opacity-70" />
+
       <Image
         src="/images/SVG/LogoTransparent.svg"
         alt="Logo"
@@ -95,6 +97,7 @@ const RegisterPage: React.FC = () => {
         height={600}
         className="absolute top-4 right-4 z-10 opacity-30 hidden lg:block"
       />
+
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
@@ -119,7 +122,7 @@ const RegisterPage: React.FC = () => {
               height={100}
               className="mr-4"
             />
-            <div className="h-12 w-px bg-white mx-4"></div>
+            <div className="h-12 w-px bg-white mx-4" />
             <div className="flex-1 flex flex-col justify-center items-center">
               <motion.h2 
                 className="text-3xl font-extrabold text-white"
@@ -134,17 +137,17 @@ const RegisterPage: React.FC = () => {
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 1, repeat: Infinity }}
                   className="w-3 h-3 rounded-full bg-[#936DAD]"
-                ></motion.div>
+                />
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 1, delay: 0.3, repeat: Infinity }}
                   className="w-3 h-3 rounded-full bg-[#B6D3D2]"
-                ></motion.div>
+                />
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 1, delay: 0.6, repeat: Infinity }}
                   className="w-3 h-3 rounded-full bg-[#F3BEB6]"
-                ></motion.div>
+                />
               </div>
             </div>
           </motion.div>
@@ -164,6 +167,7 @@ const RegisterPage: React.FC = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               {inputFields.map((field, index) => (
                 <motion.div 
@@ -195,6 +199,7 @@ const RegisterPage: React.FC = () => {
                   </div>
                 </motion.div>
               ))}
+
               <motion.div 
                 whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }}
@@ -229,7 +234,10 @@ const RegisterPage: React.FC = () => {
         >
           <p className="text-white text-sm">
             ¿Ya tienes una cuenta?{' '}
-            <Link href="/login" className="font-semibold text-[#D1D500] hover:text-purple-800 transition duration-300">
+            <Link 
+              href="/login" 
+              className="font-semibold text-[#D1D500] hover:text-purple-800 transition duration-300"
+            >
               Inicia sesión aquí
             </Link>
           </p>

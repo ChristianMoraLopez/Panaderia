@@ -5,7 +5,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   User,
-  updateProfile
+  updateProfile,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import { createClient } from 'contentful-management';
 import { setPersistence, browserSessionPersistence } from "firebase/auth";
@@ -212,5 +213,25 @@ export const useAuth = () => {
     }
   };
 
-  return { user, loading, error, login, logout, registerUser, updatePurchaseHistory };
+ 
+// Añadir esta función dentro del hook useAuth
+const resetPassword = async (email: string) => {
+  setLoading(true);
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return true;
+  } catch (err) {
+    if (err instanceof Error) {
+      setError(err.message);
+    } else {
+      setError('An unknown error occurred during password reset');
+    }
+    throw err;
+  } finally {
+    setLoading(false);
+  }
 };
+
+// Añadir resetPassword al return del hook
+return { user, loading, error, login, logout, registerUser, updatePurchaseHistory, resetPassword }
+}

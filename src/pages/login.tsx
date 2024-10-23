@@ -1,3 +1,4 @@
+// LoginPage.tsx
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -255,6 +256,17 @@ const LoginPage = () => {
                   </motion.p>
                 )}
               </div>
+
+              {/* Enlace para restablecer contraseña */}
+              <div className="flex justify-end">
+                <Link
+                  href="/reset-password"
+                  className="text-sm text-purple-600 hover:text-purple-800 transition-colors"
+                >
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
+
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   type="submit"

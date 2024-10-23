@@ -72,14 +72,17 @@ const ShippingForm: React.FC = () => {
 
     const purchaseId = uuidv4();
     
-    // Crear el objeto de orden completo
+
     const orderData = {
       purchaseId,
-      fullName: formData.fullName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
+      customerName: formData.fullName,    // Cambiado de fullName
+      customerEmail: formData.email,      // Cambiado de email
+      phoneNumber: formData.phone,        // Cambiado de phone
+      address1: formData.address,         // Cambiado de address
+      address2: '',                       // Nuevo campo
       city: formData.city,
+      state: '',                         // Nuevo campo
+      zipCode: '',                       // Nuevo campo
       documentType: formData.documentType,
       documentNumber: formData.documentNumber,
       orderDetails: items.map(item => ({
@@ -90,7 +93,7 @@ const ShippingForm: React.FC = () => {
         description: item.description,
         image_url: item.image_url
       })),
-      totalAmount: subTotal,
+      total: subTotal,                    // Cambiado de totalAmount
     };
 
     // Guardar la orden en localStorage

@@ -34,71 +34,89 @@ const sendMail = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const orderData: OrderData = req.body;
 
+  // Construir la dirección completa
+  const fullAddress = [
+    orderData.address1,
+    orderData.address2,
+    orderData.city,
+    orderData.state,
+    orderData.zipCode
+  ].filter(Boolean).join(', ');
+
   const orderItemsHtml = orderData.orderDetails.map((item: OrderItem) => `
     <tr>
-      <td>${item.name}</td>
-      <td>${item.quantity}</td>
-      <td>$${item.price.toFixed(2)}</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${item.name}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${item.price.toFixed(2)}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${(item.quantity * item.price).toFixed(2)}</td>
     </tr>
   `).join('');
 
   const emailContent = `
-    <h3>Detalles del pedido</h3>
-    <p><strong>Nombre Completo:</strong> ${orderData.fullName}</p>
-    <p><strong>Correo Electrónico:</strong> ${orderData.email}</p>
-    <p><strong>Teléfono:</strong> ${orderData.phone}</p>
-    <p><strong>Dirección 1:</strong> ${orderData.address1}</p>
-    <p><strong>Dirección 2:</strong> ${orderData.address2 || 'N/A'}</p>
-    <p><strong>Ciudad:</strong> ${orderData.city}</p>
-    <p><strong>Estado:</strong> ${orderData.state}</p>
-    <p><strong>Código Postal:</strong> ${orderData.zipCode}</p>
-    <h4>Artículos del pedido:</h4>
-    <table border="1" cellpadding="5" cellspacing="0">
-      <tr>
-        <th>Producto</th>
-        <th>Cantidad</th>
-        <th>Precio</th>
-      </tr>
-      ${orderItemsHtml}
-    </table>
-    <p><strong>Total:</strong> $${orderData.totalAmount.toFixed(2)}</p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #936DAD;">Detalles del pedido</h2>
+      
+      <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <h3 style="color: #936DAD; margin-top: 0;">Información del cliente:</h3>
+        <p><strong>Nombre:</strong> ${orderData.fullName}</p>
+        <p><strong>Email:</strong> ${orderData.email}</p>
+        <p><strong>Teléfono:</strong> ${orderData.phone}</p>
+        <p><strong>Dirección completa:</strong> ${fullAddress}</p>
+      </div>
+
+      <h3 style="color: #936DAD;">Productos:</h3>
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr style="background-color: #936DAD; color: white;">
+          <th style="padding: 8px; text-align: left;">Producto</th>
+          <th style="padding: 8px; text-align: center;">Cantidad</th>
+          <th style="padding: 8px; text-align: right;">Precio</th>
+          <th style="padding: 8px; text-align: right;">Subtotal</th>
+        </tr>
+        ${orderItemsHtml}
+        <tr style="background-color: #f9f9f9; font-weight: bold;">
+          <td colspan="3" style="padding: 8px; text-align: right;">Total:</td>
+          <td style="padding: 8px; text-align: right;">$${orderData.totalAmount.toFixed(2)}</td>
+        </tr>
+      </table>
+    </div>
   `;
 
-  const msg = {
-    to: 'beevsovenbakery@outlook.com',
-    from: 'beevsovenbakery@outlook.com', // Asegúrate de que este correo esté verificado en SendGrid
-    subject: `Nuevo pedido de ${orderData.fullName}`,
-    html: emailContent,
-  };
-
   try {
-    await sendgrid.send(msg);
-    
+    // Enviar correo a la tienda
+    await sendgrid.send({
+      to: 'info@beevsoven.com',
+      from: 'confirmation@beevsoven.com',
+      subject: `Nuevo pedido de ${orderData.fullName}`,
+      html: emailContent,
+    });
+
     // Enviar correo al cliente
-    const clientMsg = {
-      to: [orderData.email, 'beevsovenbakery@outlook.com'],
-      from: 'beevsovenbakery@outlook.com', // Asegúrate de que este correo esté verificado en SendGrid
+    await sendgrid.send({
+      to: orderData.email,
+      from: 'confirmation@beevsoven.com',
       subject: 'Confirmación de tu pedido en BeevsovenBakery',
       html: `
-        <h2>¡Gracias por tu pedido!</h2>
-        <p>Hemos recibido tu pedido y lo estamos procesando. Aquí están los detalles:</p>
-        ${emailContent}
-        <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-        <p>¡Gracias por elegir BeevsovenBakery!</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #936DAD;">¡Gracias por tu pedido!</h2>
+          <p>Hemos recibido tu pedido y lo estamos procesando. Aquí están los detalles:</p>
+          ${emailContent}
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+            <p>Si tienes alguna pregunta, no dudes en contactarnos:</p>
+            <p>Email: info@beevsoven.com</p>
+            <p>Teléfono: +1 (786) 280-0961</p>
+          </div>
+        </div>
       `,
-    };
-    
-    await sendgrid.send(clientMsg);
+    });
 
     return res.status(200).json({ success: true });
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('Error details:', error.message);
-      return res.status(500).json({ success: false, error: 'Error al enviar el correo', details: error.message });
-    } else {
-      console.error('Error details:', error);
-      return res.status(500).json({ success: false, error: 'Error inesperado' });
-    }
+    console.error('Error details:', error instanceof Error ? error.message : error);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error al enviar el correo',
+      details: error instanceof Error ? error.message : 'Error inesperado'
+    });
   }
 };
 
