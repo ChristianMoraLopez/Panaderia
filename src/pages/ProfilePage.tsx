@@ -256,7 +256,7 @@ const Profile = () => {
           <ShoppingBag className="w-12 h-12 text-white mx-auto mb-4" />
           <p className="text-white font-semibold body-font">{t.noPurchases}</p>
           <Link 
-            href="/GalleryPage" 
+            href="/ProductGalleryPage" 
             className="mt-4 inline-block bg-[#926cad] hover:bg-[#7d5c94] text-white font-bold py-2 px-4 rounded transition duration-300 body-font"
           >
             {t.exploreMenu}

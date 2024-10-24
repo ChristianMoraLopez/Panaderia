@@ -30,7 +30,7 @@ const LearnMore: React.FC<LearnMoreProps> = ({ language }) => {
     { 
       title: t.videos, 
       image: '/images/galletas.jpg',
-      link: 'https://www.instagram.com/beevsoven/reels/'
+      link: 'https://www.tiktok.com/@beevsoven?_t=8qekMoITjKc&_r=1'
     },
     { 
       title: t.recipes, 

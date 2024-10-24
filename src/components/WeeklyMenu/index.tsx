@@ -83,15 +83,10 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
                 </div>
                 
                 {/* Content wrapper */}
-                <div className="absolute inset-0 flex flex-col md:flex-row">
+                <div className="absolute inset-0 mt-64 flex flex-col md:flex-row">
                     {/* Left side content */}
                     <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col justify-end text-white">
-                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4 title-font">
-                            {currentMenu.title}
-                        </h3>
-                        <p className="text-xl sm:text-2xl font-semibold sharp-font">
-                            ${currentMenu.price.toFixed(2)}
-                        </p>
+                       
                     </div>
 
                     {/* Colored Circles as division */}
@@ -102,24 +97,25 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
                                 whileHover={{ scale: 1.2 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => setCurrentIndex(index)}
-                                className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full cursor-pointer transition-all duration-300 ${
-                                    currentIndex === index ? 'ring-2 ring-white ring-offset-1' : ''
+                                className={`w-8 h-8 sm:w-8 sm:h-8 rounded-full cursor-pointer transition-all duration-300 ${
+                                    currentIndex === index ? '' : ''
                                 }`}
                                 style={{ backgroundColor: colors[index % colors.length] }}
                             />
                         ))}
                     </div>
 
-                    {/* Right side content (description) */}
-                    <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex items-center">
-                        <div className="bg-black/40 p-4 sm:p-6 rounded-lg text-white w-full">
-                            <ul className="text-sm sm:text-base md:text-lg body-font">
-                                {currentMenu.description.split(',').map((item, index) => (
-                                    <li key={index} className="mb-2">{item.trim()}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
+         {/* Right side content (description) */}
+<div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex items-center">
+    <div className="p-4 sm:p-6 rounded-lg text-white w-full">
+        <ul className="text-lg sm:text-xl md:text-2xl body-font">
+            {currentMenu.description.split(',').map((item, index) => (
+                <li key={index} className="mb-3">{item.trim()}</li> 
+            ))}
+        </ul>
+    </div>
+</div>
+
                 </div>
             </div>
         </div>

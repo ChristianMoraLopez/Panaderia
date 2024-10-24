@@ -61,6 +61,18 @@ const ProductGalleryPage: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (products) {
+        setCurrentSlide((prev) => (prev + 1) % products.length);
+      }
+    }, 10000); // Cambia cada 5 segundos
+
+    return () => clearInterval(timer); // Limpia el timer cuando el componente se desmonta
+  }, [products]);
+
+
   useEffect(() => {
     if (products) {
       setFilteredProducts(
@@ -122,17 +134,17 @@ const ProductGalleryPage: React.FC = () => {
     <>
       <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
 
-      {/* WhatsApp Button */}
-      <motion.a
-        href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors body-font"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        <MessageCircle className="w-6 h-6" />
-      </motion.a>
+       {/* WhatsApp Button */}
+<motion.a
+  href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="fixed bottom-6 right-6 z-50 bg-white/20 text-white p-4 rounded-full shadow-lg hover:bg-white/30 backdrop-blur-sm transition-colors"
+  whileHover={{ scale: 1.1 }}
+  whileTap={{ scale: 0.9 }}
+>
+  <MessageCircle className="w-12 h-12" />
+</motion.a>
 
       {/* Main Slider Section */}
       <section className="h-screen relative overflow-hidden">
@@ -162,17 +174,27 @@ const ProductGalleryPage: React.FC = () => {
 
         {/* Social Media Buttons */}
         <div className="absolute left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
-          <SocialButton Icon={Instagram} href="https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA==" />
-          <SocialButton Icon={Facebook} href="https://www.facebook.com/profile.php?id=61566809876928" />
-          <SocialButton 
-            Icon={() => (
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
-              </svg>
-            )} 
-            href="https://www.tiktok.com/@beevsoven?_t=8qekMoITjKc&_r=1" 
-          />
-        </div>
+  <SocialButton Icon={Instagram} href="https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA==" />
+  <SocialButton Icon={Facebook} href="https://www.facebook.com/profile.php?id=61566809876928" />
+  <motion.a
+    href="https://www.tiktok.com/@beevsoven?_t=8qekMoITjKc&_r=1"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-white/20 p-2 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors"
+    whileHover={{ scale: 1.1 }}
+    whileTap={{ scale: 0.9 }}
+  >
+    <svg 
+      className="w-6 h-6" 
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"
+        fill="white"
+      />
+    </svg>
+  </motion.a>
+</div>
 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center z-10 px-4">
@@ -220,30 +242,28 @@ const ProductGalleryPage: React.FC = () => {
           ))}
         </div>
       </section>
-
-      {/* Main content */}
-      <div className="min-h-screen  pt-20">
-        <div className={`sticky top-20 z-10 bg-[#F2BFBB] transition-all duration-300 ${
-          isScrolled ? 'shadow-lg' : ''
-        }`}>
-          <div className="container mx-auto px-4 py-6">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="text-white px-8 py-4  text-2xl font-bold  transition-all duration-300 mb-8 mx-auto block"
-            >
-              <span className="bg-[#886AA6] px-4 py-2 super-rounded title-font">
-                {t('makeOrder')}
-              </span>
-            </motion.button>
-            <CategoryFilter
-              categories={categories}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
-              isScrolled={isScrolled}
-            />
-          </div>
-        </div>
+{/* Main content */}
+<div className="min-h-screen pt-20">
+  <div className="bg-[#F2BFBB] transition-all duration-300 mb-8"> {/* Removed sticky positioning */}
+    <div className="container mx-auto px-4 py-6">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="text-white px-8 py-4 text-2xl font-bold transition-all duration-300 mb-8 mx-auto block"
+      >
+        <span className="bg-[#886AA6] px-4 py-2 super-rounded title-font">
+          {t('makeOrder')}
+        </span>
+      </motion.button>
+      <CategoryFilter
+        categories={categories}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        isScrolled={isScrolled}
+      />
+    </div>
+  </div>
+  
         <main className="container mx-auto px-4 py-12">
           {loading ? (
             <div className="flex justify-center items-center h-64">

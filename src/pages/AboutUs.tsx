@@ -33,6 +33,10 @@ type Translation = {
     highlight: string;
   }
   values2: TranslationValue[];
+  slider: {
+    title: string;
+    subtitle: string;
+  }
 };
 
 type Translations = {
@@ -62,6 +66,7 @@ const translations: Translations = {
         description: "Nos enorgullece servir a nuestra comunidad local en Florida, contribuyendo a un estilo de vida más saludable.",
         icon: "Leaf"
       },
+      
     
       
     ],
@@ -88,7 +93,11 @@ const translations: Translations = {
         icon: "Star"
       }
 
-    ]
+    ],
+    slider: {
+      title: "Team Beev's",
+      subtitle: "Conócenos un poco más"
+    }
 
     
   },
@@ -139,58 +148,44 @@ const translations: Translations = {
       description: "Commitment to excellence, health innovation, artisanal dedication, and exceptional community service.",
       icon: "Star"
     }
-  ]
+  ],
+
+    slider: {
+      title: "Team Beev's",
+      subtitle: "Get to know us a little better"
+    }
 
   
   }
 };
 
-
-// Define las diapositivas personalizadas
+// Simplificamos las diapositivas para solo tener las imágenes
 const slides = {
   es: [
     {
-      image: "https://images.pexels.com/photos/2216350/pexels-photo-2216350.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", // Asegúrate de tener estas imágenes
-      title: "Nuestra Historia",
-      description: "Comenzamos con un sueño de crear postres saludables y deliciosos",
-      link: "/historia",
+      image: "https://images.pexels.com/photos/2216350/pexels-photo-2216350.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
       color: "#F3BEB6"
     },
     {
       image: "https://images.pexels.com/photos/1587830/pexels-photo-1587830.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      title: "Nuestro Proceso",
-      description: "Elaboración artesanal con ingredientes naturales seleccionados",
-      link: "/proceso",
       color: "#936DAD"
     },
     {
       image: "https://images.pexels.com/photos/35666/cooking-baby-only-kitchen.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      title: "Nuestra Misión",
-      description: "Hacer la repostería saludable accesible para todos",
-      link: "/mision",
       color: "#D1D550"
     }
   ],
   en: [
     {
       image: "https://images.pexels.com/photos/2216350/pexels-photo-2216350.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      title: "Our Story",
-      description: "We started with a dream of creating healthy and delicious desserts",
-      link: "/story",
       color: "#F3BEB6"
     },
     {
       image: "https://images.pexels.com/photos/1587830/pexels-photo-1587830.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      title: "Our Process",
-      description: "Artisanal preparation with selected natural ingredients",
-      link: "/process",
       color: "#936DAD"
     },
     {
       image: "https://images.pexels.com/photos/35666/cooking-baby-only-kitchen.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      title: "Our Mission",
-      description: "Making healthy baking accessible to everyone",
-      link: "/mission",
       color: "#D1D550"
     }
   ]
@@ -228,20 +223,18 @@ interface AboutUsPageProps {
     return (
       <div className="bg-gradient-to-br from-[#8D4C91] to-[#6A3B6E] min-h-screen text-white">
         <Navbar cartCount={cartCount} language={language} toggleLanguage={toggleLanguage} />
-
-        
-      {/* WhatsApp Button */}
-      <motion.a
-        href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors body-font"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        <MessageCircle className="w-6 h-6" />
-      </motion.a>
-  
+     {/* WhatsApp Button */}
+<motion.a
+  href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="fixed bottom-6 right-6 z-50 bg-white/20 text-white p-4 rounded-full shadow-lg hover:bg-white/30 backdrop-blur-sm transition-colors"
+  whileHover={{ scale: 1.1 }}
+  whileTap={{ scale: 0.9 }}
+>
+  <MessageCircle className="w-12 h-12" />
+</motion.a>
+    
         {/* Main Slider Section */}
         <section className="h-screen relative overflow-hidden">
           <AnimatePresence initial={false}>
@@ -255,7 +248,7 @@ interface AboutUsPageProps {
             >
               <Image
                 src={currentSlides[currentSlide].image}
-                alt={currentSlides[currentSlide].title}
+                alt="Team Beev's"
                 layout="fill"
                 objectFit="cover"
                 quality={100}
@@ -263,7 +256,7 @@ interface AboutUsPageProps {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
             </motion.div>
           </AnimatePresence>
-  
+    
           {/* Social Media Buttons */}
           <div className="absolute left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
             <SocialButton Icon={Instagram} href="https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA==" />
@@ -278,7 +271,7 @@ interface AboutUsPageProps {
             />
           </div>
   
-          {/* Contenido central del slider */}
+          {/* Central Content */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center z-10 px-4">
               <motion.h2
@@ -289,37 +282,37 @@ interface AboutUsPageProps {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter text-amber-100 drop-shadow-lg title-font"
               >
-                {currentSlides[currentSlide].title}
+                {translations[language].slider.title}
               </motion.h2>
               <motion.p
-                key={`description-${currentSlide}-${language}`}
+                key={`subtitle-${currentSlide}-${language}`}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -50 }}
                 transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                 className="text-lg md:text-xl lg:text-2xl font-light mb-12 max-w-2xl mx-auto text-amber-50 drop-shadow body-font"
               >
-                {currentSlides[currentSlide].description}
+                {translations[language].slider.subtitle}
               </motion.p>
             </div>
           </div>
-
-        {/* Indicadores de diapositiva */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-4">
-          {currentSlides.map((slide, index) => (
-            <motion.button
-              key={index}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => handleSlideChange(index)}
-              className={`w-4 h-4 rounded-full cursor-pointer transition-all duration-300 ${
-                currentSlide === index ? 'ring-2 ring-white ring-offset-2' : ''
-              }`}
-              style={{ backgroundColor: slide.color }}
-            />
-          ))}
-        </div>
-      </section>
+  
+          {/* Slider indicators */}
+          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-4">
+            {currentSlides.map((slide, index) => (
+              <motion.button
+                key={index}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => handleSlideChange(index)}
+                className={`w-4 h-4 rounded-full cursor-pointer transition-all duration-300 ${
+                  currentSlide === index ? 'ring-2 ring-white ring-offset-2' : ''
+                }`}
+                style={{ backgroundColor: slide.color }}
+              />
+            ))}
+          </div>
+        </section>
   
         <header className="container mx-auto py-8">
           <Image

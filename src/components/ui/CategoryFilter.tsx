@@ -8,12 +8,11 @@ interface CategoryFilterProps {
   setActiveCategory: (category: string | null) => void;
   isScrolled: boolean;
 }
-
 const CategoryFilter: React.FC<CategoryFilterProps> = ({
   categories,
   activeCategory,
   setActiveCategory,
-  isScrolled,
+  
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,11 +24,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   };
 
   return (
-    <div
-      className={`sticky top-0 z-10 py-4 ${
-        isScrolled ? "backdrop-blur-md" : ""
-      } transition-all duration-300`}
-    >
+    <div className="relative py-4"> {/* Removed sticky positioning */}
       {/* Mobile view */}
       <div className="md:hidden px-4">
         <button
@@ -45,7 +40,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mt-2 rounded-lg overflow-hidden shadow-lg"
+              className="absolute w-full left-0 mt-2 rounded-lg overflow-hidden shadow-lg bg-white z-20"
             >
               <button
                 className={`w-full py-3 px-5 text-left font-medium ${
