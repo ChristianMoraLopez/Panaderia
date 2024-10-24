@@ -36,11 +36,11 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
     }, [products]);
 
     if (loading) {
-        return <div className="text-center py-6">{translations[language].loading}</div>;
+        return <div className="text-center py-6 body-font">{translations[language].loading}</div>;
     }
 
     if (error || !products || products.length === 0) {
-        return <div className="text-center py-6 text-red-500">{translations[language].error}</div>;
+        return <div className="text-center py-6 text-red-500 body-font">{translations[language].error}</div>;
     }
 
     const currentMenu = products[currentIndex];
@@ -86,8 +86,10 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
                 <div className="absolute inset-0 flex flex-col md:flex-row">
                     {/* Left side content */}
                     <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col justify-end text-white">
-                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4">{currentMenu.title}</h3>
-                        <p className="text-xl sm:text-2xl font-semibold">
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4 title-font">
+                            {currentMenu.title}
+                        </h3>
+                        <p className="text-xl sm:text-2xl font-semibold sharp-font">
                             ${currentMenu.price.toFixed(2)}
                         </p>
                     </div>
@@ -111,7 +113,7 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
                     {/* Right side content (description) */}
                     <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex items-center">
                         <div className="bg-black/40 p-4 sm:p-6 rounded-lg text-white w-full">
-                            <ul className="text-sm sm:text-base md:text-lg">
+                            <ul className="text-sm sm:text-base md:text-lg body-font">
                                 {currentMenu.description.split(',').map((item, index) => (
                                     <li key={index} className="mb-2">{item.trim()}</li>
                                 ))}

@@ -11,28 +11,38 @@ const labelVariants = cva(
         default: "text-gray-900 dark:text-gray-100",
         error: "text-red-500 dark:text-red-400",
       },
+      font: {
+        title: "font-['Bohemian_Soul'] serif title-font",
+        body: "font-['Edgecutting'] sans-serif body-font",
+        sharp: "font-['Edgecutting_Sharp'] sans-serif sharp-font",
+        tight: "font-['Edgecutting_Tight'] sans-serif tight-font"
+      }
     },
     defaultVariants: {
       variant: "default",
+      font: "body"
     },
   }
 );
 
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement>,
-    VariantProps<typeof labelVariants> {}
+    VariantProps<typeof labelVariants> {
+  font?: "title" | "body" | "sharp" | "tight";
+}
 
 const Label = forwardRef<HTMLLabelElement, LabelProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, variant, font, ...props }, ref) => {
     return (
       <label
         ref={ref}
-        className={cn(labelVariants({ variant, className }))}
+        className={cn(labelVariants({ variant, font }), className)}
         {...props}
       />
     );
   }
 );
+
 Label.displayName = "Label";
 
 export default Label;

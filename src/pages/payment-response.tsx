@@ -155,8 +155,8 @@ const PaymentResponse = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              <h2 className="text-3xl font-bold text-[#936DAD] mb-2">¡Pago Exitoso!</h2>
-              <p className="text-gray-600 mb-4">Gracias por tu compra. Tu pedido ha sido procesado correctamente.</p>
+              <h2 className="text-3xl font-bold text-[#936DAD] mb-2 title-font">¡Pago Exitoso!</h2>
+              <p className="text-gray-600 mb-4 body-font">Gracias por tu compra. Tu pedido ha sido procesado correctamente.</p>
             </motion.div>
 
             <motion.div
@@ -165,8 +165,8 @@ const PaymentResponse = () => {
               transition={{ delay: 0.5 }}
               className="bg-[#ECEACA] p-6 rounded-2xl text-left mb-6 shadow-lg"
             >
-              <h3 className="font-semibold text-[#936DAD] mb-4">Próximos pasos:</h3>
-              <ul className="space-y-4 text-gray-700">
+              <h3 className="font-semibold text-[#936DAD] mb-4 title-font">Próximos pasos:</h3>
+              <ul className="space-y-4 text-gray-700 body-font">
                 {['Recibirás un correo electrónico con la confirmación de tu pedido en breve.',
                   'Nos pondremos en contacto contigo para coordinar la entrega.',
                   'Si tienes alguna pregunta o necesitas gestionar el envío, contáctanos:'].map((text, index) => (
@@ -175,7 +175,7 @@ const PaymentResponse = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7 + (index * 0.1) }}
-                    className="flex items-center"
+                    className="flex items-center body-font"
                   >
                     <div className="w-2 h-2 rounded-full bg-[#D1D550] mr-3"></div>
                     {text}
@@ -188,7 +188,7 @@ const PaymentResponse = () => {
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 href="mailto:info@beevsoven.com"
-                className="flex items-center justify-center bg-[#B6D3D2] text-white py-3 px-6 rounded-full"
+                className="flex items-center justify-center bg-[#B6D3D2] text-white py-3 px-6 rounded-full body-font"
               >
                 <Mail className="w-5 h-5 mr-2" />
                 info@beevsoven.com
@@ -196,7 +196,7 @@ const PaymentResponse = () => {
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 href="tel:+17862800961"
-                className="flex items-center justify-center bg-[#936DAD] text-white py-3 px-6 rounded-full"
+                className="flex items-center justify-center bg-[#936DAD] text-white py-3 px-6 rounded-full body-font"
               >
                 <Phone className="w-5 h-5 mr-2" />
                 +1 (786) 280-0961
@@ -221,8 +221,8 @@ const PaymentResponse = () => {
               className="mx-auto mb-6"
             />
             <XCircle className="w-24 h-24 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-[#936DAD] mb-2">Pago Fallido</h2>
-            <p className="text-gray-600">Lo sentimos, hubo un problema al procesar tu pago. Por favor, intenta nuevamente.</p>
+            <h2 className="text-2xl font-bold text-[#936DAD] mb-2 title-font">Pago Fallido</h2>
+            <p className="text-gray-600 body-font">Lo sentimos, hubo un problema al procesar tu pago. Por favor, intenta nuevamente.</p>
           </motion.div>
         )}
 
@@ -242,7 +242,7 @@ const PaymentResponse = () => {
               className="mx-auto mb-6"
             />
             <Loader className="w-24 h-24 text-[#936DAD] mx-auto mb-4 animate-spin" />
-            <p className="text-gray-600">Procesando tu pago...</p>
+            <p className="text-gray-600 body-font">Procesando tu pago...</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -265,7 +265,7 @@ const PaymentResponse = () => {
               exit={{ opacity: 0, y: 20 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="mt-8 w-full bg-[#D1D550] text-white py-4 rounded-full font-semibold hover:bg-[#C7CB4B] transition-colors duration-300 shadow-lg"
+              className="mt-8 w-full bg-[#D1D550] text-white py-4 rounded-full font-semibold hover:bg-[#C7CB4B] transition-colors duration-300 shadow-lg body-font"
               onClick={() => router.push('/')}
             >
               Volver a la página principal

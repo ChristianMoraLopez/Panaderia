@@ -1,4 +1,5 @@
-// tailwind.config.js
+
+/* tailwind.config.js */
 module.exports = {
   darkMode: 'class',
   content: [
@@ -10,8 +11,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'playfair': ['"Playfair Display"', 'serif'],
-        'lato': ['Lato', 'sans-serif'],
+        'bohemian': ['"Bohemian Soul"', 'serif'],
+        'edgecutting': ['Edgecutting', 'sans-serif'],
       },
       colors: {
         'beauty-pink': '#FF69B4',

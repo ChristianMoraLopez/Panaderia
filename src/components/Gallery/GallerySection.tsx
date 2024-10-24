@@ -64,7 +64,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({ language }) => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="text-center text-red-600 p-4 bg-red-100 rounded-lg"
+        className="text-center text-red-600 p-4 bg-red-100 rounded-lg body-font"
       >
         {translations[language].error} {error}
       </motion.div>
@@ -92,12 +92,12 @@ const GallerySection: React.FC<GallerySectionProps> = ({ language }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="pt-0"
+      className="pt-0 body-font"
     >
       <div className="relative mb-12 overflow-hidden">
         <div className="absolute inset-0 bg-[#D0D450]"></div>
         <div className="relative z-10 py-6 px-4">
-          <h2 className="text-4xl font-bold text-center text-purple-800 relative z-20">
+          <h2 className="text-4xl font-bold text-center text-purple-800 relative z-20 title-font">
             {translations[language].title}
           </h2>
           <div className="absolute inset-0 z-10">
@@ -130,7 +130,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({ language }) => {
                     className="w-full h-64 object-cover transition-transform duration-300 transform group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <h3 className="absolute bottom-4 left-4 right-4 text-white text-2xl font-bold text-center drop-shadow-lg transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                  <h3 className="absolute bottom-4 left-4 right-4 text-white text-2xl font-bold text-center drop-shadow-lg transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 title-font">
                     {language === 'es' ? product.name : product.name}
                   </h3>
                 </div>

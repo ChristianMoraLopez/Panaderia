@@ -60,7 +60,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-2xl overflow-hidden max-w-4xl w-full shadow-2xl"
+            className="bg-white rounded-2xl overflow-hidden max-w-4xl w-full shadow-2xl body-font"
             onClick={e => e.stopPropagation()}
           >
             <div className="grid grid-cols-1 md:grid-cols-2">
@@ -95,18 +95,20 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-3xl font-bold text-white mb-2">{product.name}</h2>
-                    <span className="inline-block px-4 py-1 rounded-full bg-white/20 text-white text-sm">
+                    <h2 className="title-font text-3xl font-bold text-white mb-2">
+                      {product.name}
+                    </h2>
+                    <span className="inline-block px-4 py-1 rounded-full bg-white/20 text-white text-sm body-font">
                       {product.category}
                     </span>
                   </div>
 
-                  <p className="text-white/90 text-lg leading-relaxed">
+                  <p className="body-font text-white/90 text-lg leading-relaxed">
                     {product.description}
                   </p>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-3xl font-bold text-white">
+                    <span className="title-font text-3xl font-bold text-white">
                       ${product.price.toFixed(2)}
                     </span>
                   </div>
@@ -116,7 +118,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleBuyNow}
-                      className="w-full bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-4 px-6 rounded-full font-semibold text-lg flex items-center justify-center space-x-2 shadow-lg transition-colors"
+                      className="body-font w-full bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-4 px-6 rounded-full font-semibold text-lg flex items-center justify-center space-x-2 shadow-lg transition-colors"
                     >
                       <ShoppingBag className="w-6 h-6" />
                       <span>{language === 'es' ? 'Comprar Ahora' : 'Buy Now'}</span>

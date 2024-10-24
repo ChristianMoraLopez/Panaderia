@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ title, backgroundColor, textColor }) =>
     <div className="relative mb-12 overflow-hidden">
       <div className={`absolute inset-0 ${backgroundColor}`}></div>
       <div className="relative z-10 py-6 px-4">
-        <h2 className={`text-4xl font-bold text-center ${textColor} relative z-20`}>
+        <h2 className={`text-4xl font-bold text-center ${textColor} relative z-20 title-font`}>
           {title}
         </h2>
         <div className="absolute inset-0 z-10">

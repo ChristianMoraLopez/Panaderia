@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin, Leaf, Heart } from 'lucide-react';
+import { ArrowRight, MapPin, Leaf, Heart, MessageCircle, Star, Eye, Target } from 'lucide-react';
 import Navbar from '@/components/Navbar/Navbar';
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
@@ -27,6 +27,12 @@ type Translation = {
   location: string;
   learnMore: string;
   values: TranslationValue[];
+  beevsSection: {
+    title: string;
+    description: string;
+    highlight: string;
+  }
+  values2: TranslationValue[];
 };
 
 type Translations = {
@@ -55,8 +61,36 @@ const translations: Translations = {
         title: "Comunidad",
         description: "Nos enorgullece servir a nuestra comunidad local en Florida, contribuyendo a un estilo de vida más saludable.",
         icon: "Leaf"
+      },
+    
+      
+    ],
+    beevsSection: {
+      title: "Beevs Oven",
+      description: "En Beevs Oven, fusionamos la tradición panadera con la innovación saludable. Cada uno de nuestros productos está elaborado con ingredientes cuidadosamente seleccionados y técnicas artesanales que garantizan no solo un sabor excepcional, sino también beneficios nutricionales para ti y tu familia.",
+      highlight: "Descubre el sabor de lo artesanal"
+    },
+
+    values2:[
+      {
+        title: "Misión",
+        description: "Crear productos de panadería excepcionales que combinen el sabor con la nutrición, usando ingredientes naturales y técnicas artesanales.",
+        icon: "Target"
+      },
+      {
+        title: "Visión",
+        description: "Ser reconocidos como la principal panadería artesanal en Florida que revoluciona la forma de disfrutar productos horneados saludables.",
+        icon: "Eye"
+      },
+      {
+        title: "Valores",
+        description: "Compromiso con la excelencia, innovación en la salud, dedicación artesanal y servicio excepcional a nuestra comunidad.",
+        icon: "Star"
       }
+
     ]
+
+    
   },
   en: {
     title: "About",
@@ -79,8 +113,35 @@ const translations: Translations = {
         title: "Community",
         description: "We take pride in serving our local community in Florida, contributing to a healthier lifestyle.",
         icon: "Leaf"
-      }
-    ]
+      },
+      
+    ],
+
+    beevsSection: {
+      title: "Beevs Oven",
+      description: "At Beevs Oven, we merge baking tradition with healthy innovation. Each of our products is crafted with carefully selected ingredients and artisanal techniques that ensure not only exceptional taste but also nutritional benefits for you and your family.",
+      highlight: "Discover the taste of artisanal"
+    },
+
+    values2:[
+    {
+      title: "Mission",
+      description: "To create exceptional bakery products that combine flavor with nutrition, using natural ingredients and artisanal techniques.",
+      icon: "Target"
+    },
+    {
+      title: "Vision",
+      description: "To be recognized as Florida's leading artisanal bakery revolutionizing how people enjoy healthy baked goods.",
+      icon: "Eye"
+    },
+    {
+      title: "Values",
+      description: "Commitment to excellence, health innovation, artisanal dedication, and exceptional community service.",
+      icon: "Star"
+    }
+  ]
+
+  
   }
 };
 
@@ -168,70 +229,80 @@ interface AboutUsPageProps {
       <div className="bg-gradient-to-br from-[#8D4C91] to-[#6A3B6E] min-h-screen text-white">
         <Navbar cartCount={cartCount} language={language} toggleLanguage={toggleLanguage} />
 
-
-      {/* Main Slider Section */}
-      <section className="h-screen relative overflow-hidden">
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0 w-full h-full"
-          >
-            <Image
-              src={currentSlides[currentSlide].image}
-              alt={currentSlides[currentSlide].title}
-              layout="fill"
-              objectFit="cover"
-              quality={100}
+        
+      {/* WhatsApp Button */}
+      <motion.a
+        href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors body-font"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <MessageCircle className="w-6 h-6" />
+      </motion.a>
+  
+        {/* Main Slider Section */}
+        <section className="h-screen relative overflow-hidden">
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <Image
+                src={currentSlides[currentSlide].image}
+                alt={currentSlides[currentSlide].title}
+                layout="fill"
+                objectFit="cover"
+                quality={100}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
+            </motion.div>
+          </AnimatePresence>
+  
+          {/* Social Media Buttons */}
+          <div className="absolute left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
+            <SocialButton Icon={Instagram} href="https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA==" />
+            <SocialButton Icon={Facebook} href="https://www.facebook.com/profile.php?id=61566809876928" />
+            <SocialButton 
+              Icon={() => (
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                </svg>
+              )} 
+              href="https://www.tiktok.com/@beevsoven?_t=8qekMoITjKc&_r=1" 
             />
-            
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Social Media Buttons */}
-        <div className="absolute left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
-          <SocialButton Icon={Instagram} href="https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA==" />
-          <SocialButton Icon={Facebook} href="https://www.facebook.com/profile.php?id=61566809876928" />
-          <SocialButton 
-            Icon={() => (
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
-              </svg>
-            )} 
-            href="https://www.tiktok.com/@beevsoven?_t=8qekMoITjKc&_r=1" 
-          />
-        </div>
-
-        {/* Contenido central del slider */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center z-10 px-4">
-            <motion.h2
-              key={`title-${currentSlide}-${language}`}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter text-amber-100 drop-shadow-lg"
-            >
-              {currentSlides[currentSlide].title}
-            </motion.h2>
-            <motion.p
-              key={`description-${currentSlide}-${language}`}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-lg md:text-xl lg:text-2xl font-light mb-12 max-w-2xl mx-auto text-amber-50 drop-shadow"
-            >
-              {currentSlides[currentSlide].description}
-            </motion.p>
-           
           </div>
-        </div>
+  
+          {/* Contenido central del slider */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center z-10 px-4">
+              <motion.h2
+                key={`title-${currentSlide}-${language}`}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter text-amber-100 drop-shadow-lg title-font"
+              >
+                {currentSlides[currentSlide].title}
+              </motion.h2>
+              <motion.p
+                key={`description-${currentSlide}-${language}`}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                className="text-lg md:text-xl lg:text-2xl font-light mb-12 max-w-2xl mx-auto text-amber-50 drop-shadow body-font"
+              >
+                {currentSlides[currentSlide].description}
+              </motion.p>
+            </div>
+          </div>
 
         {/* Indicadores de diapositiva */}
         <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-4">
@@ -260,82 +331,138 @@ interface AboutUsPageProps {
           />
         </header>
   
-        <main className="container  mx-auto px-4 py-16">
-          <motion.h1 
-            className="text-6xl md:text-7xl font-bold mb-8 text-center text-[#D9D055]"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {t.title} <span className="text-white">{t.subtitle}</span>
-          </motion.h1>
-  
-          <motion.p 
-            className="text-xl mb-12 text-center max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            {t.description}
-          </motion.p>
-  
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {t.values.map((value, index) => (
-              <motion.div
-                key={index}
-                className="bg-white/10 p-6 rounded-lg text-center"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 * index }}
-              >
-                {value.icon === 'Leaf' && <Leaf className="mx-auto mb-4 text-[#D9D055]" size={40} />}
-                {value.icon === 'Heart' && <Heart className="mx-auto mb-4 text-[#D9D055]" size={40} />}
-                <h3 className="text-2xl font-semibold mb-2">{value.title}</h3>
-                <p>{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-  
-          <motion.div
-            className="bg-[#D9D055] text-[#8D4C91] p-8 rounded-lg text-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <MapPin className="mx-auto mb-4" size={40} />
-            <p className="text-2xl font-semibold">{t.location}</p>
-          </motion.div>
-        </main>
-  
-        <footer className="container mx-auto py-8 text-center">
-          <a href="#" className="inline-flex items-center text-[#D9D055] hover:underline">
-            {t.learnMore} <ArrowRight className="ml-2" size={20} />
-          </a>
-        </footer>
-      </div>
-    );
-  };
+        <main className="container mx-auto px-4 py-16">
+        <motion.h1 
+          className="text-6xl md:text-7xl font-bold mb-8 text-center text-[#D9D055] title-font"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {t.title} <span className="text-white title-font">{t.subtitle}</span>
+        </motion.h1>
 
-  
-  // Definición de tipos para las props de SocialButton
-  interface SocialButtonProps {
-    Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-    href: string;
-  }
-  
-  
-  // Componente SocialButton
-  const SocialButton: React.FC<SocialButtonProps> = ({ Icon, href }) => (
-    <motion.a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-white/20 p-2 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors"
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-    >
-      <Icon className="w-6 h-6 text-white" />
-    </motion.a>
+        <motion.p 
+          className="text-xl mb-12 text-center max-w-3xl mx-auto body-font"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          {t.description}
+        </motion.p>
+
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          {t.values.map((value, index) => (
+            <motion.div
+              key={index}
+              className="bg-white/10 p-6 rounded-lg text-center"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 * index }}
+            >
+              {value.icon === 'Leaf' && <Leaf className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              {value.icon === 'Heart' && <Heart className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              <h3 className="text-2xl font-semibold mb-2 title-font">{value.title}</h3>
+              <p className="body-font">{value.description}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="container mx-auto px-4 mb-16">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          {/* Image Section */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative h-[400px] rounded-lg overflow-hidden"
+          >
+            <Image
+              src={slides[language][0].image}
+              alt="Beevs Oven Bakery"
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg"
+            />
+          </motion.div>
+
+          {/* Text Section */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="space-y-6"
+          >
+            <h2 className="text-4xl font-bold text-[#D9D055] title-font">
+              {translations[language].beevsSection.title}
+            </h2>
+            <p className="text-lg leading-relaxed body-font">
+              {translations[language].beevsSection.description}
+            </p>
+            <div className="inline-block bg-[#D9D055] text-[#8D4C91] px-6 py-3 rounded-full font-semibold title-font">
+              {translations[language].beevsSection.highlight}
+            </div>
+          </motion.div>
+
+
+        </div>
+          {/* Sección corregida usando values2 */}
+      <div className="grid md:grid-cols-3 gap-8 mt-14 mb-16">
+        {t.values2.map((value, index) => (
+          <motion.div
+            key={index}
+            className="bg-white/10 p-6 rounded-lg text-center"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 * index }}
+          >
+            {value.icon === 'Target' && <Target className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+            {value.icon === 'Eye' && <Eye className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+            {value.icon === 'Star' && <Star className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+            <h3 className="text-2xl font-semibold mb-2 title-font">{value.title}</h3>
+            <p className="body-font">{value.description}</p>
+          </motion.div>
+        ))}
+      </div>
+      </div>
+
+        <motion.div
+          className="bg-[#D9D055] text-[#8D4C91] p-8 rounded-lg text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <MapPin className="mx-auto mb-4" size={40} />
+          <p className="text-2xl font-semibold title-font">{t.location}</p>
+        </motion.div>
+      </main>
+
+      <footer className="container mx-auto py-8 text-center">
+        <a href="#" className="inline-flex items-center text-[#D9D055] hover:underline body-font">
+          {t.learnMore} <ArrowRight className="ml-2" size={20} />
+        </a>
+      </footer>
+    </div>
   );
-  
-  export default AboutUsPage;
+};
+
+ // Definición de tipos para las props de SocialButton
+ interface SocialButtonProps {
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  href: string;
+}
+
+// SocialButton with typography
+const SocialButton: React.FC<SocialButtonProps> = ({ Icon, href }) => (
+  <motion.a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-white/20 p-2 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors body-font"
+    whileHover={{ scale: 1.1 }}
+    whileTap={{ scale: 0.9 }}
+  >
+    <Icon className="w-6 h-6 text-white" />
+  </motion.a>
+);
+
+export default AboutUsPage;

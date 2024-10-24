@@ -1,4 +1,3 @@
-// components/ui/button.tsx
 import React, { useState } from 'react';
 import { VariantProps, cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
@@ -21,10 +20,17 @@ const buttonVariants = cva(
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
       },
+      font: {
+        title: "font-['Bohemian_Soul'] serif title-font",
+        body: "font-['Edgecutting'] sans-serif body-font",
+        sharp: "font-['Edgecutting_Sharp'] sans-serif sharp-font",
+        tight: "font-['Edgecutting_Tight'] sans-serif tight-font"
+      }
     },
     defaultVariants: {
       variant: 'default',
       size: 'default',
+      font: 'body'
     },
   }
 );
@@ -33,13 +39,23 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  tooltipContent?: string; // Agregar prop para contenido del tooltip
+  tooltipContent?: string;
+  font?: "title" | "body" | "sharp" | "tight";
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, tooltipContent, ...props }, ref) => {
+  ({ className, variant, size, font, asChild = false, tooltipContent, ...props }, ref) => {
     const Comp = asChild ? 'button' : 'button';
-    const [visible, setVisible] = useState(false); // Estado para mostrar el tooltip
+    const [visible, setVisible] = useState(false);
+
+    // Define tooltip font based on button font or default to body
+    const tooltipFont = font || 'body';
+    const tooltipFontClass = `font-['${
+      tooltipFont === 'title' ? 'Bohemian_Soul' :
+      tooltipFont === 'sharp' ? 'Edgecutting_Sharp' :
+      tooltipFont === 'tight' ? 'Edgecutting_Tight' :
+      'Edgecutting'
+    }'] ${tooltipFont}-font`;
 
     return (
       <div 
@@ -48,12 +64,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         onMouseLeave={() => setVisible(false)}
       >
         <Comp
-          className={cn(buttonVariants({ variant, size, className }))}
+          className={cn(buttonVariants({ variant, size, font, className }))}
           ref={ref}
           {...props}
         />
         {visible && tooltipContent && (
-          <div className="absolute z-10 w-32 p-2 text-sm text-white bg-black rounded-md -translate-x-1/2 bottom-full left-1/2 mb-2 ">
+          <div className={cn(
+            "absolute z-10 w-32 p-2 text-sm text-white bg-black rounded-md -translate-x-1/2 bottom-full left-1/2 mb-2",
+            tooltipFontClass
+          )}>
             {tooltipContent}
           </div>
         )}
@@ -61,6 +80,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
+
 Button.displayName = 'Button';
 
 export default Button;

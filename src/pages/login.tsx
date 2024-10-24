@@ -51,18 +51,18 @@ const LoginPage = () => {
     const newErrors = { email: "", password: "" };
 
     if (!email) {
-      newErrors.email = "El correo electrónico es requerido";
+      newErrors.email = "Email is required";
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Correo electrónico inválido";
+      newErrors.email = "Invalid email address";
       isValid = false;
     }
 
     if (!password) {
-      newErrors.password = "La contraseña es requerida";
+      newErrors.password = "Password is required";
       isValid = false;
     } else if (password.length < 6) {
-      newErrors.password = "La contraseña debe tener al menos 6 caracteres";
+      newErrors.password = "Password must be at least 6 characters";
       isValid = false;
     }
 
@@ -89,7 +89,7 @@ const LoginPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-purple-600">
+      <div className="flex items-center justify-center min-h-screen bg-purple-600 body-font">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -101,20 +101,21 @@ const LoginPage = () => {
 
   if (user) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-purple-600">
+      <div className="flex items-center justify-center min-h-screen bg-purple-600 body-font">
         <motion.p
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-lg font-semibold text-white"
         >
-          Redirigiendo al perfil...
+          Redirecting to profile...
         </motion.p>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-start min-h-screen bg-[#936DAD] p-4 relative overflow-hidden">
+    <div className="flex items-center justify-start min-h-screen bg-[#936DAD] p-4 relative overflow-hidden body-font">
+      {/* Background Image */}
       <AnimatePresence>
         {randomProduct && (
           <motion.div
@@ -133,57 +134,67 @@ const LoginPage = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="absolute inset-0 bg-purple-600 opacity-70"></div>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-[#884681]  opacity-70"></div>
+
+      {/* Logo Background */}
       <Image
         src="/images/SVG/LogoTransparent.svg"
         alt="Logo"
-        width={600}
-        height={600}
+        width={1000}
+        height={1000}
         className="absolute top-4 right-4 z-10 opacity-30 hidden lg:block"
       />
+
+      {/* Main Content */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
         className="w-full max-w-md z-10 ml-4 sm:ml-8 md:ml-16 lg:ml-24"
       >
-        <div className="bg-[#ECEACA] bg-opacity-90 rounded-3xl shadow-2xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+        <div className="bg-[#ece9c9] bg-opacity-90 w-96 h-min rounded-3xl shadow-2xl overflow-hidden transform hover:scale-105 transition-transform duration-300">
+          {/* Header */}
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="px-8 pt-8 pb-6 bg-[#D1D550] flex items-center"
+            className="px-8 pt-8 pb-6 bg-[#c4bd5c] flex items-center"
           >
             <Image
               src="/images/SVG/LogoOnPurple.svg"
               alt="Logo"
-              width={100}
-              height={100}
+              width={120}
+              height={120}
               className="mr-4"
             />
-            <div className="h-12 w-px bg-white mx-4"></div>
+            <div className="h-32 w-px bg-[#976185] -mt-4 -mb-4 m-0"></div>
+
             <div className="flex-1 flex flex-col justify-center items-center">
-              <h2 className="text-3xl font-extrabold text-white">Welcome</h2>
+              <h2 className="text-3xl font-extrabold text-white title-font">
+                Welcome
+              </h2>
               <div className="flex space-x-2 justify-center mt-2">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="w-3 h-3 rounded-full bg-[#936DAD]"
-                ></motion.div>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, delay: 0.3, repeat: Infinity }}
-                  className="w-3 h-3 rounded-full bg-[#B6D3D2]"
-                ></motion.div>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, delay: 0.6, repeat: Infinity }}
-                  className="w-3 h-3 rounded-full bg-[#F3BEB6]"
-                ></motion.div>
+                {[0, 0.3, 0.6].map((delay, index) => (
+                  <motion.div
+                    key={index}
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 1, delay, repeat: Infinity }}
+                    className={`w-3 h-3 rounded-full ${
+                      index === 0
+                        ? "bg-[#936DAD]"
+                        : index === 1
+                        ? "bg-[#B6D3D2]"
+                        : "bg-[#F3BEB6]"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
           </motion.div>
 
+          {/* Form Section */}
           <div className="px-8 py-6">
             <AnimatePresence>
               {error && (
@@ -199,114 +210,134 @@ const LoginPage = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
             <form onSubmit={handleLogin} className="space-y-6">
-              <div>
-                <label htmlFor="email" className="text-purple-800 font-semibold">
-                  Correo Electrónico
-                </label>
-                <div className="mt-1 relative">
-                  <MailIcon
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500"
-                    size={18}
-                  />
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 bg-purple-50 border-purple-300 focus:border-purple-500 focus:ring-purple-500 rounded-full"
-                    placeholder="ejemplo@correo.com"
-                  />
+              {/* Email Input */}
+              <div className="m-0 p-0">
+                <div className="m-0 p-0">
+                  <label
+                    htmlFor="email"
+                    className="text-[#926cad] text-3xl  body-font mt-0 mb-0"
+                  >
+                    Email:
+                  </label>
+                  <div className="mt-1 relative">
+                    <MailIcon
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500"
+                      size={18}
+                    />
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10 bg-[#ECEACA] border-[#926cad] border-2 h-12 placeholder-[#926cad] focus:border-purple-500 text-xl focus:ring-purple-500 super-rounded body-font"
+                      placeholder="Example@email.com"
+                    />
+                  </div>
                 </div>
                 {errors.email && (
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-1 text-red-500 text-sm"
+                    className="mt-1 text-red-500 text-sm body-font"
                   >
                     {errors.email}
                   </motion.p>
                 )}
               </div>
-              <div>
-                <label htmlFor="password" className="text-purple-800 font-semibold">
-                  Contraseña
-                </label>
-                <div className="mt-1 relative">
-                  <Lock
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500"
-                    size={18}
-                  />
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 bg-purple-50 border-purple-300 focus:border-purple-500 focus:ring-purple-500 rounded-full"
-                    placeholder="********"
-                  />
-                </div>
-                {errors.password && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mt-1 text-red-500 text-sm"
+
+              {/* Password Input */}
+              <div className="m-0 p-0">
+                <div className="m-0 p-0">
+                  <label
+                    htmlFor="password"
+                    className="text-[#926cad] text-3xl body-font mt-0 mb-0"
                   >
-                    {errors.password}
-                  </motion.p>
-                )}
+                    Password:
+                  </label>
+                  <div className="mt-1 relative">
+                    <Lock
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500"
+                      size={18}
+                    />
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 bg-[#ECEACA] border-[#926cad] h-12  border-2  placeholder-[#926cad] focus:border-purple-500 text-xl focus:ring-purple-500 super-rounded body-font"
+                      placeholder="********"
+                    />
+                  </div>
+                  {errors.password && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-1 text-red-500 text-sm body-font"
+                    >
+                      {errors.password}
+                    </motion.p>
+                  )}
+                </div>
               </div>
 
-              {/* Enlace para restablecer contraseña */}
-              <div className="flex justify-end">
+              {/* Forgot Password Link */}
+              <div className="flex  p-0 justify-end">
                 <Link
                   href="/reset-password"
-                  className="text-sm text-purple-600 hover:text-purple-800 transition-colors"
+                  className="text-sm text-purple-600 hover:text-purple-800 transition-colors body-font"
                 >
-                  ¿Olvidaste tu contraseña?
+                  Forgot your password?
                 </Link>
               </div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              {/* Submit Button */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Button
                   type="submit"
-                  className="w-full bg-[#B6D3D2] hover:bg-[#a6c3c2] text-white font-bold py-3 rounded-full transition duration-300 flex items-center justify-center"
+                  className="w-full bg-[#B6D3D2] -my-4 hover:bg-[#a6c3c2] w-36 text-white font-bold py-2 super-rounded transition duration-300 flex items-center justify-center body-font"
                   disabled={isLoggingIn}
                 >
                   {isLoggingIn ? (
                     <>
                       <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
-                      Iniciando sesión...
+                      Signing in...
                     </>
                   ) : (
-                    "Iniciar Sesión"
+                    "Sign In"
                   )}
                 </Button>
               </motion.div>
             </form>
           </div>
 
-          <div className="px-8 py-6 bg-gradient-to-t from-purple-100 to-white">
-            <p className="text-center text-purple-800">
-              ¿Nuevo en nuestra dulce familia?{" "}
+          {/* Footer Register Link */}
+          <div className="px-4 py-4 bg-[#ece9c9] bg-opacity-0">
+            <p className=" text-center text-purple-800 body-font">
+              New to our sweet family?{" "}
               <Link
                 href="/RegisterPage"
-                className="font-semibold text-[#D1D500] hover:text-purple-800 transition duration-300"
+                className="font-semibold text-[#D1D500] hover:text-purple-800 transition duration-300 title-font"
               >
-                Regístrate aquí
+                Register here
               </Link>
             </p>
           </div>
         </div>
 
+        {/* Copyright */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-8 text-center"
+          className=" mt-8 text-center"
         >
-          <p className="text-white text-sm">
-            © 2024 La Dulce Panadería. Todos los derechos reservados.
+          <p className="text-white text-sm body-font">
+            © 2024 Beev&lsquo;s Oven. All rights reserved.
           </p>
         </motion.div>
       </motion.div>

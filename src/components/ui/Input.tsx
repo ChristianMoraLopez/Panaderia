@@ -11,9 +11,16 @@ const inputVariants = cva(
         default: "border-gray-300 dark:border-gray-700",
         error: "border-red-500 dark:border-red-400",
       },
+      font: {
+        title: "font-['Bohemian_Soul'] serif title-font",
+        body: "font-['Edgecutting'] sans-serif body-font",
+        sharp: "font-['Edgecutting_Sharp'] sans-serif sharp-font",
+        tight: "font-['Edgecutting_Tight'] sans-serif tight-font"
+      }
     },
     defaultVariants: {
       variant: "default",
+      font: "body"
     },
   }
 );
@@ -22,10 +29,16 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {
   leftIcon?: React.ReactNode;
+  font?: "title" | "body" | "sharp" | "tight";
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, variant, leftIcon, ...props }, ref) => {
+  ({ className, type, variant, font, leftIcon, ...props }, ref) => {
+    const placeholderFontClass = font === "title" ? "placeholder:title-font" :
+                                font === "sharp" ? "placeholder:sharp-font" :
+                                font === "tight" ? "placeholder:tight-font" :
+                                "placeholder:body-font";
+
     return (
       <div className="relative">
         {leftIcon && (
@@ -36,8 +49,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            inputVariants({ variant, className }),
-            leftIcon ? "pl-10" : "" // Ensure it's a string
+            inputVariants({ variant, font }),
+            leftIcon ? "pl-10" : "",
+            placeholderFontClass,
+            className
           )}
           ref={ref}
           {...props}

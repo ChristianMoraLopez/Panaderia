@@ -127,7 +127,7 @@ const ProductGalleryPage: React.FC = () => {
         href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors"
+        className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors body-font"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -182,7 +182,7 @@ const ProductGalleryPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter text-amber-100 drop-shadow-lg"
+              className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter text-amber-100 drop-shadow-lg title-font"
             >
               {products && products[currentSlide] 
                 ? (language === 'es' ? products[currentSlide].name : products[currentSlide].name) 
@@ -194,7 +194,7 @@ const ProductGalleryPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-lg md:text-xl lg:text-2xl font-light mb-12 max-w-2xl mx-auto text-amber-50 drop-shadow"
+              className="text-lg md:text-xl lg:text-2xl font-light mb-12 max-w-2xl mx-auto text-amber-50 drop-shadow body-font"
             >
               {products && products[currentSlide] 
                 ? (language === 'es' ? products[currentSlide].description : products[currentSlide].description) 
@@ -232,7 +232,7 @@ const ProductGalleryPage: React.FC = () => {
               whileTap={{ scale: 0.95 }}
               className="text-white px-8 py-4  text-2xl font-bold  transition-all duration-300 mb-8 mx-auto block"
             >
-              <span className="bg-[#886AA6] px-4 py-2 rounded-full">
+              <span className="bg-[#886AA6] px-4 py-2 super-rounded title-font">
                 {t('makeOrder')}
               </span>
             </motion.button>
@@ -292,13 +292,13 @@ const ProductGalleryPage: React.FC = () => {
                           objectFit="cover"
                           className="transition-transform duration-300 transform group-hover:scale-110"
                         />
-                        <div className="absolute top-0 right-0 bg-white text-[#936DAD] px-4 py-2 m-4 rounded-full text-sm font-bold shadow-lg">
+                        <div className="absolute top-0 right-0 bg-white text-[#936DAD] px-4 py-2 m-4 rounded-full text-sm font-bold shadow-lg body-font">
                           {product.category}
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
                       </div>
                       <div className="p-8 text-white">
-                        <h2 className="text-3xl font-serif font-bold mb-4 leading-tight">{product.name}</h2>
+                        <h2 className="text-3xl font-serif font-bold mb-4 leading-tight title-font">{product.name}</h2>
                         <p className="text-md mb-6">{product.description}</p>
                         <div className="flex justify-between items-center mb-4">
                           <span className="text-2xl font-bold">${product.price.toFixed(2)}</span>
@@ -325,7 +325,7 @@ const ProductGalleryPage: React.FC = () => {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className={`w-full flex items-center justify-center px-6 py-3 rounded-full text-white transition-colors duration-300 shadow-lg text-lg font-semibold ${
+                          className={`w-full flex items-center justify-center px-6 py-3 rounded-full text-white transition-colors duration-300 shadow-lg text-lg body-font font-semibold ${
                             isGreenCard ? 'bg-[#936DAD] hover:bg-[#8A5EA3]' : 'bg-[#D1D550] hover:bg-[#C7CB4B]'
                           }`}
                           onClick={() => handleAddToCart(product)}
@@ -364,19 +364,18 @@ const ProductGalleryPage: React.FC = () => {
   }
   
   
-  // Componente SocialButton
-  const SocialButton: React.FC<SocialButtonProps> = ({ Icon, href }) => (
-    <motion.a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-white/20 p-2 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors"
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-    >
-      <Icon className="w-6 h-6 text-white" />
-    </motion.a>
-  );
-  
-  export default ProductGalleryPage;
-                              
+// SocialButton 
+const SocialButton: React.FC<SocialButtonProps> = ({ Icon, href }) => (
+  <motion.a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-white/20 p-2 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors body-font"
+    whileHover={{ scale: 1.1 }}
+    whileTap={{ scale: 0.9 }}
+  >
+    <Icon className="w-6 h-6 text-white" />
+  </motion.a>
+);
+
+export default ProductGalleryPage;

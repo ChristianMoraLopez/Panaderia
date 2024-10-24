@@ -45,7 +45,7 @@ const LearnMore: React.FC<LearnMoreProps> = ({ language }) => {
   ];
 
   return (
-    <section className="bg-cream-100 py-16">
+    <section className="bg-cream-100 py-16 body-font">
       <Header 
         title={translations[language].title}
         backgroundColor="bg-[#F3BEB6]"
@@ -65,12 +65,14 @@ const LearnMore: React.FC<LearnMoreProps> = ({ language }) => {
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-[#8D4C91] mb-4">{card.title}</h3>
+                <h3 className="title-font text-2xl font-bold text-[#8D4C91] mb-4">
+                  {card.title}
+                </h3>
                 <a 
                   href={card.link} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="bg-[#B6D3D2] hover:bg-[#9CC6C5] text-white font-bold py-3 px-6 rounded-full transition duration-300 inline-block text-center w-full"
+                  className="body-font bg-[#B6D3D2] hover:bg-[#9CC6C5] text-white font-bold py-3 px-6 rounded-full transition duration-300 inline-block text-center w-full"
                 >
                   {t.seeMore}
                 </a>

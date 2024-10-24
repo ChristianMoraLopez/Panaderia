@@ -1,0 +1,57 @@
+/* styles/fonts.css */
+@font-face {
+    font-family: 'Bohemian Soul';
+    src: url('/fonts/Bohemian Soul.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Edgecutting';
+    src: url('/fonts/EdgecuttingLiteMedium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Edgecutting';
+    src: url('/fonts/EdgecuttingLiteMediumIt.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Edgecutting Sharp';
+    src: url('/fonts/EdgecuttingLiteSharp.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Edgecutting Tight';
+    src: url('/fonts/EdgecuttingLiteTight.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  /* Utility classes for easy use */
+  .title-font {
+    font-family: "Bohemian Soul", serif;
+  }
+  
+  .body-font {
+    font-family: "Edgecutting", sans-serif;
+  }
+  
+  .sharp-font {
+    font-family: "Edgecutting Sharp", sans-serif;
+  }
+  
+  .tight-font {
+    font-family: "Edgecutting Tight", sans-serif;
+  }

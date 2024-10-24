@@ -149,67 +149,67 @@ const Profile = () => {
   const [healthLevel, setHealthLevel] = useState({ level: '', description: '' });
   const [purchaseCount, setPurchaseCount] = useState(0);
   const [language, setLanguage] = useState<'es' | 'en'>('es');
-
-  const processContentfulHistory = () => {
-    if (!profile || !profile.history) return [];
-    
-    try {
-      return Object.entries(profile.history)
-        .map(([key, value]) => {
-          const historyItem = value as HistoryItem;
-          if ('fields' in historyItem) {
-            const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
-            const price = historyItem.fields.price['en-US'];
-            const imageUrl = historyItem.fields.image && historyItem.fields.image['en-US'] ? 
-              historyItem.fields.image['en-US'].sys.id : '';
-            
-            return {
-              id: key,
-              date: new Date().toISOString(),
-              items: [{
-                id: parseInt(key),
-                name: historyItem.fields.name['en-US'],
-                price: price,
-                quantity: quantity,
-                image_url: imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl
-              }],
-              total: price * quantity
-            };
-          }
-          return null;
-        })
-        .filter((item): item is PurchaseHistoryItem => item !== null);
-    } catch (error) {
-      console.error("Error processing Contentful history:", error);
-      return [];
-    }
-  };
-
-  const calculateHealthLevel = (purchases: number) => {
-    setPurchaseCount(purchases);
-    const t = translations[language].healthLevels;
-    
-    if (purchases < 5) {
-      setHealthLevel(t.beginner);
-    } else if (purchases < 10) {
-      setHealthLevel(t.enthusiast);
-    } else if (purchases < 20) {
-      setHealthLevel(t.adept);
-    } else if (purchases < 35) {
-      setHealthLevel(t.master);
-    } else {
-      setHealthLevel(t.guru);
-    }
-  };
-
+  
   useEffect(() => {
+    const processContentfulHistory = () => {
+      if (!profile || !profile.history) return [];
+    
+      
+      try {
+        return Object.entries(profile.history)
+          .map(([key, value]) => {
+            const historyItem = value as HistoryItem;
+            if ('fields' in historyItem) {
+              const quantity = historyItem.fields.quantity ? historyItem.fields.quantity['en-US'] : 1;
+              const price = historyItem.fields.price['en-US'];
+              const imageUrl = historyItem.fields.image && historyItem.fields.image['en-US'] ? 
+                historyItem.fields.image['en-US'].sys.id : '';
+              
+              return {
+                id: key,
+                date: new Date().toISOString(),
+                items: [{
+                  id: parseInt(key),
+                  name: historyItem.fields.name['en-US'],
+                  price: price,
+                  quantity: quantity,
+                  image_url: imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl
+                }],
+                total: price * quantity
+              };
+            }
+            return null;
+          })
+          .filter((item): item is PurchaseHistoryItem => item !== null);
+      } catch (error) {
+        console.error("Error processing Contentful history:", error);
+        return [];
+      }
+    };
+    
+      const calculateHealthLevel = (purchases: number) => {
+        setPurchaseCount(purchases);
+        const t = translations[language].healthLevels;
+        
+        if (purchases < 20) {
+          setHealthLevel(t.beginner);
+        } else if (purchases < 40) {
+          setHealthLevel(t.enthusiast);
+        } else if (purchases < 70) {
+          setHealthLevel(t.adept);
+        } else if (purchases < 150) {
+          setHealthLevel(t.master);
+        } else {
+          setHealthLevel(t.guru);
+        }
+      };
     const updatePurchaseHistory = async () => {
       if (!user) {
         setPurchaseHistory([]);
         calculateHealthLevel(0);
         return;
       }
-
+      
       if (profile) {
         const contentfulHistory = processContentfulHistory();
         setPurchaseHistory(contentfulHistory);
@@ -218,7 +218,7 @@ const Profile = () => {
     };
 
     updatePurchaseHistory();
-  }, [user, profile, refetch, language]); // Added language dependency
+  }, [user, profile, refetch, language]); 
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'es' ? 'en' : 'es');
@@ -230,9 +230,9 @@ const Profile = () => {
     return (
       <>
         <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
-        <div className="max-w-md mx-auto mt-32 p-8 bg-yellow-50 rounded-lg shadow-lg text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-700 mx-auto"></div>
-          <p className="mt-4 text-yellow-800">{t.loading}</p>
+        <div className="max-w-md mx-auto mt-32 p-8 bg-[#926cad] rounded-lg shadow-lg text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-white body-font">{t.loading}</p>
         </div>
       </>
     );
@@ -243,7 +243,7 @@ const Profile = () => {
       <>
         <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
         <div className="max-w-md mx-auto mt-32 p-8 bg-red-50 rounded-lg shadow-lg text-center">
-          <p className="text-red-600">{error}</p>
+          <p className="text-red-600 body-font">{error}</p>
         </div>
       </>
     );
@@ -252,10 +252,13 @@ const Profile = () => {
   const renderPurchaseHistory = () => {
     if (!purchaseHistory || purchaseHistory.length === 0) {
       return (
-        <div className="text-center">
-          <ShoppingBag className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-          <p className="text-yellow-800">{t.noPurchases}</p>
-          <Link href="/GalleryPage" className="mt-4 inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+        <div className="bg-[#d1d451] p-8 rounded-lg text-center">
+          <ShoppingBag className="w-12 h-12 text-white mx-auto mb-4" />
+          <p className="text-white font-semibold body-font">{t.noPurchases}</p>
+          <Link 
+            href="/GalleryPage" 
+            className="mt-4 inline-block bg-[#926cad] hover:bg-[#7d5c94] text-white font-bold py-2 px-4 rounded transition duration-300 body-font"
+          >
             {t.exploreMenu}
           </Link>
         </div>
@@ -264,7 +267,7 @@ const Profile = () => {
 
     return purchaseHistory.map((purchase) => (
       <div key={purchase.id} className="mb-6 p-4 bg-white rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+        <h3 className="text-lg font-semibold text-[#926cad] mb-2 sharp-font">
           {t.purchaseDate} {new Date(purchase.date).toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US')}
         </h3>
         {purchase.items.map((item) => (
@@ -279,15 +282,15 @@ const Profile = () => {
               />
             )}
             <div>
-              <p className="font-medium">{item.name}</p>
-              <p className="text-sm text-gray-600">
+              <p className="font-medium sharp-font">{item.name}</p>
+              <p className="text-sm text-gray-600 body-font">
                 {t.quantity}: {item.quantity} - {t.unitPrice}: ${item.price.toFixed(2)} - 
                 {t.total}: ${(item.price * item.quantity).toFixed(2)}
               </p>
             </div>
           </div>
         ))}
-        <p className="text-right font-semibold">{t.purchaseTotal}: ${purchase.total.toFixed(2)}</p>
+        <p className="text-right font-semibold body-font">{t.purchaseTotal}: ${purchase.total.toFixed(2)}</p>
       </div>
     ));
   };
@@ -295,71 +298,71 @@ const Profile = () => {
   return (
     <>
       <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
-      <div className="max-w-4xl mx-auto mt-32 p-8 bg-green-50 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold mb-6 text-green-800 text-center">{t.healthCorner}</h1>
+      <div className="max-w-4xl mx-auto mt-32 p-8 bg-[#926cad] rounded-lg shadow-lg">
+        <h1 className="text-4xl font-bold mb-6 text-white text-center title-font">{t.healthCorner}</h1>
         
         {user && profile ? (
-          <div className="bg-white p-6 rounded-lg shadow-inner mb-6 border-2 border-green-200">
-            <h2 className="text-2xl font-semibold mb-4 text-green-700 flex items-center">
-              <Coffee className="w-6 h-6 mr-2 text-green-600" />
+          <div className="bg-white p-6 rounded-lg shadow-inner mb-6">
+            <h2 className="text-2xl font-semibold mb-4 text-[#926cad] flex items-center title-font">
+              <Coffee className="w-6 h-6 mr-2 text-[#926cad]" />
               {t.healthProfile}
             </h2>
             <div className="space-y-3">
-              <p className="flex items-center">
-                <Cake className="w-5 h-5 mr-2 text-green-600" /> 
-                <span className="font-medium">{t.name}:</span> 
-                <span className="ml-2">{profile.name} {profile.lastName}</span>
+              <p className="flex items-center body-font">
+                <Cake className="w-5 h-5 mr-2 text-[#926cad]" /> 
+                <span className="font-medium text-black">{t.name}:</span> 
+                <span className="ml-2 text-black">{profile.name} {profile.lastName}</span>
               </p>
-              <p className="flex items-center">
-                <Calendar className="w-5 h-5 mr-2 text-green-600" /> 
-                <span className="font-medium">{t.registryDate}:</span> 
-                <span className="ml-2">
+              <p className="flex items-center body-font">
+                <Calendar className="w-5 h-5 mr-2 text-[#926cad]" /> 
+                <span className="font-medium text-black">{t.registryDate}:</span> 
+                <span className="ml-2 text-black">
                   {profile.registry ? new Date(profile.registry).toLocaleDateString(language === 'es' ? 'es-ES' : 'en-US') : t.dateNotAvailable}
                 </span>
               </p>
-              <p className="flex items-center">
-                <Star className="w-5 h-5 mr-2 text-green-600" /> 
-                <span className="font-medium">{t.wellnessLevel}:</span> 
-                <span className="ml-2">{healthLevel.level}</span>
+              <p className="flex items-center body-font">
+                <Star className="w-5 h-5 mr-2 text-[#926cad]" /> 
+                <span className="font-medium text-black">{t.wellnessLevel}:</span> 
+                <span className="ml-2 text-black">{healthLevel.level}</span>
               </p>
-              <p className="flex items-center">
-                <Award className="w-5 h-5 mr-2 text-green-600" /> 
-                <span className="font-medium">{t.healthyPurchases}:</span> 
-                <span className="ml-2">{purchaseCount}</span>
+              <p className="flex items-center body-font">
+                <Award className="w-5 h-5 mr-2 text-[#926cad]" /> 
+                <span className="font-medium text-black">{t.healthyPurchases}:</span> 
+                <span className="ml-2 text-black">{purchaseCount}</span>
               </p>
-            </div>
-            <div className="mt-4 p-4 bg-green-100 rounded-lg">
-              <p className="text-green-700 italic">{healthLevel.description}</p>
             </div>
           </div>
         ) : (
-          <div className="bg-white p-6 rounded-lg shadow-inner mb-6 border-2 border-green-200 text-center">
-            <h2 className="text-2xl font-semibold mb-4 text-green-700">{t.guestTitle}</h2>
-            <p className="text-green-600 mb-4">{t.guestMessage}</p>
-            <Link href="/login" className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+          <div className="bg-white p-6 rounded-lg shadow-inner mb-6 text-center">
+            <h2 className="text-2xl font-semibold mb-4 text-[#926cad] title-font">{t.guestTitle}</h2>
+            <p className="text-gray-600 mb-4 body-font">{t.guestMessage}</p>
+            <Link 
+              href="/login" 
+              className="bg-[#d1d451] hover:bg-[#bfc048] text-white font-bold py-2 px-4 rounded transition duration-300 body-font"
+            >
               {t.login}
             </Link>
           </div>
         )}
 
-        <div className="bg-white p-6 rounded-lg shadow-inner border-2 border-green-200">
-          <h2 className="text-2xl font-semibold mb-4 text-green-700 flex items-center">
-            <ShoppingBag className="w-6 h-6 mr-2 text-green-600" />
+        <div className="bg-white p-6 rounded-lg shadow-inner">
+          <h2 className="text-2xl font-semibold mb-4 text-[#926cad] flex items-center title-font">
+            <ShoppingBag className="w-6 h-6 mr-2 text-[#926cad]" />
             {t.purchaseHistory}
           </h2>
           {renderPurchaseHistory()}
         </div>
         
-        <div className="mt-8 bg-green-100 p-6 rounded-lg shadow-inner text-center">
-          <h3 className="text-xl font-semibold text-green-800 mb-3">{t.didYouKnow}</h3>
-          <p className="text-green-700">{t.funFact}</p>
+        <div className="mt-8 bg-[#b0c4cc] p-6 rounded-lg shadow-inner text-center">
+          <h3 className="text-xl font-semibold text-[#926cad] mb-3 title-font">{t.didYouKnow}</h3>
+          <p className="text-gray-700 body-font">{t.funFact}</p>
         </div>
 
         {user && (
           <div className="mt-8 text-center">
             <button
               onClick={logout}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+              className="bg-[#d1d451] hover:bg-[#bfc048] text-white font-bold py-2 px-4 rounded transition duration-300 body-font"
             >
               {t.logout}
             </button>

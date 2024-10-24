@@ -136,7 +136,7 @@ const LuxuryBakeryHomepage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-amber-50 text-brown-900 overflow-hidden font-serif relative">
+    <div className="min-h-screen bg-amber-50 text-brown-900 overflow-hidden body-font relative">
       <Navbar cartCount={cartCount} language={language} toggleLanguage={toggleLanguage} />
 
       {/* WhatsApp Button */}
@@ -200,29 +200,31 @@ const LuxuryBakeryHomepage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter text-amber-100 drop-shadow-lg"
+              className="title-font text-5xl md:text-7xl lg:text-8xl mb-6 tracking-tighter text-amber-100 drop-shadow-lg"
             >
               {products && products[currentSlide] 
                 ? (language === 'es' ? products[currentSlide].name : products[currentSlide].name) 
                 : t('artInEveryBite')}
             </motion.h2>
+            
             <motion.p
               key={`description-${currentSlide}-${language}`}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-lg md:text-xl lg:text-2xl font-light mb-12 max-w-2xl mx-auto text-amber-50 drop-shadow"
+              className="body-font text-lg md:text-xl lg:text-2xl font-light mb-12 max-w-2xl mx-auto text-amber-50 drop-shadow"
             >
               {products && products[currentSlide] 
                 ? (language === 'es' ? products[currentSlide].description : products[currentSlide].description) 
                 : t('discoverExquisiteness')}
             </motion.p>
+            
             <motion.button
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-              className="px-8 py-4 bg-[#D0D450] text-[#7C428C] rounded-full text-lg font-semibold hover:bg-[#C8CC4A] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="body-font px-8 py-4 bg-[#D0D450] text-[#7C428C] rounded-full text-lg font-semibold hover:bg-[#C8CC4A] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               onClick={handleNavigate}
             >
               <ShoppingCart className="inline-block mr-2 h-5 w-5" />

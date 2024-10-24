@@ -35,7 +35,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
   };
 
   return (
-    <footer className="bg-[#D0D450] text-white py-8">
+    <footer className="bg-[#D0D450] text-white py-8 body-font">
       <div className="container mx-auto px-6">
         <div className="flex justify-between items-start">
           {/* Logo a la izquierda */}
@@ -59,16 +59,16 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
             <div className="border-l border-purple-700 mx-4" />
             <div className="flex flex-col items-center flex-grow">
               <div className="flex items-center mb-2">
-              <a href="tel:+17862800961" className="flex items-center text-xl hover:text-[#8D4C91] transition duration-300">
-                    <Phone className="w-6 h-6 mr-4" />
-                    +1 (786) 280-0961
-                  </a>
+                <a href="tel:+17862800961" className="flex items-center text-xl hover:text-[#8D4C91] transition duration-300 body-font">
+                  <Phone className="w-6 h-6 mr-4" />
+                  +1 (786) 280-0961
+                </a>
               </div>
               <div className="flex items-center mb-4">
-              <a href="mailto:info@beevsoven.com" className="flex items-center text-xl hover:text-[#8D4C91] transition duration-300">
-                    <Mail className="w-6 h-6 mr-4" />
-                    info@beevsoven.com
-                  </a>
+                <a href="mailto:info@beevsoven.com" className="flex items-center text-xl hover:text-[#8D4C91] transition duration-300 body-font">
+                  <Mail className="w-6 h-6 mr-4" />
+                  info@beevsoven.com
+                </a>
               </div>
 
               <div className="border-b border-blue-700 w-full mb-4" />
@@ -76,7 +76,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
               <div className="flex flex-col items-center mb-4">
                 {['login', 'buy', 'about-us', 'Contact-Us'].map((key) => (
                   <Link key={key} href={`/${key.toLowerCase()}`} passHref>
-                    <span className="flex items-center mb-2 transition-all duration-300 ease-in-out hover:text-yellow-300 hover:scale-105">
+                    <span className="flex items-center mb-2 transition-all duration-300 ease-in-out hover:text-yellow-300 hover:scale-105 title-font">
                       <Image src={`/images/${key.toLowerCase()}.svg`} alt={t(key as keyof typeof translations.en)} width={24} height={24} className="mr-2" />
                       {t(key as keyof typeof translations.en)}
                     </span>
@@ -103,7 +103,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
                 ))}
               </div>
 
-              <div className="text-center">
+              <div className="text-center title-font">
                 @beevs oven
               </div>
             </div>

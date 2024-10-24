@@ -106,12 +106,12 @@ const Navbar: React.FC<NavbarProps> = ({
       ? "group-hover:text-cream-100"
       : "group-hover:text-brown-600";
 
-    return (
-      <Link href={href} passHref>
-        <span
-          className={`group flex flex-col items-center justify-center px-2 py-2 text-sm md:text-base lg:text-lg font-semibold w-full md:w-28 lg:w-36 h-20 md:h-24
-            transition-colors duration-300 cursor-pointer`}
-        >
+      return (
+        <Link href={href} passHref>
+          <span
+            className={`group flex flex-col items-center justify-center px-2 py-2 text-sm md:text-base lg:text-lg font-semibold w-full md:w-28 lg:w-36 h-20 md:h-24
+              transition-colors duration-300 cursor-pointer body-font`}
+          >
           {isCustomIcon ? (
             <Image
               src={icon}
@@ -127,7 +127,7 @@ const Navbar: React.FC<NavbarProps> = ({
             />
           )}
           <span 
-            className={`text-center w-full truncate ${getTextColor()} ${isBuyLink ? '' : hoverColor}`}
+            className={`text-center w-full truncate ${getTextColor()} ${isBuyLink ? '' : hoverColor} body-font`}
           >
             {language === "es" ? textES : textEN}
           </span>
@@ -142,11 +142,11 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-500 ease-in-out
-          ${isScrolled ? "bg-opacity-95 backdrop-blur-md" : "bg-opacity-0"}
-          ${isDarkBackground ? "bg-brown-800" : "bg-cream-100"}
-          ${visible ? "top-0" : "-top-36"}`}
-    >
+    className={`fixed w-full z-50 transition-all duration-500 ease-in-out body-font
+        ${isScrolled ? "bg-opacity-95 backdrop-blur-md" : "bg-opacity-0"}
+        ${isDarkBackground ? "bg-brown-800" : "bg-cream-100"}
+        ${visible ? "top-0" : "-top-36"}`}
+  >
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24 xl:h-36">
           {/* Logo */}
@@ -171,15 +171,15 @@ const Navbar: React.FC<NavbarProps> = ({
           {/* Desktop Navigation */}
           <div className="hidden xl:flex items-center space-x-8">
             {user && (
-              <span
-                className={`text-2xl font-bold px-8
-                  ${isDarkBackground ? "text-white" : "text-brown-800"}
-                  transition-colors duration-300`}
-              >
-                {language === "es"
-                  ? `Hola, ${user.displayName || user.email}`
-                  : `Hello, ${user.displayName || user.email}`}
-              </span>
+                  <span
+                  className={`title-font text-2xl font-bold px-8
+                    ${isDarkBackground ? "text-white" : "text-brown-800"}
+                    transition-colors duration-300`}
+                >
+                  {language === "es"
+                    ? `Hola, ${user.displayName || user.email}`
+                    : `Hello, ${user.displayName || user.email}`}
+                </span>
             )}
 
 <NavLink  
@@ -214,7 +214,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     className="h-16 w-16 mr-2 text-brown-800"
                   />
                   {cartCount > 0 && (
-                    <span className="absolute top-0 right-0 inline-flex items-center justify-center px-3 py-2 text-base font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                    <span className="absolute top-0 right-0 inline-flex items-center justify-center px-3 py-2 text-base font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full body-font">
                       {cartCount}
                     </span>
                   )}
@@ -223,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={toggleLanguage}
-                className={`flex items-center justify-center px-6 py-4 text-xl font-bold w-44 h-28
+                className={`flex items-center justify-center px-6 py-4 text-xl font-bold w-44 h-28 body-font
                     ${isDarkBackground ? "text-white hover:text-cream-100" : "text-brown-800 hover:text-brown-600"}
                     transition-colors duration-300`}
               >
@@ -237,7 +237,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className="xl:hidden flex items-center space-x-4">
             <button
               onClick={toggleLanguage}
-              className={`flex items-center justify-center p-2 text-lg font-bold
+              className={`flex items-center justify-center p-2 text-lg font-bold body-font
                   ${isDarkBackground ? "text-white hover:text-cream-100" : "text-brown-800 hover:text-brown-600"}
                   transition-colors duration-300`}
             >
@@ -264,13 +264,13 @@ const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Menu */}
       <div
-        className={`xl:hidden transition-all duration-300 ease-in-out
+        className={`xl:hidden transition-all duration-300 ease-in-out body-font
             ${isNavOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"}
             overflow-hidden ${isDarkBackground ? "bg-brown-800" : "bg-cream-100"} bg-opacity-95 backdrop-blur-md`}
       >
         <div className="px-4 pt-2 pb-3 space-y-4 sm:px-3 flex flex-col items-center">
           {user && (
-            <span className={`text-2xl font-bold px-8 ${isDarkBackground ? "text-white" : "text-brown-800"}`}>
+            <span className={`title-font text-2xl font-bold px-8 ${isDarkBackground ? "text-white" : "text-brown-800"}`}>
               {language === "es"
                 ? `Hola, ${user.displayName || user.email}`
                 : `Hello, ${user.displayName || user.email}`}
