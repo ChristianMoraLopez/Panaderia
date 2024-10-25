@@ -12,59 +12,84 @@ const AboutUs: React.FC<AboutUsProps> = ({ language }) => {
       title: "Sobre",
       subtitle: "Nosotros",
       description: "Somos una empresa de productos alimenticios saludables para el cuidado de las personas, manejamos postres, comida saludable, para personas en Estados Unidos especialmente en la Florida.",
-      location: "Ubicados en Florida, EE.UU."
     },
     en: {
       title: "About",
       subtitle: "Us",
       description: "We are a company specializing in healthy food products for people's well-being. We offer desserts and healthy food, catering to individuals in the United States, particularly in Florida.",
-      location: "Located in Florida, USA"
     }
   };
 
   const t = translations[language];
 
+  const dotVariants = {
+    animate: {
+      y: [0, -8, 0],
+      transition: {
+        duration: 1.5,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <div className="bg-[#8D4C91] text-[#D9D055] py-12 sm:py-16 md:py-20 relative overflow-hidden body-font">
+    <div className="bg-[#936cad] py-12 sm:py-16 md:py-20 relative overflow-hidden body-font">
+      {/* Animated dots */}
+      <div className="absolute top-8 right-8 flex flex-col gap-4 z-20">
+        <motion.div
+          variants={dotVariants}
+          animate="animate"
+          className="w-4 h-4 rounded-full bg-[#f1bfb5]"
+        />
+        <motion.div
+          variants={dotVariants}
+          animate="animate"
+          transition={{ delay: 0.5 }}
+          className="w-4 h-4 rounded-full bg-[#d1d451]"
+        />
+        <motion.div
+          variants={dotVariants}
+          animate="animate"
+          transition={{ delay: 1 }}
+          className="w-4 h-4 rounded-full bg-[#b0c4cc]"
+        />
+      </div>
+
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center">
+        <div className="flex flex-col lg:flex-row items-center justify-between">
           <motion.div
             className="w-full lg:w-1/2 lg:pr-8 mb-8 lg:mb-0"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="title-font text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-4">
+            <h1 className="title-font text-[#d1d451] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-4">
               {t.title}
             </h1>
-            <h2 className="title-font text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold mb-4 sm:mb-6 md:mb-8">
+            <h2 className="title-font text-[#d1d451] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold mb-4 sm:mb-6 md:mb-8">
               {t.subtitle}
             </h2>
-            <p className="body-font text-lg sm:text-xl mb-6 sm:mb-8 leading-relaxed">
+            <p className="body-font text-white text-lg sm:text-xl mb-6 sm:mb-8 leading-relaxed max-w-xl">
               {t.description}
             </p>
-            <div className="w-full sm:w-2/3 md:w-1/2 mx-auto lg:mx-0">
-              <div className="bg-[#8D4C91] p-3 sm:p-4 rounded-lg border border-[#D9D055] text-center">
-                <p className="text-base sm:text-lg font-medium title-font">
-                  {t.location}
-                </p>
-              </div>
-            </div>
           </motion.div>
           <motion.div
-            className="w-full lg:w-1/2 flex justify-center items-center"
+            className="w-full lg:w-1/2 flex justify-end"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className="relative w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] aspect-square">
-              <Image
-                src="/images/SVG/LogoTransparent.svg"
-                alt="Company Logo"
-                layout="fill"
-                objectFit="contain"
-                className="opacity-20"
-              />
+           <div className="absolute right-0 -top-24 -bottom-24">
+              <div className="relative w-[500px] h-[500px]">
+                <Image
+                  src="/images/SVG/LogoTransparent.svg"
+                  alt="Company Logo"
+                  layout="fill"
+                  objectFit="contain"
+                  className="opacity-80 translate-x-44"
+                />
+              </div>
             </div>
           </motion.div>
         </div>

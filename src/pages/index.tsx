@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Footer from '@/components/Footer/Footer';
 import LearnMore from '@/components/learnMore';
+import OurProducts from '@/components/OurProducts';
 
 // Definimos un tipo para nuestras traducciones
 type Translations = {
@@ -91,6 +92,7 @@ const LuxuryBakeryHomepage = () => {
   const weeklyMenuSectionRef = useRef<HTMLElement | null>(null);
   const aboutUsSectionRef = useRef<HTMLElement | null>(null);
   const learnMoreSectionRef = useRef<HTMLElement | null>(null);
+  const OurProductsSectionRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
   
@@ -279,6 +281,12 @@ const LuxuryBakeryHomepage = () => {
         <section ref={weeklyMenuSectionRef} className="bg-brown-900 text-amber-100 py-12">
           <WeeklyMenuItemSection language={language} />
         </section>
+
+        <section ref={OurProductsSectionRef} className="bg-brown-900 text-amber-100 py-12">
+          <OurProducts language={language} />
+        </section>
+
+
         <section ref={aboutUsSectionRef} className="bg-amber-50 text-brown-900 ">
           <AboutUs language={language} />
         </section>
