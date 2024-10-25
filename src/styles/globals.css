@@ -6,3 +6,22 @@
 .super-rounded {
     border-radius: 30px !important; /* O el valor que prefieras */
   }
+
+  @keyframes logoAnimation {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    25% {
+      transform: scale(1.1) rotate(5deg);
+    }
+    75% {
+      transform: scale(1.1) rotate(-5deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+  
+  .animate-logo {
+    animation: logoAnimation 1s ease-in-out;
+  }

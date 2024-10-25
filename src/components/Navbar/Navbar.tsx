@@ -26,6 +26,12 @@ interface NavLinkProps {
   onClick?: () => void;
 }
 
+const pageBackgrounds = {
+  darkPages: ["/"],
+  lightPages: ["/profile", "/login", "/CheckOut"],
+  scrollTransitionPages: ["/ProductGalleryPage", "/AboutUs", "/ContactUsPage"]
+};
+
 const Navbar: React.FC<NavbarProps> = ({
   cartCount,
   language,
@@ -36,14 +42,29 @@ const Navbar: React.FC<NavbarProps> = ({
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
   const [isDarkBackground, setIsDarkBackground] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
   const { pathname } = useRouter();
   const { user } = useAuth();
 
-  const pageBackgrounds = {
-    darkPages: ["/"],
-    lightPages: ["/profile", "/login", "/CheckOut"],
-    scrollTransitionPages: ["/ProductGalleryPage", "/AboutUs", "/ContactUsPage"]
-  };
+  // Add animation trigger effect
+  useEffect(() => {
+    // Initial animation
+    setIsAnimating(true);
+    const initialTimer = setTimeout(() => setIsAnimating(false), 1000);
+
+    // Set up periodic animation
+    const intervalId = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => setIsAnimating(false), 1000);
+    }, 20000); // Trigger every 20 seconds
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(intervalId);
+    };
+  }, []);
+
+ 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -142,18 +163,20 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <nav
-    className={`fixed w-full z-50 transition-all duration-500 ease-in-out body-font
+      className={`fixed w-full z-50 transition-all duration-500 ease-in-out body-font
         ${isScrolled ? "bg-opacity-95 backdrop-blur-md" : "bg-opacity-0"}
         ${isDarkBackground ? "bg-brown-800" : "bg-cream-100"}
         ${visible ? "top-0" : "-top-36"}`}
-  >
+    >
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24 xl:h-36">
-          {/* Logo */}
+          {/* Logo with animation */}
           <Link href="/" passHref>
             <span className="flex-shrink-0 flex items-center h-full">
               <Image
-                className="h-auto w-auto transition-opacity duration-300 pt-16"
+                className={`h-auto w-auto pt-16 transition-all duration-300
+                  ${isAnimating ? 'animate-logo' : ''}
+                `}
                 src={logoSrc}
                 alt="Beev's oven"
                 width={200}
