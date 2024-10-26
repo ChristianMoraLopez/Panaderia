@@ -1,13 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin, Leaf, Heart, MessageCircle, Star, Eye, Target } from 'lucide-react';
+import { ArrowRight, MapPin, Leaf, Heart, MessageCircle, Star, Eye, Target, Shield, Smile,
+  
+ } from 'lucide-react';
 import Navbar from '@/components/Navbar/Navbar';
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Instagram, Facebook } from 'lucide-react';
 import { useEffect } from 'react';
-
+import StorySection from '@/components/StoryModal';
 
 
 
@@ -29,7 +31,9 @@ type Translation = {
   values: TranslationValue[];
   beevsSection: {
     title: string;
-    description: string;
+    description1: string;
+    description2: string;
+    description3: string;
     highlight: string;
   }
   values2: TranslationValue[];
@@ -47,115 +51,126 @@ const translations: Translations = {
   es: {
     title: "Sobre",
     subtitle: "Nosotros",
-    description: "Somos una empresa apasionada por ofrecer productos alimenticios saludables que cuidan de ti y de tu familia. Desde deliciosos postres hasta nutritivas comidas, nos especializamos en crear opciones que deleitan el paladar y nutren el cuerpo, sirviendo principalmente a nuestra comunidad en Florida, Estados Unidos.",
+    description: "Somos una compañía comprometida con la producción de alimentos saludables y nutritivos de consumo humano. Libres de aditivos, químicos, utilizando solamente productos que son beneficiosos para la salud y enseñando la manera de llevar un estilo de vida sin gluten, azúcar y aditivos, pero delicioso.",
     location: "Ubicados con orgullo en Florida, EE.UU.",
     learnMore: "Conoce más sobre nuestra misión",
     values: [
       {
-        title: "Salud",
-        description: "Priorizamos ingredientes naturales y procesos que mantienen el valor nutricional de nuestros productos.",
-        icon: "Leaf"
-      },
-      {
-        title: "Sabor",
-        description: "Creemos que la comida saludable puede ser deliciosa. Nuestros chefs se aseguran de que cada bocado sea una experiencia placentera.",
+        title: "Honestidad",
+        description: "Mantenemos la transparencia y veracidad en todos nuestros procesos y relaciones.",
         icon: "Heart"
       },
       {
-        title: "Comunidad",
-        description: "Nos enorgullece servir a nuestra comunidad local en Florida, contribuyendo a un estilo de vida más saludable.",
-        icon: "Leaf"
+        title: "Responsabilidad",
+        description: "Nos comprometemos con la calidad y el bienestar de nuestros clientes.",
+        icon: "Shield"
       },
-      
-    
-      
+      {
+        title: "Humildad",
+        description: "Mantenemos una actitud de aprendizaje continuo y respeto hacia todos.",
+        icon: "Smile"
+      },
+      {
+        title: "Excelencia",
+        description: "Buscamos la mejora continua en todos nuestros productos y servicios.",
+        icon: "Star"
+      },
+      {
+        title: "Transparencia",
+        description: "Compartimos abiertamente nuestros procesos e ingredientes.",
+        icon: "Eye"
+      }
     ],
     beevsSection: {
-      title: "Beevs Oven",
-      description: "En Beevs Oven, fusionamos la tradición panadera con la innovación saludable. Cada uno de nuestros productos está elaborado con ingredientes cuidadosamente seleccionados y técnicas artesanales que garantizan no solo un sabor excepcional, sino también beneficios nutricionales para ti y tu familia.",
-      highlight: "Descubre el sabor de lo artesanal"
+      title: "Mi Historia",
+      description1: "Hola, mi nombre es Belkis Escobar, y estoy emocionada de compartir con ustedes un capítulo de mi vida que me ha transformado de maneras que nunca imaginé. Como esposa, madre e hija y trabajadora bancaria, mi vida era ocupada, pero no fue hasta el 2022 que encontré mi verdadera vocación en la cocina con amor y pasión. Mi viaje comenzó con una llamada de atención. Después de ser diagnosticada con presión arterial alta y prediabetes, me encontré en una encrucijada. Con 237 libras, sabía que necesitaba hacer un cambio. No se trataba solo de números en una balanza; se trataba de recuperar mi salud y mi vida. Ese fue el punto de inflexión cuando decidí someterme a una cirugía de bypass gástrico. Después de la cirugía, perdí casi 100 libras, pero lo más importante fue que comencé a aprender sobre mi cuerpo y lo que realmente necesitaba. Descubrí que los dulces \"mis leales compañeros\" ahora eran mis enemigos. Fue desalentador darme cuenta de que muchos de mis postres favoritos podían sabotear mi nueva salud. Pero en lugar de sentirme derrotada, canalicé esa energía en la creación de versiones más saludables de los postres que amaba.",
+      description2: "Cocinar siempre había sido una pasión para mí, pero ahora estaba impregnada de un propósito más profundo: nutrir no solo mi paladar, sino también la salud de mi familia. Comencé a experimentar en la cocina, reemplazando los azúcares refinados por edulcorantes naturales y refinando recetas para mantener la indulgencia sin la culpa. Con cada creación, sentía una oleada de alegría, sabiendo que no solo alimentaba a mi familia, sino que ponía amor en cada bocado. Cada receta se convirtió en una historia, una conexión con la cultura de mi familia. Reunía a mis seres queridos alrededor de la isla de la cocina compartiendo relatos de cómo mi abuela solía hornear o cómo mi madre preparaba comidas especiales para las celebraciones. Cada plato era un recuerdo, una forma de honrar a quienes vinieron antes que yo mientras abría el camino hacia un futuro más saludable. Ahora, disfruto del papel de narradora a través de la comida. He convertido mi pasión por la cocina en una experiencia alegre, creando comidas y postres saludables que reúnen a todos alrededor de la mesa. Mi historia es un recordatorio de que, a veces, los desafíos de la vida pueden llevar a hermosas transformaciones. Así que, abracemos cada sabor, cada momento y cada recuerdo compartido alrededor de una comida. Después de todo, las mejores recetas se sazonan con amor.",
+      description3: "Desde siempre, mi cocina ha sido mi refugio. Entre el ruido de las ollas y los aromas, encontré paz. Pero no fue hasta que nació Beev's Oven que transformé mi pasión en algo más. Aquí es donde aprendí a combinar salud e indulgencia. En mi familia, los postres son más que dulces: son una tradición que conecta con el pasado y trae alegría. Siempre he estado orgullosa de ofrecer delicias caseras en nuestras reuniones, pero con el tiempo, me preocupé más por los ingredientes. Vi cómo lo que comemos afecta nuestra salud, y quise hacer la diferencia. Así nació Beev's Oven, con un compromiso claro: crear postres saludables y nutritivos. En Beev's Oven, no solo horneamos, creamos con amor. Cada receta es personalizada, desde opciones sin lácteos hasta sin gluten, porque todos merecen sentirse incluidos. Utilizo ingredientes naturales y de calidad, como harina de almendra, azúcar de coco orgánica y superalimentos. Cada bocado es una celebración de sabor y bienestar. Consulto regularmente con familias para entender sus necesidades, y la felicidad en sus rostros al disfrutar de un postre sin culpa no tiene precio. En Beev's Oven, salud y sabor están en perfecta armonía. Mi misión es demostrar que podemos disfrutar de placeres sin culpa. Con cada postre que preparo, cuido, conecto y construyo comunidad. Beev's Oven está aquí para compartir amor, un postre a la vez.",
+      highlight: "Descubre mi historia"
     },
-
     values2:[
       {
         title: "Misión",
-        description: "Crear productos de panadería excepcionales que combinen el sabor con la nutrición, usando ingredientes naturales y técnicas artesanales.",
+        description: "Nuestra misión es producir y entregar productos y alimentos de calidad e innovación, satisfaciendo de manera continua las necesidades de nuestros clientes, colaboradores y socios estratégicos. Nos comprometemos a mantener altos estándares de excelencia y a fomentar relaciones duraderas que impulsen el crecimiento mutuo.",
         icon: "Target"
       },
       {
         title: "Visión",
-        description: "Ser reconocidos como la principal panadería artesanal en Florida que revoluciona la forma de disfrutar productos horneados saludables.",
+        description: "Ser la compañía productora más grande de la Florida en la producción de comida saludable de mayor aporte nutricional en alimentos terminados y deliciosos.",
         icon: "Eye"
       },
       {
         title: "Valores",
-        description: "Compromiso con la excelencia, innovación en la salud, dedicación artesanal y servicio excepcional a nuestra comunidad.",
+        description: "Honestidad, Responsabilidad, Humildad, Excelencia y Transparencia son los pilares que guían nuestro trabajo diario.",
         icon: "Star"
       }
-
     ],
     slider: {
       title: "Team Beev's",
       subtitle: "Conócenos un poco más"
     }
-
-    
   },
   en: {
     title: "About",
     subtitle: "Us",
-    description: "We are a company passionate about offering healthy food products that take care of you and your family. From delicious desserts to nutritious meals, we specialize in creating options that delight the palate and nourish the body, primarily serving our community in Florida, United States.",
+    description: "We are a company committed to producing healthy and nutritious foods for human consumption. Free from additives and chemicals, using only products that are beneficial to health and teaching how to maintain a gluten-free, sugar-free, and additive-free lifestyle that's still delicious.",
     location: "Proudly located in Florida, USA",
     learnMore: "Learn more about our mission",
     values: [
       {
-        title: "Health",
-        description: "We prioritize natural ingredients and processes that maintain the nutritional value of our products.",
-        icon: "Leaf"
-      },
-      {
-        title: "Flavor",
-        description: "We believe that healthy food can be delicious. Our chefs ensure that every bite is a pleasant experience.",
+        title: "Honesty",
+        description: "We maintain transparency and truthfulness in all our processes and relationships.",
         icon: "Heart"
       },
       {
-        title: "Community",
-        description: "We take pride in serving our local community in Florida, contributing to a healthier lifestyle.",
-        icon: "Leaf"
+        title: "Responsibility",
+        description: "We are committed to the quality and well-being of our customers.",
+        icon: "Shield"
       },
-      
+      {
+        title: "Humility",
+        description: "We maintain an attitude of continuous learning and respect towards everyone.",
+        icon: "Smile"
+      },
+      {
+        title: "Excellence",
+        description: "We seek continuous improvement in all our products and services.",
+        icon: "Star"
+      },
+      {
+        title: "Transparency",
+        description: "We openly share our processes and ingredients.",
+        icon: "Eye"
+      }
     ],
-
     beevsSection: {
-      title: "Beevs Oven",
-      description: "At Beevs Oven, we merge baking tradition with healthy innovation. Each of our products is crafted with carefully selected ingredients and artisanal techniques that ensure not only exceptional taste but also nutritional benefits for you and your family.",
-      highlight: "Discover the taste of artisanal"
+      title: "My Story",
+      description1: "Hi, my name is Belkis Escobar, and I'm excited to share with you a chapter of my life that has transformed me in ways I never imagined. As a wife, mother, daughter, and bank worker, my life was busy, but it wasn't until 2022 that I found my true calling in cooking with love and passion. My journey began with a wake-up call. After being diagnosed with high blood pressure and prediabetes, I found myself at a crossroads. At 237 pounds, I knew I needed to make a change. It wasn't just about numbers on a scale; it was about reclaiming my health and my life. That was the turning point when I decided to undergo gastric bypass surgery. After the surgery, I lost almost 100 pounds, but most importantly, I began to learn about my body and what it really needed. I discovered that sweets, 'my loyal companions,' were now my enemies. It was disheartening to realize that many of my favorite desserts could sabotage my new health. But instead of feeling defeated, I channeled that energy into creating healthier versions of the desserts I loved.",
+      description2: "Cooking had always been a passion for me, but now it was infused with a deeper purpose: to nourish not just my palate, but also my family's health. I began experimenting in the kitchen, replacing refined sugars with natural sweeteners and refining recipes to maintain indulgence without guilt. With each creation, I felt a surge of joy, knowing I was not just feeding my family, but putting love into every bite. Each recipe became a story, a connection to my family's culture. I would gather my loved ones around the kitchen island, sharing stories of how my grandmother used to bake or how my mother prepared special meals for celebrations. Each dish was a memory, a way to honor those who came before me while paving the way for a healthier future. Now, I enjoy the role of storyteller through food. I've turned my passion for cooking into a joyful experience, creating healthy meals and desserts that bring everyone together around the table. My story is a reminder that sometimes life's challenges can lead to beautiful transformations. So, let's embrace every flavor, every moment, and every memory shared around a meal. After all, the best recipes are seasoned with love.",
+      description3: "My kitchen has always been my sanctuary. Among the noise of pots and aromas, I found peace. But it wasn't until Beev's Oven was born that I transformed my passion into something more. This is where I learned to combine health and indulgence. In my family, desserts are more than sweets: they're a tradition that connects with the past and brings joy. I've always been proud to offer homemade delights at our gatherings, but over time, I became more concerned about ingredients. I saw how what we eat affects our health, and I wanted to make a difference. That's how Beev's Oven was born, with a clear commitment: to create healthy and nutritious desserts. At Beev's Oven, we don't just bake, we create with love. Each recipe is personalized, from dairy-free to gluten-free options, because everyone deserves to feel included. I use natural, quality ingredients like almond flour, organic coconut sugar, and superfoods. Every bite is a celebration of flavor and wellness. I regularly consult with families to understand their needs, and the happiness on their faces when enjoying a guilt-free dessert is priceless. At Beev's Oven, health and flavor are in perfect harmony. My mission is to show that we can enjoy pleasures without guilt. With every dessert I prepare, I care, connect, and build community. Beev's Oven is here to share love, one dessert at a time.",
+      highlight: "Discover my story"
     },
-
     values2:[
-    {
-      title: "Mission",
-      description: "To create exceptional bakery products that combine flavor with nutrition, using natural ingredients and artisanal techniques.",
-      icon: "Target"
-    },
-    {
-      title: "Vision",
-      description: "To be recognized as Florida's leading artisanal bakery revolutionizing how people enjoy healthy baked goods.",
-      icon: "Eye"
-    },
-    {
-      title: "Values",
-      description: "Commitment to excellence, health innovation, artisanal dedication, and exceptional community service.",
-      icon: "Star"
-    }
-  ],
-
+      {
+        title: "Mission",
+        description: "Our mission is to produce and deliver quality and innovative products and foods, continuously satisfying the needs of our customers, collaborators, and strategic partners. We are committed to maintaining high standards of excellence and fostering lasting relationships that drive mutual growth.",
+        icon: "Target"
+      },
+      {
+        title: "Vision",
+        description: "To be Florida's largest producing company in the production of healthy food with the highest nutritional value in finished and delicious foods.",
+        icon: "Eye"
+      },
+      {
+        title: "Values",
+        description: "Honesty, Responsibility, Humility, Excellence, and Transparency are the pillars that guide our daily work.",
+        icon: "Star"
+      }
+    ],
     slider: {
       title: "Team Beev's",
       subtitle: "Get to know us a little better"
     }
-
-  
   }
 };
 
@@ -354,6 +369,13 @@ interface AboutUsPageProps {
             >
               {value.icon === 'Leaf' && <Leaf className="mx-auto mb-4 text-[#D9D055]" size={40} />}
               {value.icon === 'Heart' && <Heart className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              {value.icon === 'MessageCircle' && <MessageCircle className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              {value.icon === 'Star' && <Star className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              {value.icon === 'Eye' && <Eye className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              {value.icon === 'Target' && <Target className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              {value.icon === 'Shield' && <Shield className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              {value.icon === 'Smile' && <Smile className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+              
               <h3 className="text-2xl font-semibold mb-2 title-font">{value.title}</h3>
               <p className="body-font">{value.description}</p>
             </motion.div>
@@ -378,23 +400,7 @@ interface AboutUsPageProps {
             />
           </motion.div>
 
-          {/* Text Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-6"
-          >
-            <h2 className="text-4xl font-bold text-[#D9D055] title-font">
-              {translations[language].beevsSection.title}
-            </h2>
-            <p className="text-lg leading-relaxed body-font">
-              {translations[language].beevsSection.description}
-            </p>
-            <div className="inline-block bg-[#D9D055] text-[#8D4C91] px-6 py-3 rounded-full font-semibold title-font">
-              {translations[language].beevsSection.highlight}
-            </div>
-          </motion.div>
+          <StorySection translations={translations} language={language} />
 
 
         </div>
@@ -411,6 +417,7 @@ interface AboutUsPageProps {
             {value.icon === 'Target' && <Target className="mx-auto mb-4 text-[#D9D055]" size={40} />}
             {value.icon === 'Eye' && <Eye className="mx-auto mb-4 text-[#D9D055]" size={40} />}
             {value.icon === 'Star' && <Star className="mx-auto mb-4 text-[#D9D055]" size={40} />}
+          
             <h3 className="text-2xl font-semibold mb-2 title-font">{value.title}</h3>
             <p className="body-font">{value.description}</p>
           </motion.div>
