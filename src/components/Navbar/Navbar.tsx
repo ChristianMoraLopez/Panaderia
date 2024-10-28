@@ -159,7 +159,13 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const logoSrc = isDarkBackground
     ? "/images/reshot-icon-bread white.png"
-    : "/images/reshot-icon-bread.png";
+    : "/images/SVG/LogoOnPurple.svg";
+
+  // Add explicit dimensions for each logo variant
+  const logoDimensions = {
+    width: isDarkBackground ? 150 : 150, // Adjust these values as needed
+    height: isDarkBackground ? 200 : 150,  // Adjust these values as needed
+  };
 
   return (
     <nav
@@ -170,7 +176,7 @@ const Navbar: React.FC<NavbarProps> = ({
     >
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24 xl:h-36">
-          {/* Logo with animation */}
+          {/* Logo with animation and explicit dimensions */}
           <Link href="/" passHref>
             <span className="flex-shrink-0 flex items-center h-full">
               <Image
@@ -179,13 +185,14 @@ const Navbar: React.FC<NavbarProps> = ({
                 `}
                 src={logoSrc}
                 alt="Beev's oven"
-                width={200}
-                height={80}
+                width={logoDimensions.width}
+                height={logoDimensions.height}
                 style={{ 
                   objectFit: 'contain',
-                  maxWidth: '100%',
-                  maxHeight: '100%',
+                  minWidth: `${logoDimensions.width}px`, // Add minimum width
+                  minHeight: `${logoDimensions.height}px`, // Add minimum height
                 }}
+                priority // Add priority loading for logo
                 sizes="(max-width: 640px) 100px, (max-width: 768px) 140px, 150px"
               />
             </span>

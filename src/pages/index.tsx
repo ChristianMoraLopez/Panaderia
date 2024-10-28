@@ -11,6 +11,9 @@ import { useRouter } from 'next/router';
 import Footer from '@/components/Footer/Footer';
 import LearnMore from '@/components/learnMore';
 import OurProducts from '@/components/OurProducts';
+import Labels from '@/components/Labels';
+import Reviews from '@/components/Review';
+
 
 // Definimos un tipo para nuestras traducciones
 type Translations = {
@@ -93,6 +96,7 @@ const LuxuryBakeryHomepage = () => {
   const aboutUsSectionRef = useRef<HTMLElement | null>(null);
   const learnMoreSectionRef = useRef<HTMLElement | null>(null);
   const OurProductsSectionRef = useRef<HTMLElement | null>(null);
+  const ReviewsSectionRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
   
@@ -130,7 +134,7 @@ const LuxuryBakeryHomepage = () => {
         animate={{ rotate: 360 }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
       >
-        <Image src="/images/SVG/LogoWithOutLetters.svg" alt="Beev's oven" width={300} height={60} />
+        <Image src="/images/SVG/LogoOnWhite.svg" alt="Beev's oven" width={300} height={60} />
       </motion.div>
     </div>
   );
@@ -192,7 +196,9 @@ const LuxuryBakeryHomepage = () => {
         </AnimatePresence>
 
         {/* Social Media Buttons */}
-        <div className="absolute left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
+        <div 
+        style={{ paddingTop: "40%" }}
+        className="absolute pt- left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
   <SocialButton Icon={Instagram} href="https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA==" />
   <SocialButton Icon={Facebook} href="https://www.facebook.com/profile.php?id=61566809876928" />
   <motion.a
@@ -215,7 +221,7 @@ const LuxuryBakeryHomepage = () => {
   </motion.a>
 </div>
 
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute pt-48 inset-0 flex items-center justify-center">
           <div className="text-center z-10 px-4">
             <motion.h2
               key={`title-${currentSlide}-${language}`}
@@ -278,22 +284,37 @@ const LuxuryBakeryHomepage = () => {
         <section ref={productsSectionRef} className=" bg-gradient-to-b from-brown-900 to-amber-900">
           <GallerySection onAddToCart={() => setCartCount(prevCount => prevCount + 1)} language={language} />
         </section>
-        <section ref={weeklyMenuSectionRef} className="bg-brown-900 text-amber-100 py-12">
+        <section ref={weeklyMenuSectionRef} className="bg-brown-900 text-amber-100 pt-12 ">
           <WeeklyMenuItemSection language={language} />
         </section>
 
-        <section ref={OurProductsSectionRef} className="bg-brown-900 text-amber-100 py-12">
+        <section ref={OurProductsSectionRef} className="bg-brown-900 text-amber-100 pb-4">
           <OurProducts language={language} />
         </section>
 
 
-        <section ref={aboutUsSectionRef} className="bg-amber-50 text-brown-900 ">
+        <section ref={aboutUsSectionRef} className="bg-amber-50 text-brown-900 pb-0 ">
           <AboutUs language={language} />
         </section>
+
+        <section className="bg-amber-50 text-brown-900 pt-12">
+          <Labels />
+        </section>
+
+
+
 
         <section ref={learnMoreSectionRef} className="bg-brown-900 text-amber-100 ">
           <LearnMore language={language} />
         </section>
+
+
+        <section ref={ReviewsSectionRef} className="bg-brown-900 text-amber-100 ">
+          <Reviews language={language} />
+        </section>
+
+
+
 
 
 

@@ -30,8 +30,36 @@ export interface ContentfulEntryBase<TFields> {
       };
     };
     fields: TFields; // Tipo genérico para los campos específicos
+
+
+
   }
 
+  // Interfaz para los campos de las imágenes de la página "Sobre nosotros"
+
+  
+  export interface AboutUsPicturesFields {
+    title: string;
+    color: string; // Agregamos el campo color
+    imageAboutUs: {
+      fields: {
+        file: {
+          url: string;
+        };
+      };
+      sys: {
+        type: 'Link';
+        linkType: 'Asset';
+        id: string;
+      };
+    };
+  }
+// Entry type for About Us Pictures
+export interface AboutUsPicturesEntry {
+  sys: ContentfulEntryBase<AboutUsPicturesFields>['sys'];
+  fields: AboutUsPicturesFields;
+  contentTypeId: string;
+}
 // Interfaz para los campos del menú semanal
 export interface WeeklyMenuFields {
     title: string; // Ajustado para coincidir con el campo del JSON

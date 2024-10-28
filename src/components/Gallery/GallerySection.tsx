@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useProducts } from '@/hooks/useProducts';
 import { motion } from 'framer-motion';
-import { Cake, Cookie, Croissant, Coffee, Utensils  } from 'lucide-react';
+import Header from '../ui/Header';
 // Define the Product type
 interface Product {
   name: string;
@@ -54,7 +54,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({ language }) => {
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
         >
-          <Cake className="w-12 h-12 text-brown-500" />
+          
         </motion.div>
       </div>
     );
@@ -70,22 +70,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({ language }) => {
       </motion.div>
     );
 
-  const BackgroundIcons = () => (
-    <>
-      {[Cake, Cookie, Croissant, Coffee, Utensils].map((Icon, index) => (
-        <Icon 
-          key={index} 
-          className="w-8 h-8 text-brown-800 opacity-10" 
-          style={{
-            position: 'absolute',
-            top: `${Math.random() * 500}%`,
-            left: `${Math.random() * 200}%`,
-            transform: `rotate(${Math.random() * 360}deg)`,
-          }}
-        />
-      ))}
-    </>
-  );
 
   return (
     <motion.div
@@ -94,50 +78,49 @@ const GallerySection: React.FC<GallerySectionProps> = ({ language }) => {
       transition={{ duration: 0.5 }}
       className="pt-0 body-font"
     >
-      <div className="relative mb-12 overflow-hidden">
-        <div className="absolute inset-0 bg-[#D0D450]"></div>
-        <div className="relative z-10 py-6 px-4">
-          <h2 className="text-4xl font-bold text-center text-purple-800 relative z-20 title-font">
-            {translations[language].title}
-          </h2>
-          <div className="absolute inset-0 z-10">
-            {[...Array(50)].map((_, i) => (
-              <BackgroundIcons key={i} />
-            ))}
-          </div>
+
+
+<Header 
+        title={translations[language].title}
+        backgroundColor="bg-[#D0D450]"
+        textColor="text-[#936cad]"
+      />
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {randomProducts.map((product, index) => {
+            const imageUrl = product.image?.fields?.file?.url
+              ? `https:${product.image.fields.file.url}`
+              : '/placeholder.jpg';
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="group relative"
+              >
+                <Link href="/product">
+                  <div className="relative overflow-hidden rounded-lg shadow-lg cursor-pointer">
+                    <div className="aspect-[3/4]"> {/* Set aspect ratio for more elongated images */}
+                      <Image
+                        src={imageUrl}
+                        alt={language === 'es' ? product.name : product.name}
+                        fill
+                        className="object-cover transition-transform duration-300 transform group-hover:scale-110"
+                      />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <h3 className="text-white text-2xl font-bold text-center px-4 drop-shadow-lg opacity-80 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0 title-font">
+                        {language === 'es' ? product.name : product.name}
+                      </h3>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {randomProducts.map((product: Product, index: number) => {
-          const imageUrl = product.image?.fields?.file?.url
-            ? `https:${product.image.fields.file.url}`
-            : '/placeholder.jpg';
-          return (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="group relative"
-            >
-              <Link href="/product">
-                <div className="relative overflow-hidden rounded-lg shadow-lg cursor-pointer">
-                  <Image
-                    src={imageUrl}
-                    alt={language === 'es' ? product.name : product.name}
-                    width={500}
-                    height={500}
-                    className="w-full h-64 object-cover transition-transform duration-300 transform group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <h3 className="absolute bottom-4 left-4 right-4 text-white text-2xl font-bold text-center drop-shadow-lg transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 title-font">
-                    {language === 'es' ? product.name : product.name}
-                  </h3>
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })}
       </div>
     </motion.div>
   );

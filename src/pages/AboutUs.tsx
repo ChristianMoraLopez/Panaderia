@@ -10,6 +10,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Instagram, Facebook } from 'lucide-react';
 import { useEffect } from 'react';
 import StorySection from '@/components/StoryModal';
+import{useImages} from '@/hooks/useAboutImages';
 
 
 
@@ -211,67 +212,85 @@ interface AboutUsPageProps {
   }
   
  
-  const AboutUsPage: React.FC<AboutUsPageProps> = ({ initialLanguage = 'es' }) => {
-    const [language, setLanguage] = useState<Language>(initialLanguage);
-    const [cartCount] = useState(0);
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const toggleLanguage = () => {
-      setLanguage(prev => prev === 'es' ? 'en' : 'es');
-    };
+// Define los colores fijos fuera del componente
+const SLIDE_COLORS = ['#F3BEB6', '#936DAD', '#D1D550'];
 
+const AboutUsPage: React.FC<AboutUsPageProps> = ({ initialLanguage = 'es' }) => {
+  const [language, setLanguage] = useState<Language>(initialLanguage);
+  const [cartCount] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const { images, loading } = useImages();
   
-    const t = translations[language];
-    const currentSlides = slides[language];
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === 'es' ? 'en' : 'es');
+  };
   
-    useEffect(() => {
-      const timer = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % currentSlides.length);
-      }, 10000); // Cambia cada 5 segundos
-  
-      return () => clearInterval(timer);
-    }, [currentSlides.length]);
-  
-    const handleSlideChange = (index: number) => {
-      setCurrentSlide(index);
-    };
-  
+
+  const t = translations[language];
+
+
+  const currentSlides = React.useMemo(() => {
+    if (images && images.length > 0) {
+      return images.map((image, index) => {
+        const imageUrl = image.imageAboutUs.fields.file.url;
+        // Usa el color del arreglo según el índice, y si se acaban los colores, vuelve a empezar
+        const slideColor = SLIDE_COLORS[index % SLIDE_COLORS.length];
+        return {
+          image: imageUrl ? `https:${imageUrl}` : '/fallback-image.jpg',
+          color: slideColor
+        };
+      });
+    }
+    return slides[language];
+  }, [images, language]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % currentSlides.length);
+    }, 10000);
+
+    return () => clearInterval(timer);
+  }, [currentSlides.length]);
+
+  const handleSlideChange = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  // Show loading state
+  if (loading) {
     return (
-      <div className="bg-gradient-to-br from-[#8D4C91] to-[#6A3B6E] min-h-screen text-white">
-        <Navbar cartCount={cartCount} language={language} toggleLanguage={toggleLanguage} />
-     {/* WhatsApp Button */}
-<motion.a
-  href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="fixed bottom-6 right-6 z-50 bg-white/20 text-white p-4 rounded-full shadow-lg hover:bg-white/30 backdrop-blur-sm transition-colors"
-  whileHover={{ scale: 1.1 }}
-  whileTap={{ scale: 0.9 }}
->
-  <MessageCircle className="w-12 h-12" />
-</motion.a>
-    
-        {/* Main Slider Section */}
-        <section className="h-screen relative overflow-hidden">
-          <AnimatePresence initial={false}>
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="absolute inset-0 w-full h-full"
-            >
-              <Image
-                src={currentSlides[currentSlide].image}
-                alt="Team Beev's"
-                layout="fill"
-                objectFit="cover"
-                quality={100}
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
-            </motion.div>
-          </AnimatePresence>
-    
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#8D4C91] to-[#6A3B6E]">
+        <div className="text-white text-2xl">Loading...</div>
+      </div>
+    );
+  }
+  return (
+    <div className="bg-gradient-to-br from-[#8D4C91] to-[#6A3B6E] min-h-screen text-white">
+      <Navbar cartCount={cartCount} language={language} toggleLanguage={toggleLanguage} />
+      
+      {/* Main Slider Section */}
+      <section className="h-screen relative overflow-hidden">
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 w-full h-full"
+          >
+            <Image
+              src={currentSlides[currentSlide]?.image || '/fallback-image.jpg'}
+              alt="Team Beev's"
+              layout="fill"
+              objectFit="cover"
+              quality={100}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
+          </motion.div>
+        </AnimatePresence>
+
+
           {/* Social Media Buttons */}
           <div className="absolute left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
             <SocialButton Icon={Instagram} href="https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA==" />
@@ -313,20 +332,33 @@ interface AboutUsPageProps {
           </div>
   
           {/* Slider indicators */}
-          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-4">
-            {currentSlides.map((slide, index) => (
-              <motion.button
-                key={index}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => handleSlideChange(index)}
-                className={`w-4 h-4 rounded-full cursor-pointer transition-all duration-300 ${
-                  currentSlide === index ? 'ring-2 ring-white ring-offset-2' : ''
-                }`}
-                style={{ backgroundColor: slide.color }}
-              />
-            ))}
-          </div>
+<div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-4">
+  {currentSlides.map((slide, index) => {
+    // Determina el color del botón y su estado activo
+    const buttonColor = slide.color;
+    const isActive = currentSlide === index;
+    
+    return (
+      <motion.button
+        key={index}
+        whileHover={{ scale: 1.2 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => handleSlideChange(index)}
+        animate={{ 
+          scale: isActive ? 1.1 : 1,
+          opacity: isActive ? 1 : 0.6
+        }}
+        className={`w-4 h-4 rounded-full cursor-pointer transition-all duration-300
+          ${isActive ? 'ring-2 ring-white ring-offset-2' : ''}
+        `}
+        style={{ 
+          backgroundColor: buttonColor,
+          boxShadow: isActive ? `0 0 10px ${buttonColor}` : 'none'
+        }}
+      />
+    );
+  })}
+</div>
         </section>
   
         <header className="container mx-auto py-8">
@@ -383,8 +415,7 @@ interface AboutUsPageProps {
         </div>
 
         <div className="container mx-auto px-4 mb-16">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Image Section */}
+         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -392,18 +423,20 @@ interface AboutUsPageProps {
             className="relative h-[400px] rounded-lg overflow-hidden"
           >
             <Image
-              src={slides[language][0].image}
+              src={images?.[0]?.imageAboutUs.fields.file.url
+                ? `https:${images[0].imageAboutUs.fields.file.url }`
+                : slides[language][0].image}
               alt="Beevs Oven Bakery"
               layout="fill"
               objectFit="cover"
               className="rounded-lg"
             />
           </motion.div>
-
+          
           <StorySection translations={translations} language={language} />
-
-
         </div>
+
+
           {/* Sección corregida usando values2 */}
       <div className="grid md:grid-cols-3 gap-8 mt-14 mb-16">
         {t.values2.map((value, index) => (

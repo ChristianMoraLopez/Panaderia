@@ -97,7 +97,7 @@ const CheckoutPage: React.FC = () => {
   return (
     <>
       <Navbar cartCount={count} language={language} toggleLanguage={toggleLanguage} />
-      <div className="min-h-screen bg-gradient-to-br from-[#F2BFBB] via-[#B7D3D3] to-[#D0D450] pt-24">
+      <div className="min-h-screen bg-gradient-to-br from-[#FFFF] via-[#FFF8] to-[#FFFF] pt-24">
         <div className="container mx-auto px-4 py-12">
           <motion.h1 
             className="text-5xl md:text-6xl lg:text-7xl font-black mb-12 tracking-tighter text-[#936DAD] text-center drop-shadow-lg"

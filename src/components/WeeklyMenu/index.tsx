@@ -57,7 +57,7 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
             />
            
             {/* Content */}
-            <div className="relative w-full" style={{ minHeight: '400px', height: 'calc(100vh - 200px)' }}>
+            <div className="relative w-full h-[100vh]"> {/* Ajustado a 80vh */}
                 <Image
                     src={imageUrl}
                     alt={currentMenu.title}
@@ -70,10 +70,10 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
                 {/* Watermark Logo */}
                 <div className="absolute inset-0 overflow-hidden">
                     <Image
-                        src="/images/SVG/LogoWithOutLetters.svg"
+                        src="/images/SVG/LogoWithOutLettersWhite.svg"
                         alt="Watermark Logo"
-                        width={800}
-                        height={800}
+                        width={1000}
+                        height={1000}
                         className="absolute opacity-10 filter grayscale"
                         style={{
                             bottom: '0px',
@@ -82,11 +82,10 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
                     />
                 </div>
                 
-                {/* Content wrapper */}
-                <div className="absolute inset-0 mt-64 flex flex-col md:flex-row">
+                {/* Content wrapper - Movido hacia arriba */}
+                <div className="absolute inset-0 mt-56 flex flex-col md:flex-row"> {/* Ajustado mt-32 */}
                     {/* Left side content */}
-                    <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col justify-end text-white">
-                       
+                    <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col justify-start text-white"> {/* Cambiado a justify-start */}
                     </div>
 
                     {/* Colored Circles as division */}
@@ -97,25 +96,24 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
                                 whileHover={{ scale: 1.2 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => setCurrentIndex(index)}
-                                className={`w-8 h-8 sm:w-8 sm:h-8 rounded-full cursor-pointer transition-all duration-300 ${
-                                    currentIndex === index ? '' : ''
-                                }`}
+                                className={`w-8 h-8 sm:w-8 sm:h-8 rounded-full cursor-pointer transition-all duration-300`}
                                 style={{ backgroundColor: colors[index % colors.length] }}
                             />
                         ))}
                     </div>
 
-         {/* Right side content (description) */}
-<div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex items-center">
-    <div className="p-4 sm:p-6 rounded-lg text-white w-full">
-        <ul className="text-lg sm:text-xl md:text-2xl body-font">
-            {currentMenu.description.split(',').map((item, index) => (
-                <li key={index} className="mb-3">{item.trim()}</li> 
-            ))}
-        </ul>
-    </div>
-</div>
-
+                    {/* Right side content (description) - Texto más grande y arriba */}
+                    <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex items-start pt-16"> {/* Cambiado a items-start y agregado pt-16 */}
+                        <div className="p-4 sm:p-6 rounded-lg text-white w-full">
+                            <ul className="text-2xl sm:text-3xl md:text-4xl font-medium space-y-6 body-font"> {/* Aumentado tamaño de texto y espaciado */}
+                                {currentMenu.description.split(',').map((item, index) => (
+                                    <li key={index} className="mb-4 leading-relaxed">
+                                        {item.trim()}
+                                    </li> 
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
