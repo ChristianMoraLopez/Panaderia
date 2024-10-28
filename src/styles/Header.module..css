@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+  /* Header.module.css */
+  .backgroundSvg {
+    background-repeat: repeat-x;
+    background-size: 800px auto;
+    background-position: center;
+    min-height: 200px;
+  }
+  
+  /* Mantenemos el mismo tamaño en todos los breakpoints */
+  @media (max-width: 768px) {
+    .backgroundSvg {
+      background-size: 800px auto;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .backgroundSvg {
+      background-size: 800px auto;
+    }
+  }
