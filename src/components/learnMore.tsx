@@ -30,17 +30,17 @@ const LearnMore: React.FC<LearnMoreProps> = ({ language }) => {
     { 
       title: t.videos, 
       image: '/images/galletas.jpg',
-      link: 'https://www.tiktok.com/@beevsoven?_t=8qekMoITjKc&_r=1'
+      link: 'https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA%3D%3D '
     },
     { 
       title: t.recipes, 
       image: '/images/postre.jpg',
-      link: 'https://www.instagram.com/beevsoven/'
+      link: 'https://www.facebook.com/profile.php?id=61566798357587'
     },
     { 
       title: t.beevs, 
       image: '/images/beevsoven.jpg',
-      link: 'https://www.instagram.com/stories/highlights/18033024562838882/'
+      link: 'https://www.tiktok.com/@beevsoven?_t=8qqYITEYSOx&_r=1'
     },
   ];
 
