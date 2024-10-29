@@ -20,7 +20,7 @@ const DietaryBadges: React.FC<DietaryBadgesProps> = ({ nutritionalTable }) => {
     {
       id: 'sugarFree',
       show: nutritionalTable.fields.sugarFree,
-      src: '/public/images/svg/sugarfree.svg',
+      src: '/images/sugarfree.svg',
       alt: 'Sugar Free',
       width: 600,
       height: 400,
@@ -28,7 +28,7 @@ const DietaryBadges: React.FC<DietaryBadgesProps> = ({ nutritionalTable }) => {
     {
       id: 'glutenFree',
       show: nutritionalTable.fields.glutenFree,
-      src: '/images/svg/glutenfree.svg',
+      src: '/images/glutenfree.svg',
       alt: 'Gluten Free',
       width: 400,
       height: 400,
@@ -36,7 +36,7 @@ const DietaryBadges: React.FC<DietaryBadgesProps> = ({ nutritionalTable }) => {
     {
       id: 'keto',
       show: nutritionalTable.fields.keto,
-      src: '/images/svg/keto.svg',
+      src: '/images/keto.svg',
       alt: 'Keto',
       width: 400,
       height: 400,
@@ -44,7 +44,7 @@ const DietaryBadges: React.FC<DietaryBadgesProps> = ({ nutritionalTable }) => {
     {
       id: 'milkFree',
       show: nutritionalTable.fields.milkFree,
-      src: '/images/svg/milkfree.svg',
+      src: '/images/milkfree.svg',
       alt: 'Milk Free',
       width: 400,
       height: 400,
