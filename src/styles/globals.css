@@ -7,6 +7,10 @@
     border-radius: 30px !important; /* O el valor que prefieras */
   }
 
+  .full-rounded {
+    border-radius: 9999px !important; /* O el valor que prefieras */
+  }
+
   @keyframes logoAnimation {
     0% {
       transform: scale(1) rotate(0deg);
