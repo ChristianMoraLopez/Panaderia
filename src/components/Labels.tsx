@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 
 const Labels = () => {
   const stickers = [
-    '/images/SVG/glutenfree.svg',
-    '/images/SVG/keto.svg',
-    '/images/SVG/milkfree.svg',
-    '/images/SVG/sugarfree.svg'
+    '/images/glutenfree.svg',
+    '/images/keto.svg',
+    '/images/milkfree.svg',
+    '/images/sugarfree.svg'
   ];
 
   const containerVariants = {
