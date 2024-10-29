@@ -39,7 +39,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-12 md:gap-8">
           {/* Logo */}
-          <div className="w-full lg:-ml-64 md:w-1/2 flex justify-center md:justify-start">
+          <div className="w-full -ml-8 md:w-1/2 flex justify-center md:justify-start">
             <div 
               className="cursor-pointer transition-transform duration-500 ease-in-out hover:scale-110"
               onClick={handleLogoClick}
@@ -55,7 +55,7 @@ const Footer: React.FC<FooterProps> = ({ language }) => {
           </div>
 
           {/* Elementos centrales */}
-          <div className="w-full md:w-1/2 flex flex-col md:flex-row">
+          <div className="w-full md:w-1/2 -ml-24 flex flex-col md:flex-row">
             <div className="hidden md:block border-l-4 border-[#d1d451] mx-6" />
             <div className="flex flex-col items-center md:items-start flex-grow">
               {/* Contacto */}
