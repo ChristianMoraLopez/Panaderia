@@ -47,7 +47,7 @@ const Reviews: React.FC<ReviewsProps> = ({ language }) => {
       {/* Fondo */}
       <div className="absolute inset-0">
         <Image
-          src="/images/COMENTARIOS.PNG"
+          src="/images/comentarios.png"
           alt="Background"
           layout="fill"
           objectFit="cover"
