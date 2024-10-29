@@ -186,7 +186,7 @@ const LuxuryBakeryHomepage = () => {
       </motion.a>
 
       {/* Main Slider Section */}
-      <section className="h-screen relative overflow-hidden">
+      <section className="h-screen relative   overflow-hidden">
         <AnimatePresence initial={false}>
           {products && products[currentSlide] && (
             <motion.div
@@ -195,7 +195,7 @@ const LuxuryBakeryHomepage = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0  w-full h-full"
             >
               <Image
                 src={`https:${products[currentSlide].image.fields.file.url}`}
@@ -208,13 +208,13 @@ const LuxuryBakeryHomepage = () => {
                 objectFit="cover"
                 quality={100}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
+              <div className="absolute  inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/70" />
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* Social Media Buttons - Adjusted positioning */}
-        <div className="absolute left-6 top-1/3 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
+        <div className="absolute mt-64 left-6 top-1/3 transform -translate-y-1/2 flex flex-col space-y-4 z-10 hidden sm:flex">
           <SocialButton
             Icon={Instagram}
             href="https://www.instagram.com/beevsoven/profilecard/?igsh=MXhtN2djMnJtaHp2bA=="
@@ -241,7 +241,7 @@ const LuxuryBakeryHomepage = () => {
         </div>
 
         {/* Content Container - Adjusted for better vertical spacing */}
-        <div className="absolute inset-0 flex flex-col justify-center items-center">
+        <div className="absolute inset-0 flex pt-36 flex-col justify-center items-center">
           <div className="text-center z-10 px-4 mb-20">
             <motion.h2
               key={`title-${currentSlide}-${language}`}
