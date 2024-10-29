@@ -104,45 +104,45 @@ const NutritionalTable: React.FC<NutritionalTableProps> = ({
   const servingSize = ((Number(nt.servingSize)*100) * selectedUnits / product.units).toFixed(0);
 
   return (
-    <div className="w-full  bg-white rounded-lg overflow-hidden border-4 border-[#936cad] text-lg">
-      <div className="border-b border-[#936cad]  p-2">
-        <h3 className="title-font text-[#936cad] font-bold text-center">
+    <div className="w-full bg-white rounded-md overflow-hidden border-2 border-[#936cad] text-sm">
+      <div className="border-b border-[#936cad] p-1">
+        <h3 className="title-font text-[#936cad] font-bold text-center text-sm">
           {t.nutritionalInfo}
         </h3>
       </div>
-      <div className="p-1 text-center border-b-[12px] border-[#936cad]">
-        <p className="body-font text-black text-s">
+      <div className="p-0.5 text-center border-b-8 border-[#936cad]">
+        <p className="body-font text-black text-xs">
           {t.servingSize} {t.servingContains} {servingSize}g*
         </p>
       </div>
-      <div className="p-1">
+      <div className="p-0.5">
         <div className="">
-          <div className="p-1 border-b border-[#936cad]">
-            <p className="text-[#936cad] sharp-font font-semibold text-s">{t.amountPerServing}</p>
+          <div className="p-0.5 border-b border-[#936cad]">
+            <p className="text-[#936cad] sharp-font font-semibold text-xs">{t.amountPerServing}</p>
           </div>
 
-          <div className="p-1 border-b border-[#936cad] flex justify-between">
-            <span className="text-[#936cad] title-font">{t.calories}</span>
+          <div className="p-0.5 border-b border-[#936cad] flex justify-between">
+            <span className="text-[#936cad] title-font text-xs">{t.calories}</span>
             <div className="text-right">
-              <span className="text-black mr-1 body-font">{nt.calories}</span>
-              <span className="text-black text-s body-font">
+              <span className="text-black mr-1 body-font text-xs">{nt.calories}</span>
+              <span className="text-black text-xs body-font">
                 {calculateDailyPercentage(nt.calories, "calories")}% 
               </span>
             </div>
           </div>
 
-          <div className="p-1 border-b-4 border-[#936cad] flex justify-between">
-            <span className="text-[#936cad] title-font">{t.fatCalories}</span>
+          <div className="p-0.5 border-b-2 border-[#936cad] flex justify-between">
+            <span className="text-[#936cad] title-font text-xs">{t.fatCalories}</span>
             <div className="text-right">
-              <span className="text-black mr-1 body-font">{nt.fatCalories}</span>
-              <span className="text-black text-s body-font">
+              <span className="text-black mr-1 body-font text-xs">{nt.fatCalories}</span>
+              <span className="text-black text-xs body-font">
                 {calculateDailyPercentage(nt.fatCalories, "fatCalories")}% 
               </span>
             </div>
           </div>
 
-          <div className="p-1 border-b border-[#936cad] text-right">
-            <span className="sharp-font  text-s body-font">{t.dailyValue}</span>
+          <div className="p-0.5 border-b border-[#936cad] text-right">
+            <span className="sharp-font text-xs body-font">{t.dailyValue}</span>
           </div>
 
           <div className="divide-y divide-[#936cad]">
@@ -157,12 +157,12 @@ const NutritionalTable: React.FC<NutritionalTableProps> = ({
               { label: t.sugars, value: 4, unit: 'g', nutrient: null },
               { label: t.protein, value: nt.protein, unit: 'g', nutrient: 'protein' as NutrientType },
             ].map((item, index) => (
-              <div key={index} className="p-1 flex justify-between">
-                <span className="text-[#936cad] title-font">{item.label}</span>
-                <div className="flex gap-1">
-                  <span className="text-black body-font">{item.value}{item.unit}</span>
+              <div key={index} className="p-0.5 flex justify-between">
+                <span className="text-[#936cad] title-font text-xs">{item.label}</span>
+                <div className="flex gap-0.5">
+                  <span className="text-black body-font text-xs">{item.value}{item.unit}</span>
                   {item.nutrient && (
-                    <span className="text-black text-s body-font">
+                    <span className="text-black text-xs body-font">
                       {calculateDailyPercentage(item.value, item.nutrient)}%
                     </span>
                   )}
@@ -171,28 +171,28 @@ const NutritionalTable: React.FC<NutritionalTableProps> = ({
             ))}
           </div>
 
-          <div className="p-1 border-t-[12px] border-[#936cad] grid grid-cols-2 gap-1">
+          <div className="p-0.5 border-t-8 border-[#936cad] grid grid-cols-2 gap-0.5">
             <div className="flex justify-between">
-              <span className="text-[#936cad] body-font">{t.vitaminA}</span>
-              <span className="text-black body-font">
+              <span className="text-[#936cad] body-font text-xs">{t.vitaminA}</span>
+              <span className="text-black body-font text-xs">
                 {calculateDailyPercentage(nt.vitaminA, "vitaminA")}% 
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#936cad] body-font">{t.vitaminC}</span>
-              <span className="text-black body-font">
+              <span className="text-[#936cad] body-font text-xs">{t.vitaminC}</span>
+              <span className="text-black body-font text-xs">
                 {calculateDailyPercentage(nt.vitaminC, "vitaminC")}% 
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#936cad] body-font">{t.calcium}</span>
-              <span className="text-black body-font">
+              <span className="text-[#936cad] body-font text-xs">{t.calcium}</span>
+              <span className="text-black body-font text-xs">
                 {calculateDailyPercentage(nt.calcium, "calcium")}% 
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#936cad] body-font">{t.iron}</span>
-              <span className="text-black body-font">
+              <span className="text-[#936cad] body-font text-xs">{t.iron}</span>
+              <span className="text-black body-font text-xs">
                 {calculateDailyPercentage(nt.iron, "iron")}% 
               </span>
             </div>

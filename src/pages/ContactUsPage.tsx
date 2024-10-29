@@ -105,6 +105,18 @@ const ContactUsPage: React.FC = () => {
         toggleLanguage={toggleLanguage}
       />
 
+      {/* WhatsApp Button */}
+      <motion.a
+        href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-white/20 text-white p-4 rounded-full shadow-lg hover:bg-white/30 backdrop-blur-sm transition-colors"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <MessageCircle className="w-12 h-12" />
+      </motion.a>
+
       <div className="min-h-screen pt-36 bg-[#F2BFBB]">
         <main className="container mx-auto px-4 py-12">
           <motion.div

@@ -5,6 +5,7 @@ import { X, ShoppingBag, ChevronLeft, ChevronRight, Gift } from "lucide-react";
 import { useRouter } from "next/router";
 import { ProductFields } from "@/types/ProductTypes";
 import NutritionalTable from "./NutritionalTable";
+import DietaryBadges from "./ProductModalComponents/DietaryBadges";
 
 interface CartItem {
   id: number;
@@ -135,19 +136,19 @@ const ProductModal: React.FC<ProductModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-1 sm:p-2 bg-black/70 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-lg sm:rounded-2xl overflow-hidden w-full max-w-[1800px] shadow-2xl body-font max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg sm:rounded-xl overflow-hidden w-full max-w-[1200px] shadow-xl body-font max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] h-full">
               {/* Image Section */}
-              <div className="relative h-[300px] sm:h-[400px] md:h-[600px] lg:min-h-[900px] bg-gray-100">
+              <div className="relative h-[200px] sm:h-[300px] md:h-[400px] lg:min-h-[600px] bg-gray-100">
                 <Image
                   src={`https:${allImages[currentImageIndex].url}`}
                   alt={product.name}
@@ -157,11 +158,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 />
 
                 {/* Indicadores de imagen en la parte inferior */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1">
                   {allImages.map((_, index) => (
                     <div
                       key={index}
-                      className={`w-2 h-2 rounded-full ${
+                      className={`w-1.5 h-1.5 rounded-full ${
                         currentImageIndex === index ? "bg-white" : "bg-white/50"
                       } transition-all duration-300`}
                     ></div>
@@ -171,19 +172,19 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <>
                     <button
                       onClick={prevImage}
-                      className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 p-1 sm:p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+                      className="absolute left-1 sm:left-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors"
                     >
-                      <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 text-gray-800" />
+                      <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 text-gray-800" />
                     </button>
                     <button
                       onClick={nextImage}
-                      className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 p-1 sm:p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+                      className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors"
                     >
-                      <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 text-gray-800" />
+                      <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-800" />
                     </button>
 
                     {/* Image indicators */}
-                    <div className="absolute top-4 right-4 flex flex-wrap gap-2">
+                    <div className="absolute top-2 right-2 flex flex-wrap gap-1">
                       {unitOptions.map((units) => (
                         <button
                           key={units}
@@ -191,7 +192,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                             e.stopPropagation();
                             setSelectedUnits(units);
                           }}
-                          className={`px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm rounded-full ${
+                          className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs rounded-full ${
                             selectedUnits === units
                               ? "bg-[#936cad] text-white"
                               : "bg-white/80 text-gray-800"
@@ -206,35 +207,35 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
                 <button
                   onClick={onClose}
-                  className="absolute top-2 sm:top-4 right-2 sm:right-4 p-1 sm:p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+                  className="absolute top-1 sm:top-2 right-1 sm:right-2 p-1 rounded-full bg-white/80 hover:bg-white transition-colors"
                 >
-                  <X className="w-4 h-4 sm:w-6 sm:h-6 text-gray-800" />
+                  <X className="w-3 h-3 sm:w-4 sm:h-4 text-gray-800" />
                 </button>
+                
                 {/* Puntos de conexión */}
-
-                <div className="absolute right-0 top-1/2 lg:translate-x-1/2 transform -translate-y-1/2 hidden md:flex flex-col gap-4 lg:gap-6 z-20">
-                  <div className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 rounded-full bg-[#884393] shadow-lg"></div>
-                  <div className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 rounded-full bg-[#f1bfb5] shadow-lg"></div>
-                  <div className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 rounded-full bg-[#d1d451] shadow-lg"></div>
+                <div className="absolute right-0 top-1/2 lg:translate-x-1/2 transform -translate-y-1/2 hidden md:flex flex-col gap-2 lg:gap-3 z-20">
+                  <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-full bg-[#884393] shadow-lg"></div>
+                  <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-full bg-[#f1bfb5] shadow-lg"></div>
+                  <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 rounded-full bg-[#d1d451] shadow-lg"></div>
                 </div>
               </div>
 
               {/* Content Section */}
-              <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-[#ffff] to-[#fff9] min-h-[500px] lg:min-h-[800px]">
+              <div className="p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-[#ffff] to-[#fff9] min-h-[400px] lg:min-h-[600px]">
                 <div className="h-full flex flex-col">
                   {/* Header with improved spacing and overflow handling */}
-                  <div className="bg-[#936cad] p-3 sm:p-4 rounded-t-lg mb-4 sm:mb-8 overflow-hidden">
-                    <h2 className="title-font text-3xl sm:text-5xl lg:text-[80px] font-bold text-[#b0c4cc] leading-tight break-words">
+                  <div className="bg-[#936cad] p-2 sm:p-3 rounded-t-lg mb-3 sm:mb-4 overflow-hidden">
+                    <h2 className="title-font text-2xl sm:text-3xl lg:text-5xl font-bold text-[#b0c4cc] leading-tight break-words">
                       {product.name}
                     </h2>
                   </div>
 
                   {/* Main Content Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                     {/* Left Column - Nutritional Table */}
                     <div className="flex flex-col">
                       {product.nutrutionalTable && (
-                        <div className="transform scale-90 origin-top">
+                        <div className="transform scale-85 origin-top">
                           <NutritionalTable
                             product={product}
                             selectedUnits={selectedUnits}
@@ -245,72 +246,27 @@ const ProductModal: React.FC<ProductModalProps> = ({
                     </div>
 
                     {/* Right Column - Badges, Description, and Purchase Options */}
-                    <div className="flex flex-col gap-4 sm:gap-6">
+                    <div className="flex flex-col gap-3 sm:gap-4">
                       {/* Dietary Badges */}
-                      {product.nutrutionalTable && (
-                        <div className="flex justify-start my-4 sm:my-8 lg:my-12 ml-4 sm:ml-12 lg:ml-24  sm:-space-x-6 lg:-space-x-15 p-1 bg-white/10 rounded-lg">
-                          {product.nutrutionalTable.fields.sugarFree && (
-                            <div>
-                              <Image
-                                src="/images/svg/sugarfree.svg"
-                                alt="Sugar Free"
-                                width={600}
-                                height={400}
-                                className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24"
-                              />
-                            </div>
-                          )}
-                          {product.nutrutionalTable.fields.glutenFree && (
-                            <div>
-                              <Image
-                                src="/images/svg/glutenfree.svg"
-                                alt="Gluten Free"
-                                width={400}
-                                height={400}
-                                className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24"
-                              />
-                            </div>
-                          )}
-                          {product.nutrutionalTable.fields.keto && (
-                            <div>
-                              <Image
-                                src="/images/svg/keto.svg"
-                                alt="Keto"
-                                width={400}
-                                height={400}
-                                className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24"
-                              />
-                            </div>
-                          )}
-                          {product.nutrutionalTable.fields.milkFree && (
-                            <div>
-                              <Image
-                                src="/images/svg/milkfree.svg"
-                                alt="Milk Free"
-                                width={400}
-                                height={400}
-                                className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
+{product.nutrutionalTable && (
+  <DietaryBadges nutritionalTable={product.nutrutionalTable} />
+)}
                       {/* Description */}
-                      <p className="text-gray-800 text-base sm:text-lg leading-relaxed">
+                      <p className="text-gray-800 text-sm sm:text-base leading-relaxed">
                         {product.description}
                       </p>
 
                       {/* Units Selection */}
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1">
                         {unitOptions.map((units) => (
                           <button
                             key={units}
                             onClick={() => setSelectedUnits(units)}
-                            className={`px-3 sm:px-4 py-1 sm:py-2 rounded-full ${
+                            className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${
                               selectedUnits === units
                                 ? "bg-[#936cad] text-white"
                                 : "bg-white/80 text-gray-800"
-                            } hover:bg-[#936cad] hover:text-white transition-colors text-xs sm:text-sm font-semibold`}
+                            } hover:bg-[#936cad] hover:text-white transition-colors text-xs font-semibold`}
                           >
                             {units} {language === "es" ? "Unidades" : "Units"}
                           </button>
@@ -318,27 +274,27 @@ const ProductModal: React.FC<ProductModalProps> = ({
                       </div>
 
                       {/* Price and Purchase Buttons */}
-                      <div className="space-y-3 sm:space-y-4">
-                        <div className="flex items-center justify-between flex-wrap gap-2">
-                          <span className="title-font text-2xl sm:text-3xl font-bold text-gray-800">
+                      <div className="space-y-2 sm:space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-1">
+                          <span className="title-font text-xl sm:text-2xl font-bold text-gray-800">
                             ${calculatePrice(product.price).toFixed(2)}
                           </span>
                           {product.giftBoxPrice && (
-                            <span className="title-font text-lg sm:text-xl text-gray-600">
+                            <span className="title-font text-base sm:text-lg text-gray-600">
                               {t.giftBox}: $
                               {calculatePrice(product.giftBoxPrice).toFixed(2)}
                             </span>
                           )}
                         </div>
 
-                        <div className="flex flex-col  border-t-4 pt-4 border-[#b0c4cc] sm:flex-row gap-2 sm:gap-4">
+                        <div className="flex flex-col border-t-2 pt-2 border-[#b0c4cc] sm:flex-row gap-1 sm:gap-2">
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={handleBuyNow}
-                            className="flex-1 bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-semibold text-base sm:text-lg flex items-center justify-center gap-2"
+                            className="flex-1 bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center justify-center gap-1"
                           >
-                            <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
+                            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                             <span>{t.buyNow}</span>
                           </motion.button>
 
@@ -347,9 +303,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                               onClick={handleBuyNow}
-                              className="flex-1 bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-semibold text-base sm:text-lg flex items-center justify-center gap-2"
+                              className="flex-1 bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center justify-center gap-1"
                             >
-                              <Gift className="w-5 h-5 sm:w-6 sm:h-6" />
+                              <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
                               <span>{t.buyWithGiftBox}</span>
                             </motion.button>
                           )}
@@ -358,13 +314,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
                       {/* Allergen Information */}
                       {product.allergenInfo && (
-                        <div className="p-3 sm:p-4 ">
-                          <p className="text-[#884393] text-sm sm:text-base">
+                        <div className="p-2 sm:p-3">
+                          <p className="text-[#884393] text-xs sm:text-sm">
                             {language === "es"
                               ? "Información de Alérgenos:"
                               : "Allergen Information:"}
                           </p>
-                          <p className="text-gray-800 mt-2 text-sm sm:text-base">
+                          <p className="text-gray-800 mt-1 text-xs sm:text-sm">
                             {product.allergenInfo}
                           </p>
                         </div>

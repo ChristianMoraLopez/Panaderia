@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin, Leaf, Heart, MessageCircle, Star, Eye, Target, Shield, Smile,
+import {  MapPin, Leaf, Heart, MessageCircle, Star, Eye, Target, Shield, Smile,
   
  } from 'lucide-react';
 import Navbar from '@/components/Navbar/Navbar';
@@ -11,6 +11,7 @@ import { Instagram, Facebook } from 'lucide-react';
 import { useEffect } from 'react';
 import StorySection from '@/components/StoryModal';
 import{useImages} from '@/hooks/useAboutImages';
+import Footer from '@/components/Footer/Footer';
 
 
 
@@ -267,6 +268,18 @@ const AboutUsPage: React.FC<AboutUsPageProps> = ({ initialLanguage = 'es' }) => 
   return (
     <div className="bg-gradient-to-br from-[#8D4C91] to-[#6A3B6E] min-h-screen text-white">
       <Navbar cartCount={cartCount} language={language} toggleLanguage={toggleLanguage} />
+
+      {/* WhatsApp Button */}
+      <motion.a
+        href="https://wa.me/17862800961?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20acerca%20de%20sus%20productos"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-white/20 text-white p-4 rounded-full shadow-lg hover:bg-white/30 backdrop-blur-sm transition-colors"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <MessageCircle className="w-12 h-12" />
+      </motion.a>
       
       {/* Main Slider Section */}
       <section className="h-screen relative overflow-hidden">
@@ -469,11 +482,7 @@ const AboutUsPage: React.FC<AboutUsPageProps> = ({ initialLanguage = 'es' }) => 
         </motion.div>
       </main>
 
-      <footer className="container mx-auto py-8 text-center">
-        <a href="#" className="inline-flex items-center text-[#D9D055] hover:underline body-font">
-          {t.learnMore} <ArrowRight className="ml-2" size={20} />
-        </a>
-      </footer>
+      <Footer language={language} />
     </div>
   );
 };
