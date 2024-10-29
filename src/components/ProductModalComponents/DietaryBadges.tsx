@@ -20,7 +20,7 @@ const DietaryBadges: React.FC<DietaryBadgesProps> = ({ nutritionalTable }) => {
     {
       id: 'sugarFree',
       show: nutritionalTable.fields.sugarFree,
-      src: '/images/svg/sugarfree.svg',
+      src: '/public/images/svg/sugarfree.svg',
       alt: 'Sugar Free',
       width: 600,
       height: 400,
