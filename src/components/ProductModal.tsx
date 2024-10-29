@@ -32,17 +32,17 @@ const ProductModal: React.FC<ProductModalProps> = ({
 }) => {
   const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  // Initialize selectedUnits with a default value of 0
   const [selectedUnits, setSelectedUnits] = useState<number>(0);
+  const [, setIncludeGiftBox] = useState<boolean>(false);
 
-  // Set the selectedUnits when product changes
+
+
   useEffect(() => {
     if (product) {
       setSelectedUnits(product.units);
+      setIncludeGiftBox(false); // Reset gift box selection when product changes
     }
   }, [product]);
-
   // Return null if product is not available
   if (!product) return null;
 
@@ -62,12 +62,16 @@ const ProductModal: React.FC<ProductModalProps> = ({
     product.anotherImages?.map((img) => ({ url: img.fields.file.url })) || [];
   const allImages = [mainImage, ...additionalImages];
 
-  const handleBuyNow = () => {
+  const handleBuyNow = (withGiftBox: boolean = false) => {
+    const finalPrice = withGiftBox 
+      ? (product.giftBoxPrice || 0)
+      : calculatePrice(product.price);
+  
     addToCart({
       id: parseInt(product.image.sys.id),
       name: product.name,
       description: product.description,
-      price: product.price,
+      price: finalPrice,
       image_url: product.image?.fields?.file?.url || "/placeholder.jpg",
     });
     router.push("/CheckOut");
@@ -288,28 +292,29 @@ const ProductModal: React.FC<ProductModalProps> = ({
                         </div>
 
                         <div className="flex flex-col border-t-2 pt-2 border-[#b0c4cc] sm:flex-row gap-1 sm:gap-2">
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={handleBuyNow}
-                            className="flex-1 bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center justify-center gap-1"
-                          >
-                            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
-                            <span>{t.buyNow}</span>
-                          </motion.button>
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={() => handleBuyNow(false)}
+      className="flex-1 bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center justify-center gap-1"
+    >
+      <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
+      <span>{t.buyNow}</span>
+    </motion.button>
 
-                          {product.giftBoxPrice && (
-                            <motion.button
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                              onClick={handleBuyNow}
-                              className="flex-1 bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center justify-center gap-1"
-                            >
-                              <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
-                              <span>{t.buyWithGiftBox}</span>
-                            </motion.button>
-                          )}
-                        </div>
+    {product.giftBoxPrice && (
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => handleBuyNow(true)}
+        className="flex-1 bg-[#D1D550] hover:bg-[#C7CB4B] text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base flex items-center justify-center gap-1"
+      >
+        <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
+        <span>{t.buyWithGiftBox}</span>
+      </motion.button>
+    )}
+  </div>
+
                       </div>
 
                       {/* Allergen Information */}
