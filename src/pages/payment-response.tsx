@@ -15,6 +15,31 @@ interface ProductDetails {
   quantity: number;
 }
 
+interface OrderItem {
+  name: string;
+  price: number;
+  quantity: number;
+  description?: string;
+  image_url: string;
+}
+
+interface PendingOrder {
+  customerName: string;
+  customerEmail: string;
+  shippingAddress: {
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+  items: OrderItem[];
+  amount: number;
+  metadata: {
+    purchaseId: string;
+  };
+}
+
 const PaymentResponse = () => {
   const router = useRouter();
   const [status, setStatus] = useState<'success' | 'failure' | 'loading'>('loading');
@@ -25,7 +50,6 @@ const PaymentResponse = () => {
 
   useEffect(() => {
     const handlePaymentResponse = async () => {
-      // Only proceed if router is ready and we're not already processing an order
       if (!router.isReady || processingOrder) return;
 
       const { transactionState } = router.query;
@@ -37,44 +61,48 @@ const PaymentResponse = () => {
         const pendingOrderString = localStorage.getItem('pendingOrder');
         
         if (pendingOrderString && !processingOrder) {
-          setProcessingOrder(true); // Set processing flag to prevent multiple executions
-          
-          const pendingOrder = JSON.parse(pendingOrderString);
+          setProcessingOrder(true);
           
           try {
-            // Send email only once
+            const pendingOrder: PendingOrder = JSON.parse(pendingOrderString);
+            
+            // Format order data for email
+            const emailData = {
+              fullName: pendingOrder.customerName,
+              email: pendingOrder.customerEmail,
+              phone: pendingOrder.shippingAddress.phone,
+              address1: pendingOrder.shippingAddress.address,
+              city: pendingOrder.shippingAddress.city,
+              state: pendingOrder.shippingAddress.state,
+              zipCode: pendingOrder.shippingAddress.zipCode,
+              orderDetails: pendingOrder.items.map((item: OrderItem) => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+              })),
+              totalAmount: pendingOrder.amount / 100
+            };
+
             const emailResponse = await fetch('/api/sendMail', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                fullName: pendingOrder.customerName,
-                email: pendingOrder.customerEmail,
-                phone: pendingOrder.phoneNumber,
-                address1: pendingOrder.address1,
-                address2: pendingOrder.address2,
-                city: pendingOrder.city,
-                state: pendingOrder.state,
-                zipCode: pendingOrder.zipCode,
-                orderDetails: pendingOrder.orderDetails,
-                totalAmount: pendingOrder.total
-              }),
+              body: JSON.stringify(emailData),
             });
 
             if (!emailResponse.ok) {
               throw new Error('Error al enviar el correo electrónico');
             }
 
-            // Update purchase history
             if (user) {
-              for (const item of pendingOrder.orderDetails) {
+              for (const item of pendingOrder.items) {
                 const productDetails: ProductDetails = {
                   name: item.name,
                   price: item.price,
                   quantity: item.quantity,
-                  description: item.description,
+                  description: item.description || '',
                   imageId: item.image_url
                 };
-                await updatePurchaseHistory(pendingOrder.purchaseId, productDetails);
+                await updatePurchaseHistory(pendingOrder.metadata.purchaseId, productDetails);
               }
             } else {
               const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
@@ -82,7 +110,6 @@ const PaymentResponse = () => {
               localStorage.setItem('purchaseHistory', JSON.stringify(localPurchaseHistory));
             }
 
-            // Clean up
             clearCart();
             localStorage.removeItem('pendingOrder');
             toast.success('¡Compra realizada con éxito!');
