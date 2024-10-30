@@ -19,6 +19,7 @@ type ContentfulEntry = {
     description: { 'en-US': string };
     price: { 'en-US': number };
     quantity: { 'en-US': number };
+    registry : { 'en-US': string };
     image: { 
       'en-US': {
         sys: {
@@ -170,10 +171,11 @@ const Profile = () => {
             const quantity = historyItem.fields.quantity?.['en-US'] || 1;
             const price = historyItem.fields.price['en-US'];
             const imageId = historyItem.fields.image?.['en-US']?.sys?.id || '';
+            const registryDate = historyItem.fields.registry?.['en-US'] || new Date().toISOString();
             
             return {
               id: key,
-              date: new Date().toISOString(),
+              date: registryDate, // Usamos la fecha de registro del producto
               items: [{
                 id: parseInt(key),
                 name: historyItem.fields.name['en-US'],
@@ -186,7 +188,12 @@ const Profile = () => {
           }
           return null;
         })
-        .filter((item): item is PurchaseHistoryItem => item !== null);
+        .filter((item): item is PurchaseHistoryItem => item !== null)
+        .sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateB.getTime() - dateA.getTime(); // Orden descendente por fecha
+        });
     } catch (error) {
       console.error("Error processing Contentful history:", error);
       return [];
