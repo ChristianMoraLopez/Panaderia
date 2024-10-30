@@ -34,7 +34,6 @@ const sendMail = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const orderData: OrderData = req.body;
 
-  // Construir la dirección completa
   const fullAddress = [
     orderData.address1,
     orderData.address2,
@@ -43,14 +42,24 @@ const sendMail = async (req: NextApiRequest, res: NextApiResponse) => {
     orderData.zipCode
   ].filter(Boolean).join(', ');
 
-  const orderItemsHtml = orderData.orderDetails.map((item: OrderItem) => `
+  // Calculate subtotals and total correctly
+const orderItemsHtml = orderData.orderDetails.map((item: OrderItem) => {
+  const subtotal = Math.round((item.quantity * item.price) * 100) / 100;
+  return `
     <tr>
       <td style="padding: 8px; border: 1px solid #ddd;">${item.name}</td>
       <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${item.quantity}</td>
       <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${item.price.toFixed(2)}</td>
-      <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${(item.quantity * item.price).toFixed(2)}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${subtotal.toFixed(2)}</td>
     </tr>
-  `).join('');
+  `
+}).join('');
+
+// Calculate total amount from items with proper decimal handling
+const calculatedTotal = orderData.orderDetails.reduce((acc, item) => {
+  const itemTotal = Math.round((item.quantity * item.price) * 100) / 100;
+  return acc + itemTotal;
+}, 0);
 
   const emailContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -75,14 +84,13 @@ const sendMail = async (req: NextApiRequest, res: NextApiResponse) => {
         ${orderItemsHtml}
         <tr style="background-color: #f9f9f9; font-weight: bold;">
           <td colspan="3" style="padding: 8px; text-align: right;">Total:</td>
-          <td style="padding: 8px; text-align: right;">$${orderData.totalAmount.toFixed(2)}</td>
+          <td style="padding: 8px; text-align: right;">$${calculatedTotal.toFixed(2)}</td>
         </tr>
       </table>
     </div>
   `;
 
   try {
-    // Enviar correo a la tienda
     await sendgrid.send({
       to: 'info@beevsoven.com',
       from: 'confirmation@beevsoven.com',
@@ -90,7 +98,6 @@ const sendMail = async (req: NextApiRequest, res: NextApiResponse) => {
       html: emailContent,
     });
 
-    // Enviar correo al cliente
     await sendgrid.send({
       to: orderData.email,
       from: 'confirmation@beevsoven.com',

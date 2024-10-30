@@ -1,27 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, Loader, Phone, Mail } from 'lucide-react';
+import { XCircle, Loader, Phone, Mail } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { useAuth } from '@/hooks/authContentfulUser';
 import { useCartMutations } from '@/store/Cart';
 import Image from 'next/image';
-
-interface ProductDetails {
-  name: string;
-  price: number;
-  description: string;
-  imageId: string;
-  quantity: number;
-}
-
-interface OrderItem {
-  name: string;
-  price: number;
-  quantity: number;
-  description?: string;
-  image_url: string;
-}
 
 interface PendingOrder {
   customerName: string;
@@ -33,17 +16,19 @@ interface PendingOrder {
     state: string;
     zipCode: string;
   };
-  items: OrderItem[];
+  items: Array<{
+    name: string;
+    price: number;
+    quantity: number;
+    description?: string;
+    image_url: string;
+  }>;
   amount: number;
-  metadata: {
-    purchaseId: string;
-  };
 }
 
 const PaymentResponse = () => {
   const router = useRouter();
   const [status, setStatus] = useState<'success' | 'failure' | 'loading'>('loading');
-  const { user, updatePurchaseHistory } = useAuth();
   const { clearCart } = useCartMutations();
   const [processingOrder, setProcessingOrder] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -57,6 +42,8 @@ const PaymentResponse = () => {
       if (transactionState === '4') {
         setStatus('success');
         setShowConfetti(true);
+
+        showConfetti && setTimeout(() => setShowConfetti(false), 5000);
         
         const pendingOrderString = localStorage.getItem('pendingOrder');
         
@@ -66,7 +53,7 @@ const PaymentResponse = () => {
           try {
             const pendingOrder: PendingOrder = JSON.parse(pendingOrderString);
             
-            // Format order data for email
+            // Send email only
             const emailData = {
               fullName: pendingOrder.customerName,
               email: pendingOrder.customerEmail,
@@ -75,7 +62,7 @@ const PaymentResponse = () => {
               city: pendingOrder.shippingAddress.city,
               state: pendingOrder.shippingAddress.state,
               zipCode: pendingOrder.shippingAddress.zipCode,
-              orderDetails: pendingOrder.items.map((item: OrderItem) => ({
+              orderDetails: pendingOrder.items.map(item => ({
                 name: item.name,
                 quantity: item.quantity,
                 price: item.price
@@ -93,23 +80,6 @@ const PaymentResponse = () => {
               throw new Error('Error al enviar el correo electrónico');
             }
 
-            if (user) {
-              for (const item of pendingOrder.items) {
-                const productDetails: ProductDetails = {
-                  name: item.name,
-                  price: item.price,
-                  quantity: item.quantity,
-                  description: item.description || '',
-                  imageId: item.image_url
-                };
-                await updatePurchaseHistory(pendingOrder.metadata.purchaseId, productDetails);
-              }
-            } else {
-              const localPurchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
-              localPurchaseHistory.push(pendingOrder);
-              localStorage.setItem('purchaseHistory', JSON.stringify(localPurchaseHistory));
-            }
-
             clearCart();
             localStorage.removeItem('pendingOrder');
             toast.success('¡Compra realizada con éxito!');
@@ -125,7 +95,7 @@ const PaymentResponse = () => {
     };
 
     handlePaymentResponse();
-  }, [router.isReady, router.query, user, updatePurchaseHistory, clearCart, processingOrder]);
+  }, [router.isReady, router.query, clearCart, processingOrder]);
 
   const renderContent = () => {
     return (
@@ -147,83 +117,92 @@ const PaymentResponse = () => {
               className="mx-auto mb-6"
             />
             <div className="flex space-x-2 justify-center mb-6">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="w-3 h-3 rounded-full bg-[#936DAD]"
-              ></motion.div>
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, delay: 0.3, repeat: Infinity }}
-                className="w-3 h-3 rounded-full bg-[#B6D3D2]"
-              ></motion.div>
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, delay: 0.6, repeat: Infinity }}
-                className="w-3 h-3 rounded-full bg-[#F3BEB6]"
-              ></motion.div>
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
+                  transition={{ 
+                    duration: 2,
+                    delay: i * 0.3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="w-3 h-3 rounded-full bg-gradient-to-r from-[#936DAD] to-[#B6D3D2]"
+                />
+              ))}
             </div>
             
-            <AnimatePresence>
-              {showConfetti && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  className="relative"
-                >
-                  <CheckCircle className="w-24 h-24 text-[#D1D550] mx-auto mb-4" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
+              className="space-y-4"
             >
-              <h2 className="text-3xl font-bold text-[#936DAD] mb-2 title-font">¡Pago Exitoso!</h2>
-              <p className="text-gray-600 mb-4 body-font">Gracias por tu compra. Tu pedido ha sido procesado correctamente.</p>
+              <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#936DAD] to-[#B6D3D2] mb-2 title-font">
+                Processing Your Payment / Procesando tu Pago
+              </h2>
+              <p className="text-gray-600 mb-4 body-font">
+                Please wait while we confirm your transaction...
+                <br />
+                Por favor espera mientras confirmamos tu transacción...
+              </p>
             </motion.div>
-
+  
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-[#ECEACA] p-6 rounded-2xl text-left mb-6 shadow-lg"
+              className="bg-gradient-to-br from-[#ECEACA] to-white p-6 rounded-2xl text-left mb-6 shadow-lg"
             >
-              <h3 className="font-semibold text-[#936DAD] mb-4 title-font">Próximos pasos:</h3>
+              <h3 className="font-semibold text-[#936DAD] mb-4 title-font">Next Steps / Próximos Pasos:</h3>
               <ul className="space-y-4 text-gray-700 body-font">
-                {['Recibirás un correo electrónico con la confirmación de tu pedido en breve.',
-                  'Nos pondremos en contacto contigo para coordinar la entrega.',
-                  'Si tienes alguna pregunta o necesitas gestionar el envío, contáctanos:'].map((text, index) => (
+                {[
+                  {
+                    en: 'We are processing your payment and verifying the transaction.',
+                    es: 'Estamos procesando tu pago y verificando la transacción.'
+                  },
+                  {
+                    en: 'Once confirmed, you will receive an email with your order details.',
+                    es: 'Una vez confirmado, recibirás un correo con los detalles de tu pedido.'
+                  },
+                  {
+                    en: 'Need assistance? Contact us:',
+                    es: '¿Necesitas ayuda? Contáctanos:'
+                  }
+                ].map((item, index) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7 + (index * 0.1) }}
-                    className="flex items-center body-font"
+                    className="flex items-start space-y-1 flex-col body-font"
                   >
-                    <div className="w-2 h-2 rounded-full bg-[#D1D550] mr-3"></div>
-                    {text}
+                    <div className="flex items-center">
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#936DAD] to-[#D1D550] mr-3" />
+                      <span>{item.en}</span>
+                    </div>
+                    <div className="flex items-center ml-5">
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#B6D3D2] to-[#D1D550] mr-3" />
+                      <span className="text-gray-500">{item.es}</span>
+                    </div>
                   </motion.li>
                 ))}
               </ul>
             </motion.div>
-
+  
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
               <motion.a
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(147, 109, 173, 0.2)" }}
                 href="mailto:info@beevsoven.com"
-                className="flex items-center justify-center bg-[#B6D3D2] text-white py-3 px-6 rounded-full body-font"
+                className="flex items-center justify-center bg-gradient-to-r from-[#B6D3D2] to-[#936DAD] text-white py-3 px-6 rounded-full body-font hover:opacity-90 transition-all duration-300"
               >
                 <Mail className="w-5 h-5 mr-2" />
                 info@beevsoven.com
               </motion.a>
               <motion.a
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(182, 211, 210, 0.2)" }}
                 href="tel:+17862800961"
-                className="flex items-center justify-center bg-[#936DAD] text-white py-3 px-6 rounded-full body-font"
+                className="flex items-center justify-center bg-gradient-to-r from-[#936DAD] to-[#B6D3D2] text-white py-3 px-6 rounded-full body-font hover:opacity-90 transition-all duration-300"
               >
                 <Phone className="w-5 h-5 mr-2" />
                 +1 (786) 280-0961
