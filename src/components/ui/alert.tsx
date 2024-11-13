@@ -1,5 +1,5 @@
-import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
@@ -46,4 +46,17 @@ const AlertDescription = React.forwardRef<
 ));
 AlertDescription.displayName = "AlertDescription";
 
-export { Alert, AlertDescription };
+// Añadir el componente AlertTitle
+const AlertTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h2
+    ref={ref}
+    className={cn("text-lg font-semibold leading-snug tracking-tight", className)}
+    {...props}
+  />
+));
+AlertTitle.displayName = "AlertTitle";
+
+export { Alert, AlertDescription, AlertTitle };

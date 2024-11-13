@@ -73,6 +73,11 @@ const StateInput: React.FC<StateInputProps> = ({
           value={inputValue}
           onChange={handleInputChange}
             disabled={disabled}
+            autoComplete="new-password"
+            spellCheck="false"
+            autoCapitalize="off"
+            autoCorrect="off"
+            aria-autocomplete="none"
           className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 
             ${error ? 'border-red-500 focus:ring-red-200' : 
               verified ? 'border-green-500 focus:ring-green-200' : 

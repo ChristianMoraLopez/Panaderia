@@ -20,6 +20,9 @@ import { useProducts } from "@/hooks/useProducts";
 import InputField from "@/components/ui/InputField";
 import StateInput from "@/components/State/StateInput";
 import { StateCode } from "@components/shipping/stateUtils";
+import AddressErrorPopup from "@/components/AddressErrorPopup";
+import ShippingOptions from "@components/shipping/ShippingOptions";
+import { type ShippingRate } from "@/types/shipping";
 
 interface Product {
   name: string;
@@ -37,10 +40,17 @@ const ShippingForm: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
   const { items, subTotal } = useCart();
+  const TAX_RATE = 0.06; // 6% tax rate
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const { products } = useProducts();
   const [randomProduct, setRandomProduct] = useState<Product | null>(null);
+  const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
+  const [currentError, setCurrentError] = useState("");
+  const [selectedShippingRate, setSelectedShippingRate] = useState<
+    ShippingRate | undefined
+  >();
+  const [showShippingOptions, setShowShippingOptions] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: user?.displayName || "",
@@ -71,6 +81,13 @@ const ShippingForm: React.FC = () => {
     state: false,
     zipCode: false,
   });
+
+  // Calculate total with tax and shipping
+  const calculateTotal = (subtotal: number, shippingRate?: ShippingRate) => {
+    const tax = subtotal * TAX_RATE;
+    const shipping = shippingRate?.totalPrice || 0;
+    return subtotal + tax + shipping;
+  };
 
   useEffect(() => {
     if (items.length === 0) {
@@ -182,8 +199,14 @@ const ShippingForm: React.FC = () => {
       }
 
       if (hasErrors) {
+        const firstError = Object.entries(newErrors).find(
+          ([, value]) => value !== ""
+        );
+        if (firstError) {
+          setCurrentError(firstError[1]);
+          setIsErrorPopupOpen(true);
+        }
         setFormErrors(newErrors);
-        toast.error("Please correct the errors in the form");
         return false;
       }
 
@@ -207,14 +230,14 @@ const ShippingForm: React.FC = () => {
 
       if (!response.ok || data.error) {
         const errorMessage = data.error?.message || "Error validating address";
-        toast.error(errorMessage);
+        setCurrentError(errorMessage);
+        setIsErrorPopupOpen(true);
         setFormErrors((prev) => ({
           ...prev,
           streetAddress: errorMessage,
         }));
         return false;
       }
-
       if (data.address) {
         setFormData((prev) => ({
           ...prev,
@@ -233,6 +256,7 @@ const ShippingForm: React.FC = () => {
           zipCode: true,
         });
 
+        setShowShippingOptions(true);
         toast.success("Address verified successfully!");
         return true;
       }
@@ -240,16 +264,22 @@ const ShippingForm: React.FC = () => {
       return false;
     } catch (error) {
       console.error("Error validating address:", error);
-      toast.error("Error validating address. Please try again.");
+      setCurrentError("Error validating address. Please try again.");
+      setIsErrorPopupOpen(true);
       return false;
     } finally {
       setIsValidating(false);
     }
   };
 
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!selectedShippingRate) {
+      toast.error("Please select a shipping method");
+      return;
+    }
     const isValid = await validateAddress();
     if (!isValid) {
       toast.error("Please verify your address before proceeding");
@@ -265,10 +295,13 @@ const ShippingForm: React.FC = () => {
     }
 
     const purchaseId = uuidv4();
+    const tax = subTotal * TAX_RATE;
+    const total = calculateTotal(subTotal, selectedShippingRate);
 
     try {
       const stripeData = {
-        amount: subTotal,
+        // Convert all monetary values to cents for Stripe
+        amount: Math.round(total * 100), // Convert to cents
         items: items.map((item) => ({
           id: item.id,
           name: item.name,
@@ -279,6 +312,8 @@ const ShippingForm: React.FC = () => {
         })),
         customerEmail: formData.email,
         customerName: formData.fullName,
+        tax: Math.round(tax * 100), // Convert tax to cents
+        shipping: Math.round(selectedShippingRate.totalPrice * 100), // Convert shipping to cents
         shippingAddress: {
           firm: formData.firm.trim(),
           address: formData.streetAddress.trim(),
@@ -292,6 +327,9 @@ const ShippingForm: React.FC = () => {
         },
         metadata: {
           purchaseId,
+          subtotal: Math.round(subTotal * 100), // Add subtotal in cents
+          tax: Math.round(tax * 100), // Include tax in metadata
+          shipping: Math.round(selectedShippingRate.totalPrice * 100), // Include shipping in metadata
         },
       };
 
@@ -300,7 +338,10 @@ const ShippingForm: React.FC = () => {
         JSON.stringify({
           purchaseId,
           ...stripeData,
-          total: subTotal,
+          total,
+          subtotal: subTotal,
+          tax,
+          shippingCost: selectedShippingRate.totalPrice,
         })
       );
 
@@ -329,6 +370,10 @@ const ShippingForm: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+  const totalItemCount = items.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   return (
     <div className="flex items-center justify-start min-h-screen bg-[#936DAD] p-4 relative overflow-hidden">
@@ -532,18 +577,30 @@ const ShippingForm: React.FC = () => {
                   )}
                 </motion.button>
 
+                {showShippingOptions && (
+                  <div className="mt-6 border-t border-gray-200 pt-6">
+                    <ShippingOptions
+                      destinationZip={formData.zipCode}
+                      itemCount={totalItemCount}
+                      onSelectRate={setSelectedShippingRate}
+                      selectedRate={selectedShippingRate}
+                    />
+                  </div>
+                )}
+
                 <motion.button
                   type="submit"
                   disabled={
                     isSubmitting ||
-                    !Object.values(verifiedFields).every(Boolean)
+                    !Object.values(verifiedFields).every(Boolean) ||
+                    !selectedShippingRate
                   }
                   className={`w-full font-bold py-3 rounded-full transition duration-300 flex items-center justify-center
-      ${
-        Object.values(verifiedFields).every(Boolean)
-          ? "bg-[#926cad] hover:bg-[#926c]"
-          : "bg-gray-400 cursor-not-allowed"
-      } text-white disabled:opacity-50`}
+        ${
+          Object.values(verifiedFields).every(Boolean) && selectedShippingRate
+            ? "bg-[#926cad] hover:bg-[#926c]"
+            : "bg-gray-400 cursor-not-allowed"
+        } text-white disabled:opacity-50`}
                 >
                   {isSubmitting ? (
                     <>
@@ -553,7 +610,11 @@ const ShippingForm: React.FC = () => {
                   ) : (
                     <>
                       <CreditCard className="mr-2 h-5 w-5" />
-                      Proceed to Payment
+                      Proceed to Payment ($
+                      {calculateTotal(subTotal, selectedShippingRate).toFixed(
+                        2
+                      )}
+                      )
                     </>
                   )}
                 </motion.button>
@@ -562,6 +623,12 @@ const ShippingForm: React.FC = () => {
           </div>
         </motion.div>
       </motion.div>
+
+      <AddressErrorPopup
+        isOpen={isErrorPopupOpen}
+        onClose={() => setIsErrorPopupOpen(false)}
+        error={currentError}
+      />
     </div>
   );
 };

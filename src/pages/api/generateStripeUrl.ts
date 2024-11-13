@@ -15,12 +15,20 @@ export default async function handler(
   }
 
   try {
-    const { items, customerEmail, customerName, metadata } = req.body;
+    const { 
+      items, 
+      customerEmail, 
+      customerName, 
+      metadata,
+      tax,
+      shipping
+    } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Invalid items' });
     }
 
+    // Create line items for products
     const lineItems = items.map((item: CartItemType) => ({
       price_data: {
         currency: 'usd',
@@ -34,6 +42,38 @@ export default async function handler(
       quantity: item.quantity,
     }));
 
+    // Add tax as a separate line item if exists
+    if (tax > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Sales Tax',
+            description: '6% sales tax',
+            images: undefined,
+          },
+          unit_amount: tax,
+        },
+        quantity: 1,
+      });
+    }
+
+    // Add shipping as a separate line item
+    if (shipping > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: metadata.shippingMethod || 'Shipping',
+            description: 'Shipping cost',
+            images: undefined,
+          },
+          unit_amount: shipping,
+        },
+        quantity: 1,
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
@@ -44,48 +84,6 @@ export default async function handler(
       shipping_address_collection: {
         allowed_countries: ['US'],
       },
-      shipping_options: [
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 500,
-              currency: 'usd',
-            },
-            display_name: 'Standard Shipping',
-            delivery_estimate: {
-              minimum: {
-                unit: 'business_day',
-                value: 5,
-              },
-              maximum: {
-                unit: 'business_day',
-                value: 7,
-              },
-            },
-          },
-        },
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 1500,
-              currency: 'usd',
-            },
-            display_name: 'Express Shipping',
-            delivery_estimate: {
-              minimum: {
-                unit: 'business_day',
-                value: 2,
-              },
-              maximum: {
-                unit: 'business_day',
-                value: 3,
-              },
-            },
-          },
-        },
-      ],
       metadata: {
         ...metadata,
         customerName,

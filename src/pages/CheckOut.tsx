@@ -87,7 +87,7 @@ const CheckoutPage: React.FC = () => {
     }
   };
 
-  const tax = subTotal * 0.1;
+  const tax = subTotal * 0.06;
   const total = subTotal + tax;
 
   const getAbsoluteImageUrl = (url: string) => {
