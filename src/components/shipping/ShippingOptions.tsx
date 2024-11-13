@@ -162,7 +162,7 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
         setRates(uniqueRates);
         setError(null);
       } else {
-        if (retryCount < 2) { // Reducido de 3 a 2 intentos
+        if (retryCount < 3) { // Reducido de 3 a 2 intentos
           setIsRetrying(true);
           setTimeout(() => {
             fetchShippingRates(retryCount + 1);
@@ -177,7 +177,7 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
       console.error("Error fetching shipping rates:", error);
       setError(error instanceof Error ? error.message : "An unexpected error occurred");
       
-      if (retryCount < 2) { // Reducido de 3 a 2 intentos
+      if (retryCount < 3) { // Reducido de 3 a 2 intentos
         setIsRetrying(true);
         setTimeout(() => {
           fetchShippingRates(retryCount + 1);

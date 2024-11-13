@@ -21,8 +21,8 @@ export const SHIPPING_CONSTANTS = {
   ORIGIN_ZIP: '33015',
   BASE_WEIGHT_PER_ITEM: 0.5, // Weight in pounds per item (cookies are light!)
   MIN_WEIGHT: 0.1, // Minimum weight in pounds
-  COMPANY_NAME: 'Bee Voven Bakery',
-  PRICE_TYPE: 'RETAIL', // Changed to RETAIL to match API requirements
+  COMPANY_NAME: 'Beevs Oven Bakery',
+  PRICE_TYPE: 'RETAIL', 
   RATE_INDICATOR: 'SP',
   PROCESSING_CATEGORY: 'MACHINABLE',
   DESTINATION_ENTRY_FACILITY_TYPE: 'NONE',
