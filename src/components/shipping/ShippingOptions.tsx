@@ -7,6 +7,7 @@ import {
   getServiceName,
   getEstimatedDeliveryDate,
   getFallbackShippingRates,
+  type ShippingDimensions
 } from "@/utils/shippingCalculations";
 import { ShippingRate } from "@/types/shipping";
 
@@ -46,8 +47,16 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [rates, setRates] = useState<ShippingRate[]>([]);
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [initialLoading, setInitialLoading] = useState(true); // Nuevo estado
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [dimensions, setDimensions] = useState<ShippingDimensions | null>(null);
 
+  // Calcular dimensiones cuando cambie la cantidad de items
+  useEffect(() => {
+    if (itemCount > 0) {
+      const calculatedDimensions = calculateShippingDimensions(itemCount);
+      setDimensions(calculatedDimensions);
+    }
+  }, [itemCount]);
 
   const formatRateResponse = useCallback((rate: USPSRateResponse, mailClass: string): ShippingRate => ({
     mailClass,
@@ -68,9 +77,10 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
   }), []);
 
   const fetchShippingRates = useCallback(async (retryCount = 0) => {
+    if (!dimensions) return;
+
     const fetchRateForMailClass = async (
-      mailClass: string,
-      dimensions: ReturnType<typeof calculateShippingDimensions>
+      mailClass: string
     ): Promise<ShippingRate | null> => {
       try {
         const response = await fetch("/api/shipping-rates", {
@@ -120,32 +130,31 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
       setError(null);
       setLoadingProgress(0);
 
-      const dimensions = calculateShippingDimensions(itemCount);
       const validRates: ShippingRate[] = [];
       const progressIncrement = 100 / SHIPPING_CONSTANTS.MAIL_CLASSES.length;
 
-      // Hacer las llamadas en paralelo pero con un pequeño delay entre ellas
-      const delayBetweenCalls = 100; // 100ms entre llamadas
-      const promises = SHIPPING_CONSTANTS.MAIL_CLASSES.map((mailClass, index) => 
-        new Promise<void>((resolve) => {
-          setTimeout(async () => {
-            const rate = await fetchRateForMailClass(mailClass, dimensions);
-            setLoadingProgress((prev) => Math.min(prev + progressIncrement, 99));
-            if (rate) {
-              const isDuplicate = validRates.some(existingRate => 
-                existingRate.mailClass === rate.mailClass
-              );
-              
-              if (!isDuplicate) {
-                validRates.push(rate);
-              }
-            }
-            resolve();
-          }, index * delayBetweenCalls);
-        })
+      // Hacer todas las llamadas en paralelo
+      const results = await Promise.allSettled(
+        SHIPPING_CONSTANTS.MAIL_CLASSES.map(mailClass => 
+          fetchRateForMailClass(mailClass)
+        )
       );
 
-      await Promise.all(promises);
+      // Procesar resultados
+      results.forEach((result) => {
+        setLoadingProgress((prev) => Math.min(prev + progressIncrement, 99));
+        if (result.status === 'fulfilled' && result.value) {
+          const rate = result.value;
+          const isDuplicate = validRates.some(existingRate => 
+            existingRate.mailClass === rate.mailClass
+          );
+          
+          if (!isDuplicate) {
+            validRates.push(rate);
+          }
+        }
+      });
+
       setLoadingProgress(100);
 
       if (validRates.length > 0) {
@@ -162,11 +171,11 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
         setRates(uniqueRates);
         setError(null);
       } else {
-        if (retryCount < 3) { // Reducido de 3 a 2 intentos
+        if (retryCount < 2) {
           setIsRetrying(true);
           setTimeout(() => {
             fetchShippingRates(retryCount + 1);
-          }, 100); // Reducido de 2000ms a 1000ms
+          }, 100);
         } else {
           const fallbackRates = getFallbackShippingRates(dimensions);
           setRates(fallbackRates);
@@ -177,13 +186,12 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
       console.error("Error fetching shipping rates:", error);
       setError(error instanceof Error ? error.message : "An unexpected error occurred");
       
-      if (retryCount < 3) { // Reducido de 3 a 2 intentos
+      if (retryCount < 2) {
         setIsRetrying(true);
         setTimeout(() => {
           fetchShippingRates(retryCount + 1);
-        }, 100); // Reducido de 2000ms a 1000ms
+        }, 100);
       } else {
-        const dimensions = calculateShippingDimensions(itemCount);
         const fallbackRates = getFallbackShippingRates(dimensions);
         setRates(fallbackRates);
         setError(null);
@@ -191,19 +199,18 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
     } finally {
       setIsLoading(false);
       setInitialLoading(false);
-      if (retryCount >= 2) { // Ajustado a 2
+      if (retryCount >= 2) {
         setIsRetrying(false);
       }
     }
-  }, [destinationZip, itemCount, formatRateResponse]);
+  }, [destinationZip, dimensions, formatRateResponse]);
 
+  // Efecto para iniciar la búsqueda de tarifas cuando tengamos dimensiones y código postal
   useEffect(() => {
-    if (destinationZip && itemCount > 0) {
+    if (destinationZip && dimensions) {
       fetchShippingRates();
     }
-  }, [fetchShippingRates, destinationZip, itemCount]);
-
-  const dimensions = calculateShippingDimensions(itemCount);
+  }, [fetchShippingRates, destinationZip, dimensions]);
 
   const renderLoadingState = () => (
     <div className="flex flex-col items-center justify-center p-8 space-y-2">
@@ -318,7 +325,7 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
         </button>
       </div>
 
-      {showDimensions && (
+      {showDimensions && dimensions && (
         <div className="bg-[#936DAD]/10 p-4 rounded-lg text-sm space-y-2">
           <p className="text-[#936DAD]">
             Package Weight: {dimensions.weight} lbs ({itemCount} items)
@@ -344,7 +351,6 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
       )}
     </div>
   );
-
 };
 
 export default ShippingOptions;
