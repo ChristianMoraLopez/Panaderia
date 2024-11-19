@@ -1,3 +1,5 @@
+import {ContentfulProductEntry } from './ProductTypes';
+
 // Interfaz base general para las entradas de Contentful
 export interface ContentfulEntryBase<TFields> {
     sys: {
@@ -63,20 +65,8 @@ export interface AboutUsPicturesEntry {
 // Interfaz para los campos del menú semanal
 export interface WeeklyMenuFields {
     title: string; // Ajustado para coincidir con el campo del JSON
-    image: {
-        fields: {
-            file: {
-                url: string;
-            };
-        };
-        sys: {
-            type: 'Link';
-            linkType: 'Asset'; // Cambiado a 'Asset' para coincidir con el JSON
-            id: string;
-        };
-    };
-    description: string; // Descripción
-    price : number; // Precio
+    SemanalProduct : ContentfulProductEntry; // Producto semanal
+    PriceDiscount : number; // Precio
     dateWeeklyMenu: string; // Fecha del menú semanal
 }
 
