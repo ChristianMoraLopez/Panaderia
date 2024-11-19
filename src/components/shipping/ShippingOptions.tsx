@@ -50,7 +50,13 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
   const [initialLoading, setInitialLoading] = useState(true);
   const [dimensions, setDimensions] = useState<ShippingDimensions | null>(null);
 
-  // Calcular dimensiones cuando cambie la cantidad de items
+  // Función para añadir días a una fecha
+  const addDays = (date: string, days: number): string => {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result.toISOString();
+  };
+
   useEffect(() => {
     if (itemCount > 0) {
       const calculatedDimensions = calculateShippingDimensions(itemCount);
@@ -58,23 +64,29 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
     }
   }, [itemCount]);
 
-  const formatRateResponse = useCallback((rate: USPSRateResponse, mailClass: string): ShippingRate => ({
-    mailClass,
-    productName: rate.productName || rate.description || getServiceName(mailClass),
-    productDefinition: rate.productDefinition || getServiceDescription(mailClass),
-    totalPrice: Number(rate.price) || 0,
-    SKU: rate.SKU,
-    zone: rate.zone,
-    commitment: rate.commitment ? {
-      name: rate.commitment.name || getServiceName(mailClass),
-      scheduleDeliveryDate: rate.commitment.scheduleDeliveryDate || getEstimatedDeliveryDate(mailClass),
-      guaranteedDelivery: Boolean(rate.commitment.guaranteedDelivery || mailClass === 'PRIORITY_MAIL_EXPRESS')
-    } : {
-      name: getServiceName(mailClass),
-      scheduleDeliveryDate: getEstimatedDeliveryDate(mailClass),
-      guaranteedDelivery: mailClass === 'PRIORITY_MAIL_EXPRESS'
-    }
-  }), []);
+  const formatRateResponse = useCallback((rate: USPSRateResponse, mailClass: string): ShippingRate => {
+    // Añadir 2 días a la fecha de entrega estimada
+    const deliveryDate = rate.commitment?.scheduleDeliveryDate || getEstimatedDeliveryDate(mailClass);
+    const adjustedDeliveryDate = addDays(deliveryDate, 2);
+
+    return {
+      mailClass,
+      productName: rate.productName || rate.description || getServiceName(mailClass),
+      productDefinition: rate.productDefinition || getServiceDescription(mailClass),
+      totalPrice: Number(rate.price) || 0,
+      SKU: rate.SKU,
+      zone: rate.zone,
+      commitment: rate.commitment ? {
+        name: rate.commitment.name || getServiceName(mailClass),
+        scheduleDeliveryDate: adjustedDeliveryDate,
+        guaranteedDelivery: Boolean(rate.commitment.guaranteedDelivery || mailClass === 'PRIORITY_MAIL_EXPRESS')
+      } : {
+        name: getServiceName(mailClass),
+        scheduleDeliveryDate: adjustedDeliveryDate,
+        guaranteedDelivery: mailClass === 'PRIORITY_MAIL_EXPRESS'
+      }
+    };
+  }, []);
 
   const fetchShippingRates = useCallback(async (retryCount = 0) => {
     if (!dimensions) return;
@@ -272,15 +284,24 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
                 {rate.productName}
               </h4>
               {rate.commitment && (
-                <p
-                  className={`text-sm ${
-                    isSelected ? "text-white/80" : "text-gray-600"
-                  }`}
-                >
-                  Delivery by{" "}
-                  {new Date(rate.commitment.scheduleDeliveryDate).toLocaleDateString()}
-                  {rate.commitment.guaranteedDelivery && " (Guaranteed)"}
-                </p>
+                <div>
+                  <p
+                    className={`text-sm ${
+                      isSelected ? "text-white/80" : "text-gray-600"
+                    }`}
+                  >
+                    Delivery by{" "}
+                    {new Date(rate.commitment.scheduleDeliveryDate).toLocaleDateString()}
+                    {rate.commitment.guaranteedDelivery && " (Guaranteed)"}
+                  </p>
+                  <p
+                    className={`text-xs mt-1 ${
+                      isSelected ? "text-white/70" : "text-gray-500"
+                    }`}
+                  >
+                    Includes 2 business days for order preparation
+                  </p>
+                </div>
               )}
             </div>
           </div>
@@ -323,6 +344,12 @@ const ShippingOptions: React.FC<ShippingOptionsProps> = ({
           <Info size={16} />
           <span className="text-sm">Package Details</span>
         </button>
+      </div>
+
+      <div className="bg-[#936DAD]/10 p-3 rounded-lg text-sm">
+        <p className="text-[#936DAD]">
+          All delivery dates include 2 business days for order preparation
+        </p>
       </div>
 
       {showDimensions && dimensions && (
