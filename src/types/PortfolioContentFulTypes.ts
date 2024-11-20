@@ -210,3 +210,5 @@ export type ContentfulData = {
     technic: string;
   };
 };
+
+

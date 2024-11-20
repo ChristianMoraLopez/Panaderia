@@ -1,5 +1,5 @@
 import {ContentfulProductEntry } from './ProductTypes';
-
+import { AssetSys } from './PortfolioContentFulTypes';
 // Interfaz base general para las entradas de Contentful
 export interface ContentfulEntryBase<TFields> {
     sys: {
@@ -62,18 +62,24 @@ export interface AboutUsPicturesEntry {
   fields: AboutUsPicturesFields;
   contentTypeId: string;
 }
-// Interfaz para los campos del menú semanal
+
+
+// Weekly Menu types
 export interface WeeklyMenuFields {
-    title: string; // Ajustado para coincidir con el campo del JSON
-    SemanalProduct : ContentfulProductEntry; // Producto semanal
-    PriceDiscount : number; // Precio
-    dateWeeklyMenu: string; // Fecha del menú semanal
+  title: string;
+  semanalProduct: {
+    sys: {
+      type: 'Link';
+      linkType: 'Entry';
+      id: string;
+    };
+  } & ContentfulProductEntry; // This represents the resolved link
+  priceDiscount: number;
+  dateWeeklyMenu: string;
 }
 
-// Tipo de entrada para el menú semanal
 export interface WeeklyMenuEntry {
-   sys: ContentfulEntryBase<WeeklyMenuFields>['sys'];
-    fields: WeeklyMenuFields;
-    contentTypeId: string;          // ID del tipo de contenido
-    
+  sys: AssetSys;
+  fields: WeeklyMenuFields;
+  contentTypeId: string;
 }

@@ -44,8 +44,8 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
     }
 
     const currentMenu = products[currentIndex];
-    const imageUrl = currentMenu.SemanalProduct.fields.image?.fields?.file?.url
-        ? `https:${currentMenu.SemanalProduct.fields.image.fields.file.url}`
+    const imageUrl = currentMenu.semanalProduct.fields.image?.fields?.file?.url
+        ? `https:${currentMenu.semanalProduct.fields.image.fields.file.url}`
         : '/placeholder.jpg';
 
     return (
@@ -106,7 +106,7 @@ const WeeklyMenuItemSection: React.FC<WeeklyMenuItemProps> = ({ language }) => {
                     <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 flex items-start pt-16"> {/* Cambiado a items-start y agregado pt-16 */}
                         <div className="p-4 sm:p-6 rounded-lg text-white w-full">
                             <ul className="text-2xl sm:text-3xl md:text-4xl font-medium space-y-6 body-font"> {/* Aumentado tamaño de texto y espaciado */}
-                                {currentMenu.SemanalProduct.fields.description.split(',').map((item, index) => (
+                                {currentMenu.semanalProduct.fields.description.split(',').map((item, index) => (
                                     <li key={index} className="mb-4 leading-relaxed">
                                         {item.trim()}
                                     </li> 
